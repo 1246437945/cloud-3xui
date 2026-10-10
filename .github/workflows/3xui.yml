@@ -36,6 +36,8 @@ jobs:
           sudo systemctl is-active x-ui
 
       - name: Create VLESS+WS inbound via API
+        env:
+          VLESS_UUID: ${{ secrets.VLESS_UUID }}
         run: |
           sudo apt-get install -y -qq python3-requests > /dev/null 2>&1 || pip install -q requests
           python3 << 'PYEOF'
@@ -63,7 +65,7 @@ jobs:
                   pass
               time.sleep(2)
 
-          client_uuid = str(uuid.uuid4())
+          client_uuid = os.environ.get("VLESS_UUID", "") or str(uuid.uuid4())
           inbound = {
               "enable": True, "remark": "vless-ws", "listen": "", "port": WS_PORT,
               "protocol": "vless", "expiryTime": 0, "total": 0,
