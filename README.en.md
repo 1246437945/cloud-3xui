@@ -135,6 +135,8 @@ Detailed steps:
 4. In the popup form:
    - **Panel password**: leave empty (automatically uses the `PANEL_PASSWORD` secret)
    - **Run duration**: default `290` (minutes); for a first test you can enter `5` for a quick check; for daily use, just leave it empty
+   - **Countdown output interval**: Countdown output interval, default `1`, enter `0` to disable
+   - **Countdown interval unit**: Countdown output interval unit, select `minutes` or `seconds` from the dropdown
 5. Click the green **Run workflow** button to start.
 
 ### Step 5: Get the node link
@@ -173,7 +175,7 @@ Detailed steps:
 | Install 3x-ui | 安装 3x-ui | Install 3x-ui | Install the panel non-interactively with the official script |
 | Create VLESS+WS inbound via API | 通过 API 创建 VLESS+WS 入站 | Create VLESS+WS inbound via API | Log in with the API Token and create the inbound automatically |
 | Start named Cloudflare tunnel | 启动 Cloudflare 命名隧道 | Start named Cloudflare tunnel | Connect to the fixed-domain tunnel using the Token |
-| Keep alive | 保活 | Keep alive | Sleep for the specified minutes while monitoring service status |
+| Keep alive | 保活 | Keep alive | Sleep for the specified minutes while monitoring service status, and print the countdown at the configured interval |
 | Trigger next run | 触发下一次运行 | Trigger next run | Call the API to automatically start the next round |
 
 ## FAQ
