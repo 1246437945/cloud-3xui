@@ -139,6 +139,8 @@ flowchart TD
    - **Panel password**: اتركه فارغًا (سيستخدم `PANEL_PASSWORD` secret تلقائيًا)
      كلمة مرور اللوحة (اتركها فارغة لاستخدام PANEL_PASSWORD secret)
    - **Run duration**: الافتراضي `290` (دقيقة)، وللاختبار الأول يمكن كتابة `5` للتحقق السريع؛ وللاستخدام اليومي اتركه فارغًا
+   - **Countdown output interval**: الفاصل الزمني لإخراج العد التنازلي، الافتراضي `1`، أدخل `0` للتعطيل
+   - **Countdown interval unit**: وحدة الفاصل الزمني للعد التنازلي، حدد `minutes` أو `seconds` من القائمة المنسدلة
      مدة التشغيل (بالدقائق، الافتراضي 290، بحد أقصى 340)
 5. انقر الزر الأخضر **Run workflow** لبدء التشغيل
 
@@ -178,7 +180,7 @@ flowchart TD
 | Install 3x-ui | تثبيت 3x-ui | Install 3x-ui | تثبيت اللوحة بشكل غير تفاعلي بالسكربت الرسمي |
 | Create VLESS+WS inbound via API | إنشاء مدخل VLESS+WS عبر API | Create VLESS+WS inbound via API | تسجيل الدخول برمز API وإنشاء المدخل تلقائيًا |
 | Start named Cloudflare tunnel | تشغيل نفق Cloudflare المسمّى | Start named Cloudflare tunnel | الاتصال بالنفق ذي النطاق الثابت باستخدام الرمز |
-| Keep alive | الحفاظ على التشغيل | Keep alive | السكون لعدد الدقائق المحدد مع مراقبة حالة الخدمات |
+| Keep alive | الحفاظ على التشغيل | Keep alive | السكون لعدد الدقائق المحدد مع مراقبة حالة الخدمات وطباعة العد التنازلي بالفاصل الزمني المحدد |
 | Trigger next run | تشغيل الدورة التالية | Trigger next run | استدعاء API لبدء الدورة التالية تلقائيًا |
 
 ## الأسئلة الشائعة
