@@ -33,12 +33,20 @@ flowchart TD
     B --> C["API 创建 VLESS+WS 入站"]
     C --> D["启动 Cloudflare 命名隧道"]
     D --> E["输出节点链接"]
-    E --> F["保活 290 分钟"]
-    F --> G["调用 API 触发下一轮"]
+    E --> F["保活 N 分钟<br/>(手动输入，默认 290)"]
+    F --> G["调用 API 触发下一轮<br/>(用默认值 290)"]
     G --> A
 
     style G fill:#f6821f,color:#fff
 ```
+
+## Perpanjangan otomatis
+
+- **Durasi kamu yang tentukan**: saat Run workflow isi `run_minutes` secara manual, berjalan sesuai menit yang diisi; kosongkan untuk memakai default 290
+- **Pemicu otomatis pakai default**: setiap ronde berakhir API memicu ronde berikutnya tanpa parameter, jadi setiap ronde otomatis berdurasi 290 menit
+- Untuk tes cepat isi `5`, pemakaian harian kosongkan saja (290)
+- Domain dan UUID tetap, konfigurasi client sekali saja
+- Untuk berhenti tekan Cancel di Actions, tidak akan restart otomatis
 
 ## Alamat Tetap
 
