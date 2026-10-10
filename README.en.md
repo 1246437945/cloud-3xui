@@ -33,12 +33,21 @@ flowchart TD
     B --> C["API 创建 VLESS+WS 入站"]
     C --> D["启动 Cloudflare 命名隧道"]
     D --> E["输出节点链接"]
-    E --> F["保活 290 分钟"]
-    F --> G["调用 API 触发下一轮"]
+    E --> F["Keep alive N minutes<br/>(manual input, default 290)"]
+    F --> G["Call API to trigger next round<br/>(using the default 290)"]
     G --> A
 
     style G fill:#f6821f,color:#fff
 ```
+
+## Auto keep-alive
+
+- **You set the keep-alive duration**: when clicking Run workflow, fill in `run_minutes` manually — it will run for as many minutes as you enter; leave it empty to use the default 290
+- **Auto-triggered rounds use the default**: at the end of each round, the API is called to start the next round; the API trigger carries no parameters, so every auto keep-alive round is 290 minutes
+- For a quick test, just enter `5`; for daily use, leave it empty to use the default 290
+- The domain and UUID are fixed — configure the client once and it stays valid forever
+- To stop it, go to Actions and click Cancel; once cancelled, it will not restart automatically
+
 
 ## Fixed addresses
 
@@ -103,7 +112,7 @@ flowchart TD
 3. Click the **Run workflow** button on the right.
 4. In the popup form:
    - **Panel password**: leave empty (automatically uses the `PANEL_PASSWORD` secret)
-   - **Run duration**: default `290` (minutes); for a first test you can enter `5` for a quick check
+   - **Run duration**: default `290` (minutes); for a first test you can enter `5` for a quick check; for daily use, just leave it empty
 5. Click the green **Run workflow** button to start.
 
 ### Step 5: Get the node link
