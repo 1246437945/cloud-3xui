@@ -31,7 +31,7 @@ W repozytorium: Settings → Secrets and variables → Actions, dodaj trzy:
 |------|-------|
 | `CF_TUNNEL_TOKEN` | Token tunelu Cloudflare |
 | `PANEL_PASSWORD` | Hasło logowania do panelu |
-| `VLESS_UUID` | UUID węzła (stały, ważny na stałe w kliencie, wygeneruj na https://1024tools.com/uuid/) |
+| `VLESS_UUID` | UUID węzła (stały, ważny na stałe w kliencie, wygeneruj na https://1024tools.com/uuid/, **Zapisz ten UUID, nie będzie wyświetlany w logach jawnym tekstem, będzie potrzebny przy każdym składaniu linku węzła**) |
 
 ### 3. Uruchomienie
 
