@@ -71,7 +71,7 @@ Dasbor: https://dash.cloudflare.com
 
 ```mermaid
 flowchart TD
-    A["控制台 → Zero Trust<br/>→ Networks → Tunnels"] --> B["右上角 创建隧道"]
+    A["控制台 → Zero Trust<br/>→ Jaringan（Networks）→ Konektor（Tunnels）"] --> B["右上角 创建隧道"]
     B --> C["选 Cloudflared<br/>(推荐) → 选择 Cloudflared"]
     C --> D["输入隧道名称<br/>(例：github-3xui)<br/>→ 保存隧道"]
     D --> E["安装并运行连接器页<br/>复制 Token<br/>(eyJ 开头的一长串)"]
@@ -87,7 +87,7 @@ flowchart TD
 
 Langkah detail:
 
-1. Buka [Cloudflare Dashboard](https://dash.cloudflare.com), lalu dari menu sebelah kiri masuk ke **Zero Trust** → **Networks** → **Tunnels**
+1. Buka [Cloudflare Dashboard](https://dash.cloudflare.com), lalu dari menu sebelah kiri masuk ke **Zero Trust** → **Jaringan（Networks）** → **Konektor（Tunnels）**
 2. Klik tombol **Buat tunnel** di pojok kanan atas
 3. **Pilih jenis tunnel**: pilih **Cloudflared** (disarankan), lalu klik **Pilih Cloudflared**
 4. **Beri nama tunnel**: masukkan nama (misalnya `github-3xui`), lalu klik **Simpan tunnel**
