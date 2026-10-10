@@ -136,6 +136,10 @@ Detaljerte trinn:
      Panelpassord (la stå tomt for å bruke `PANEL_PASSWORD`-secretet)
    - **Run duration**：standard `290` (minutter); for første test kan du fylle inn `5` for rask verifisering
      Kjøretid (minutter, standard 290, maks 340)
+   - **Countdown output interval**: nedtellingsutdataintervall, standard `1`, fyll inn `0` for å deaktivere
+     Nedtelling utdataintervall (standard 1, 0 for å deaktivere)
+   - **Countdown interval unit**: enhet for nedtellingsintervall, velg `minutes` eller `seconds` fra rullegardinmenyen
+     Enhet for nedtelling utdataintervall
 5. Klikk på den grønne **Run workflow** for å starte
 
 ### Trinn 5: Hente node-lenken
@@ -174,7 +178,7 @@ Detaljerte trinn:
 | Install 3x-ui | Installere 3x-ui | Install 3x-ui | Installere panelet ikke-interaktivt med det offisielle skriptet |
 | Create VLESS+WS inbound via API | Opprette VLESS+WS-inbound via API | Create VLESS+WS inbound via API | Logge inn med API Token og opprette inbound automatisk |
 | Start named Cloudflare tunnel | Starte navngitt Cloudflare-tunnel | Start named Cloudflare tunnel | Koble til tunnelen med fast domene ved hjelp av Token |
-| Keep alive | Keep alive | Keep alive | Sove i det angitte antallet minutter og overvåke tjenestestatus |
+| Keep alive | Keep alive | Keep alive | Sover det angitte antallet minutter, sjekker tjenestestatus hvert minutt, viser nedtelling med angitt intervall |
 | Trigger next run | Utløse neste kjøring | Trigger next run | Kalle API-et for å automatisk starte neste runde |
 
 ## Vanlige spørsmål
