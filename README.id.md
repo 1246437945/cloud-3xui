@@ -44,8 +44,8 @@ flowchart TD
 ## Perpanjangan otomatis
 
 - **Durasi kamu yang tentukan**: saat Run workflow isi `run_minutes` secara manual, berjalan sesuai menit yang diisi; kosongkan untuk memakai default 290
-- **Pewarisan parameter otomatis**: setiap ronde meneruskan `run_minutes` / `countdown_interval` / `countdown_unit` ke ronde berikutnya, seluruh rantai memakai nilai awal yang kamu isi
-- **Startup tumpang tindih (perpindahan mulus)**: 5 menit sebelum setiap ronde berakhir, ronde berikutnya dipicu lebih awal, runner lama dan baru online bersamaan, tunnel Cloudflare mendukung banyak koneksi, trafik otomatis dialihkan ke koneksi yang tersedia, pengguna hampir tidak merasakan ronde lama keluar (untuk pengujian singkat ≤6 menit, dipicu 30 detik lebih awal)
+- **Pewarisan parameter otomatis**: setiap ronde meneruskan `run_minutes` / `countdown_interval` / `countdown_unit` / `overlap_threshold` / `overlap_long` / `overlap_short` ke ronde berikutnya, seluruh rantai memakai nilai awal yang kamu isi
+- **Startup tumpang tindih (perpindahan mulus)**: memicu lebih awal ronde berikutnya sebelum ronde saat ini berakhir, runner lama dan baru online bersamaan, tunnel Cloudflare mendukung banyak koneksi, trafik otomatis dialihkan ke koneksi yang tersedia, pengguna hampir tidak merasakan ronde lama keluar. Waktu pemicu dapat dikonfigurasi: keep-alive lebih besar dari `overlap_threshold` (default 5 menit) dihitung sebagai run panjang, dipicu `overlap_long` (default 5 menit) lebih awal; jika lebih kecil dihitung sebagai run pendek, dipicu `overlap_short` (default 30 detik) lebih awal
 - Untuk tes cepat isi `5`, pemakaian harian kosongkan saja (290)
 - Domain dan UUID tetap, konfigurasi client sekali saja
 - Untuk berhenti tekan Cancel di Actions· setelah dibatalkan tidak akan restart otomatis
@@ -131,6 +131,12 @@ Langkah detail:
      Interval keluaran hitung mundur (default 1, isi 0 untuk menonaktifkan)
    - **Countdown interval unit**: satuan interval hitung mundur, pilih `minutes` atau `seconds` dari dropdown
      Satuan interval keluaran hitung mundur
+   - **Overlap threshold**: ambang batas tumpang tindih (menit, default `5`), keep-alive yang lebih lama dari ini dianggap run panjang
+     Ambang batas tumpang tindih (menit, default 5): keep-alive yang lebih lama dari ini dianggap run panjang
+   - **Overlap long**: menit pemicu awal untuk run panjang (default `5`)
+     Menit pemicu awal untuk run panjang (default 5)
+   - **Overlap short**: detik pemicu awal untuk run pendek (default `30`)
+     Detik pemicu awal untuk run pendek (default 30)
 5. Klik tombol hijau **Run workflow** untuk mulai menjalankan
 
 ### Langkah 5: Mendapatkan link node
