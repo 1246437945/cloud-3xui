@@ -44,9 +44,9 @@ flowchart TD
 ## 自动续命
 
 - **保活时长由你定**：点 Run workflow 时手动填写 `run_minutes`，填多少就跑多少分钟；留空则用默认值 290
-- **参数自动继承**：每轮触发下一轮时会把 `run_minutes` / `countdown_interval` / `countdown_unit` 都传过去，整条链沿用你最初填的值
+- **参数自动继承**：每轮触发下一轮时会把所有输入参数都传过去（`run_minutes` / `countdown_interval` / `countdown_unit` / `overlap_threshold` / `overlap_long` / `overlap_short`），整条链沿用你最初填的值
 - 想临时测一下就填 `5`，日常用留空走默认 290
-- **重叠启动（无缝切换）**：本轮结束前 5 分钟提前触发下一轮，新旧两个 runner 同时在线，Cloudflare 隧道支持多连接，流量自动分到可用的连接上，旧轮退出时用户侧基本无感（短时测试如 ≤6 分钟则提前 30 秒触发）
+- **重叠启动（无缝切换）**：本轮结束前提前触发下一轮，新旧两个 runner 同时在线，Cloudflare 隧道支持多连接，流量自动分到可用的连接上，旧轮退出时用户侧基本无感。触发时机可配：保活大于 `overlap_threshold`（默认 5 分钟）算长运行，提前 `overlap_long`（默认 5 分钟）触发；小于则算短运行，提前 `overlap_short`（默认 30 秒）触发
 - 域名、UUID 都固定，客户端配置一次永久有效
 - 想停止就去 Actions 点 Cancel，取消后不会自动重启
 
