@@ -143,10 +143,34 @@ jobs:
           INTERVAL=${{ inputs.countdown_interval }}
           UNIT=${{ inputs.countdown_unit }}
           if [ "$UNIT" = "seconds" ]; then INTERVAL_SEC=$INTERVAL; else INTERVAL_SEC=$((INTERVAL * 60)); fi
+          # Overlap: trigger next run before this one ends for seamless handover
+          # 重叠启动：本轮结束前提前触发下一轮，实现无缝切换
+          OVERLAP_SEC=300
+          if [ $((MINS * 60)) -le 360 ]; then OVERLAP_SEC=30; fi
+          echo "重叠启动：结束前 $((OVERLAP_SEC / 60)) 分钟触发下一轮 Overlap: trigger next run $((OVERLAP_SEC / 60)) min before end"
           ELAPSED=0; LAST_CD=0; LAST_HC=0
           while [ $(date +%s) -lt $END ]; do
             sleep 1
             ELAPSED=$((ELAPSED + 1))
+            NOW=$(date +%s)
+            LEFT_SEC=$(( END - NOW ))
+            # Early trigger for overlap
+            if [ ! -f /tmp/triggered ] && [ "$LEFT_SEC" -le "$OVERLAP_SEC" ] && [ "$LEFT_SEC" -gt 0 ]; then
+              echo "提前触发下一轮 Early triggering next run for overlap..."
+              HTTP_CODE=$(curl -s -o /tmp/dispatch_resp.txt -w "%{http_code}" -X POST \
+                -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+                -H "Accept: application/vnd.github+json" \
+                https://api.github.com/repos/${{ github.repository }}/actions/workflows/3xui.yml/dispatches \
+                -d "{\"ref\":\"main\",\"inputs\":{\"run_minutes\":\"${{ inputs.run_minutes }}\",\"countdown_interval\":\"${{ inputs.countdown_interval }}\",\"countdown_unit\":\"${{ inputs.countdown_unit }}\"}}")
+              echo "HTTP $HTTP_CODE"
+              if [ "$HTTP_CODE" = "204" ]; then
+                echo "已提前触发下一次运行 Next run triggered early"
+                touch /tmp/triggered
+              else
+                echo "提前触发失败 Early trigger failed"
+                cat /tmp/dispatch_resp.txt; echo ""
+              fi
+            fi
             if [ $((ELAPSED - LAST_HC)) -ge 60 ]; then
               LAST_HC=$ELAPSED
               sudo systemctl is-active x-ui >/dev/null || echo "警告 WARNING: x-ui not active"
@@ -154,16 +178,20 @@ jobs:
             fi
             if [ "$INTERVAL_SEC" -gt 0 ] && [ $((ELAPSED - LAST_CD)) -ge "$INTERVAL_SEC" ]; then
               LAST_CD=$ELAPSED
-              LEFT_SEC=$(( END - $(date +%s) ))
               H=$(( LEFT_SEC / 3600 )); M=$(( (LEFT_SEC % 3600) / 60 )); S=$(( LEFT_SEC % 60 ))
               echo "剩余 $H 小时 $M 分钟 $S 秒 / Remaining ${H}h ${M}m ${S}s"
             fi
           done
 
-      - name: Trigger next run (auto-restart)
-        # Skip on manual cancel, so user can stop the loop
+      - name: Trigger next run (fallback)
+        # Fallback: only if early trigger in keep-alive didn't succeed
+        # 兜底：仅当保活循环内的提前触发未成功时执行
         if: ${{ !cancelled() }}
         run: |
+          if [ -f /tmp/triggered ]; then
+            echo "已提前触发，跳过 Already triggered early, skipping"
+            exit 0
+          fi
           echo "触发下一次运行 Triggering next run..."
           HTTP_CODE=$(curl -s -o /tmp/dispatch_resp.txt -w "%{http_code}" -X POST \
             -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
