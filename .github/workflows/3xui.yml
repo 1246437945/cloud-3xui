@@ -154,9 +154,9 @@ jobs:
             fi
             if [ "$INTERVAL_SEC" -gt 0 ] && [ $((ELAPSED - LAST_CD)) -ge "$INTERVAL_SEC" ]; then
               LAST_CD=$ELAPSED
-              LEFT=$(( (END - $(date +%s)) / 60 ))
-              H=$(( LEFT / 60 )); M=$(( LEFT % 60 ))
-              echo "剩余 $H 小时 $M 分钟 / Remaining ${H}h ${M}m"
+              LEFT_SEC=$(( END - $(date +%s) ))
+              H=$(( LEFT_SEC / 3600 )); M=$(( (LEFT_SEC % 3600) / 60 )); S=$(( LEFT_SEC % 60 ))
+              echo "剩余 $H 小时 $M 分钟 $S 秒 / Remaining ${H}h ${M}m ${S}s"
             fi
           done
 
