@@ -59,6 +59,10 @@ flowchart TD
 
 ## Yksityiskohtaiset määritysvaiheet
 
+### Ilmainen verkkotunnus (eikö sinulla ole verkkotunnusta? aloita tästä)
+
+Eikö sinulla ole omaa verkkotunnusta? Hae ilmainen osoitteesta https://my.dnshe.com/ (esim. `.ccwu.cc`, voimassa 10 vuotta) ja osoita sen jälkeen verkkotunnuksen NS-tietueet Cloudflareen.
+
 ### Vaihe 1: Luo nimetty tunneli Cloudflaressa
 
 
