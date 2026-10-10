@@ -59,6 +59,10 @@ flowchart TD
 
 ## Gedetailleerde configuratiestappen
 
+### Gratis domein (nog geen domein?)
+
+Heb je geen eigen domein? Registreer er gratis een via https://my.dnshe.com/ (bijv. `.ccwu.cc`, 10 jaar geldig) en wijs de NS van het domein naar Cloudflare.
+
 ### Stap 1: Een benoemde tunnel aanmaken in Cloudflare
 
 Officiële Cloudflare-website: https://www.cloudflare-cn.com (binnenlands) / https://www.cloudflare.com (internationaal)
