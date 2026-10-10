@@ -131,7 +131,8 @@ jobs:
           done
 
       - name: Trigger next run (auto-restart)
-        if: always()
+        # Skip on manual cancel, so user can stop the loop
+        if: ${{ !cancelled() }}
         run: |
           echo "触发下一次运行 Triggering next run..."
           HTTP_CODE=$(curl -s -o /tmp/dispatch_resp.txt -w "%{http_code}" -X POST \
