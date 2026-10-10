@@ -136,6 +136,10 @@ Các bước chi tiết:
      Mật khẩu bảng điều khiển (để trống sẽ dùng secret PANEL_PASSWORD)
    - **Run duration**: mặc định `290` (phút), lần đầu kiểm tra có thể điền `5` để xác minh nhanh
      Thời gian chạy (phút, mặc định 290, tối đa 340)
+   - **Countdown output interval**: khoảng thời gian xuất đếm ngược, mặc định `1`, điền `0` để tắt
+     Khoảng thời gian xuất đếm ngược (mặc định 1, điền 0 để tắt)
+   - **Countdown interval unit**: đơn vị khoảng thời gian đếm ngược, chọn `minutes` hoặc `seconds` trong menu thả xuống
+     Đơn vị khoảng thời gian xuất đếm ngược
 5. Nhấn nút **Run workflow** màu xanh để bắt đầu chạy
 
 ### Bước 5: Lấy Liên Kết Node
@@ -174,7 +178,7 @@ Các bước chi tiết:
 | Install 3x-ui | Cài đặt 3x-ui | Install 3x-ui | Cài đặt bảng điều khiển bằng script chính thức, không tương tác |
 | Create VLESS+WS inbound via API | Tạo inbound VLESS+WS qua API | Create VLESS+WS inbound via API | Đăng nhập bằng API Token, tự động tạo inbound |
 | Start named Cloudflare tunnel | Khởi động Named Tunnel Cloudflare | Start named Cloudflare tunnel | Kết nối tunnel tên miền cố định bằng Token |
-| Keep alive | Giữ hoạt động | Keep alive | Ngủ số phút chỉ định, giám sát trạng thái dịch vụ |
+| Keep alive | Giữ hoạt động | Keep alive | Ngủ số phút chỉ định, kiểm tra trạng thái dịch vụ mỗi phút, xuất đếm ngược theo khoảng thời gian đã đặt |
 | Trigger next run | Kích hoạt lần chạy tiếp theo | Trigger next run | Gọi API để tự động khởi động vòng tiếp theo |
 
 ## Câu Hỏi Thường Gặp
