@@ -1,53 +1,172 @@
 [简体中文](README.md) | [English](README.en.md) | [Русский](README.ru.md) | [日本語](README.ja.md) | [한국어](README.ko.md) | [Español](README.es.md) | [العربية](README.ar.md) | [Čeština](README.cs.md) | [Dansk](README.da.md) | [Deutsch](README.de.md) | [Esperanto](README.eo.md) | [فارسی](README.fa.md) | [Suomi](README.fi.md) | [Français](README.fr.md) | [Ελληνικά](README.gr.md) | [Magyar](README.hu.md) | [Bahasa Indonesia](README.id.md) | [Italiano](README.it.md) | [മലയാളം](README.ml.md) | [Nederlands](README.nl.md) | [Norsk](README.no.md) | [Polski](README.pl.md) | [Português](README.ptbr.md) | [Română](README.ro.md) | [Türkçe](README.tr.md) | [Українська](README.ua.md) | [Tiếng Việt](README.vn.md)
 
-# cloud-3xui
+# ☁️ cloud-3xui — عقدة VLESS مجانية على GitHub
 
-أنشئ عقدة 3x-ui (VLESS + WebSocket + TLS) على خوادم GitHub Actions المجانية، بنطاق ثابت وتجديد تلقائي.
+أنشئ تلقائيًا لوحة 3x-ui وعقدة VLESS على الخوادم المجانية لـ GitHub Actions، مع اسم نطاق ثابت وتجديد تلقائي عند انقطاع الاتصال.
 
-## كيف يعمل
+## مخطط المعمارية
 
-كل تشغيل يثبّت لوحة 3x-ui تلقائيًا على خادم GitHub Ubuntu، وينشئ inbound من نوع VLESS+WS عبر API اللوحة، ثم يعرض اللوحة والعقدة عبر نفق Cloudflare مسمّى (نطاق ثابت). يستمر كل تشغيل حوالي 5 ساعات ويشغّل التشغيل التالي تلقائيًا قبل انتهائه، لذا لا يتغير عنوان العقدة أبدًا.
+```mermaid
+flowchart LR
+    subgraph GitHub["GitHub Actions Runner (Ubuntu)"]
+        XUI["3x-ui 面板\n:2053"]
+        XRAY["Xray VLESS+WS\n:8080"]
+    end
+    subgraph CF["Cloudflare"]
+        TUN["命名隧道\n(固定域名)"]
+    end
+    USER["用户客户端\nv2rayN / NekoBox 等"]
+
+    XUI --> TUN
+    XRAY --> TUN
+    TUN --> USER
+
+    style TUN fill:#f6821f,color:#fff
+    style USER fill:#1f9d55,color:#fff
+```
+
+## عملية التجديد التلقائي
+
+```mermaid
+flowchart TD
+    A["手动 Run workflow\n(或上一轮自动触发)"] --> B["安装 3x-ui"]
+    B --> C["API 创建 VLESS+WS 入站"]
+    C --> D["启动 Cloudflare 命名隧道"]
+    D --> E["输出节点链接"]
+    E --> F["保活 290 分钟"]
+    F --> G["调用 API 触发下一轮"]
+    G --> A
+
+    style G fill:#f6821f,color:#fff
+```
 
 ## عناوين ثابتة
 
-- العقدة: `vless.my-github.ccwu.cc:443` (VLESS + WS + TLS)
-- اللوحة: `https://panel.my-github.ccwu.cc/panel` (اسم المستخدم `admin`)
+| الاستخدام | العنوان |
+|------|------|
+| العقدة | `vless.my-github.ccwu.cc:443` (VLESS + WebSocket + TLS) |
+| اللوحة | `https://panel.my-github.ccwu.cc/panel` (اسم المستخدم `admin`) |
 
-## الإعداد لأول مرة
+> ⚠️ أسماء النطاقات أعلاه مجرد أمثلة، استبدلها بنطاقك الخاص.
 
-### 1. نفق Cloudflare المسمّى
+## خطوات التكوين التفصيلية
 
-1. Cloudflare Dashboard → Zero Trust → Networks → Tunnels → Create tunnel (Cloudflared)
-2. سمِّه ثم انسخ الـ token (السلسلة الطويلة التي تبدأ بـ `eyJ`)
-3. أضف مدخلين في Public hostnames للنفق:
-   - `vless.yourdomain.com` → HTTP → `127.0.0.1:8080`
-   - `panel.yourdomain.com` → HTTP → `127.0.0.1:2053`
+### الخطوة 1: إنشاء نفق مسمّى في Cloudflare
 
-### 2. GitHub Secrets
+1. افتح [Cloudflare Dashboard](https://dash.cloudflare.com)، ومن القائمة اليسرى انتقل إلى **Zero Trust**
+2. من اليسار **Networks** → **Tunnels**، ثم انقر **Create a tunnel** أعلى اليمين
+3. اختر النوع **Cloudflared**، ثم انقر التالي
+4. أعطِ النفق اسمًا (مثل `github-3xui`)، ثم احفظ
+5. ستعرض الصفحة أمر تثبيت على الشكل التالي:
+   ```
+   cloudflared.exe service install eyJhIjoiYzEyNGI2...
+   ```
+   انسخ السلسلة الطويلة التي تبدأ بـ `eyJ`، وهي **Tunnel Token**، واحتفظ بها جيدًا
+6. انقر التالي للانتقال إلى **Public hostnames** (مسارات التطبيقات المنشورة)، وانقر **Add a public hostname** لإضافة مسارين:
 
-إعدادات المستودع Settings → Secrets and variables → Actions، أضف هذه الثلاثة:
+   **الأول (العقدة):**
+   - Subdomain (النطاق الفرعي): `vless`
+   - Domain (النطاق): اختر نطاقك
+   - Service Type (نوع الخدمة): `HTTP`
+   - URL: `127.0.0.1:8080`
 
-| Name | Value |
-|------|-------|
-| `CF_TUNNEL_TOKEN` | token نفق Cloudflare |
-| `PANEL_PASSWORD` | كلمة مرور اللوحة |
-| `VLESS_UUID` | UUID العقدة (ثابت، صالح للعملاء دائمًا؛ ولّد واحدًا من https://1024tools.com/uuid/، **تأكد من حفظ هذا UUID، فلن يظهر كنص عادي في السجلات، وستحتاجه في كل مرة تركّب فيها رابط العقدة**) |
+   **الثاني (اللوحة):**
+   - Subdomain (النطاق الفرعي): `panel`
+   - Domain (النطاق): اختر نطاقك
+   - Service Type (نوع الخدمة): `HTTP`
+   - URL: `127.0.0.1:2053`
 
-### 3. التشغيل
+7. احفظ. سينشئ Cloudflare سجلات DNS تلقائيًا دون الحاجة إلى إضافة يدوية.
 
-Actions → 3x-ui VLESS Node → Run workflow (المعاملات اختيارية، تُستخدم الـ secrets تلقائيًا).
+### الخطوة 2: توليد UUID
 
-سيطبع السجل رابط `vless://` الكامل؛ استورده في v2rayN / v2rayNG / Streisand / NekoBox.
+1. افتح https://1024tools.com/uuid/
+2. انسخ الـ UUID المولّد (على الشكل `cbfc229f-9d34-4fef-9990-8baa82a7327b`)
+3. **احفظ هذا الـ UUID جيدًا**، فلن يظهر بشكل صريح في سجلات سير العمل، وستحتاجه في كل مرة لتركيب رابط العقدة
 
-## التجديد التلقائي
+### الخطوة 3: إضافة Secrets إلى GitHub
 
-- يستمر كل تشغيل `run_minutes` دقيقة (290 افتراضيًا) ثم يشغّل التالي تلقائيًا
-- النطاق و UUID ثابتان؛ اضبط العميل مرة واحدة ويعمل للأبد
-- للإيقاف اضغط Cancel في Actions؛ لن يُعاد التشغيل تلقائيًا
+1. ادخل إلى هذا المستودع، وانقر على تبويب **Settings**
+2. من اليسار **Secrets and variables** → **Actions**
+3. انقر **New repository secret** أعلى اليمين، وأضف الثلاثة التالية بالترتيب:
+
+   | Name | Secret (القيمة) | الوصف |
+   |------|-------------|------|
+   | `CF_TUNNEL_TOKEN` | الـ Tunnel Token المنسوخ من الخطوة 1 | بيانات اعتماد نفق Cloudflare |
+   | `PANEL_PASSWORD` | كلمة المرور التي حددتها للوحة | كلمة مرور تسجيل الدخول إلى لوحة 3x-ui |
+   | `VLESS_UUID` | الـ UUID المولّد في الخطوة 2 | UUID العقدة، ثابت لا يتغير |
+
+### الخطوة 4: تشغيل سير العمل
+
+1. انقر على تبويب **Actions** أعلى المستودع
+2. من اليسار اختر **3x-ui VLESS Node**
+3. انقر زر **Run workflow** على اليمين
+4. في النموذج المنبثق:
+   - **Panel password**: اتركه فارغًا (سيستخدم `PANEL_PASSWORD` secret تلقائيًا)
+     كلمة مرور اللوحة (اتركها فارغة لاستخدام PANEL_PASSWORD secret)
+   - **Run duration**: الافتراضي `290` (دقيقة)، وللاختبار الأول يمكن كتابة `5` للتحقق السريع
+     مدة التشغيل (بالدقائق، الافتراضي 290، بحد أقصى 340)
+5. انقر الزر الأخضر **Run workflow** لبدء التشغيل
+
+### الخطوة 5: الحصول على رابط العقدة
+
+1. انتظر حوالي 2-3 دقائق، وانقر على المهمة الجارية للانتقال إلى صفحة التفاصيل
+2. وسّع خطوة **Start named Cloudflare tunnel**، واطلع على مخرجات السجل:
+   ```
+   ==================================================
+     面板 Panel: https://panel.my-github.ccwu.cc/panel  (admin / 你的密码 your password)
+
+     VLESS 节点 node:
+     vless://YOUR_UUID@vless.my-github.ccwu.cc:443?encryption=none&security=tls&sni=vless.my-github.ccwu.cc&type=ws&path=%2Fws#GitHub-3xui
+
+     把 YOUR_UUID 换成你在 VLESS_UUID secret 里填的 UUID
+     Replace YOUR_UUID with the UUID from your VLESS_UUID secret
+   ==================================================
+   ```
+3. انسخ رابط `vless://`، واستبدل `YOUR_UUID` بـ UUID الخاص بك
+4. الصقه في عميل v2rayN / v2rayNG / Streisand / NekoBox وغيرها لبدء الاستخدام
+
+### الخطوة 6: التحقق من التجديد التلقائي (اختياري)
+
+1. في التشغيل الأول، اضبط المدة على `5` دقائق
+2. بعد 5 دقائق، اطلع على سجل الخطوة الأخيرة **Trigger next run**، ويجب أن يظهر:
+   ```
+   HTTP 204
+   已触发下一次运行 Next run triggered
+   ```
+3. ارجع إلى قائمة Actions، ويجب أن يظهر تشغيل جديد مُفعَّل تلقائيًا
+4. بعد التأكد، أعد التشغيل وأعد المدة إلى `290` للاستخدام العادي
+
+## شرح خطوات سير العمل
+
+| الخطوة | العربي | English | الوصف |
+|------|------|---------|------|
+| Install 3x-ui | تثبيت 3x-ui | Install 3x-ui | تثبيت اللوحة بشكل غير تفاعلي بالسكربت الرسمي |
+| Create VLESS+WS inbound via API | إنشاء مدخل VLESS+WS عبر API | Create VLESS+WS inbound via API | تسجيل الدخول برمز API وإنشاء المدخل تلقائيًا |
+| Start named Cloudflare tunnel | تشغيل نفق Cloudflare المسمّى | Start named Cloudflare tunnel | الاتصال بالنفق ذي النطاق الثابت باستخدام الرمز |
+| Keep alive | الحفاظ على التشغيل | Keep alive | السكون لعدد الدقائق المحدد مع مراقبة حالة الخدمات |
+| Trigger next run | تشغيل الدورة التالية | Trigger next run | استدعاء API لبدء الدورة التالية تلقائيًا |
+
+## الأسئلة الشائعة
+
+**Q: الـ UUID في رابط العقدة يظهر كـ `***` في السجلات؟**
+A: هذه آلية حماية الـ secrets في GitHub. استبدل `YOUR_UUID` بالـ UUID الذي أدخلته في `VLESS_UUID` secret.
+
+**Q: اختبار العميل يفشل (-1)؟**
+A: تحقق من ثلاثة أمور: ① هل تم استبدال الـ UUID بشكل صحيح؛ ② هل إصدار العميل حديث (v2rayN 7.x+)؛ ③ هل نفق Cloudflare متصل بشكل طبيعي (اطلع على السجلات).
+
+**Q: لم يتم تشغيل إعادة التشغيل التلقائية؟**
+A: اطلع على سجل خطوة **Trigger next run**. إذا ظهر رمز HTTP غير 204، تحقق من إعدادات صلاحيات Actions في المستودع.
+
+**Q: هل من الطبيعي أن ينقطع الاتصال لبضع دقائق كل 5 ساعات؟**
+A: نعم، هذا طبيعي. من نهاية الجولة السابقة إلى اتصال النفق في الجولة التالية يستغرق حوالي 3-5 دقائق، وسيعيد العميل الاتصال تلقائيًا.
+
+**Q: أريد إيقاف التجديد التلقائي؟**
+A: اذهب إلى صفحة Actions وألغِ (Cancel) التشغيل الحالي، ولن يتم التشغيل تلقائيًا بعد ذلك.
 
 ## ملاحظات
 
-- **السرعة**: يمر الترافيك عبر Cloudflare ← مراكز بيانات GitHub (الولايات المتحدة/الاتحاد الأوروبي)؛ مناسب للاستخدام المؤقت/الخفيف فقط
-- **انقطاع قصير**: عند كل تسليم لإعادة التشغيل التلقائي ينقطع حوالي 3-5 دقائق (إقلاع الجهاز الجديد، تثبيت 3x-ui، إعادة اتصال النفق)؛ يعيد العملاء الاتصال تلقائيًا
-- **الامتثال**: تشغيل بروكسي على GitHub Actions قد يخالف ToS ويعرّض الحساب للإيقاف؛ قيّم بنفسك
-- **لا** تنشر `CF_TUNNEL_TOKEN` / `PANEL_PASSWORD` / `VLESS_UUID` في أماكن عامة
+- **السرعة**: تمر الحركة عبر Cloudflare → خوادم GitHub (أمريكا/أوروبا)، وهي مناسبة للاستخدام المؤقت/الخفيف فقط
+- **انقطاع قصير**: عند إعادة التشغيل التلقائية كل 5 ساعات ينقطع الاتصال حوالي 3-5 دقائق (تشغيل جهاز جديد، تثبيت 3x-ui، إعادة اتصال النفق)، وسيعيد العميل الاتصال تلقائيًا
+- **الامتثال**: تشغيل وكيل على GitHub Actions قد ينتهك شروط الاستخدام ويؤدي إلى إغلاق الحساب، قيّم ذلك بنفسك
+- **الأمان**: لا تنشر `CF_TUNNEL_TOKEN` / `PANEL_PASSWORD` / `VLESS_UUID` في أماكن عامة
