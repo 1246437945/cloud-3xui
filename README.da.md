@@ -44,9 +44,9 @@ flowchart TD
 ## Automatisk fornyelse
 
 - **Varigheden bestemmer du**: når du klikker på Run workflow, udfyld manuelt `run_minutes` – det kører det antal minutter, du indtaster; lader du det stå tomt, bruges standardværdien 290
-- **Parametre nedarves automatisk**: hver kørsel sender `run_minutes` / `countdown_interval` / `countdown_unit` videre til næste kørsel via API’en, så hele kæden bruger de værdier, du indtastede først
+- **Parametre nedarves automatisk**: hver kørsel sender `run_minutes` / `countdown_interval` / `countdown_unit` / `overlap_threshold` / `overlap_long` / `overlap_short` videre til næste kørsel via API’en, så hele kæden bruger de værdier, du indtastede først
 - Til en hurtig test skriv `5`; til daglig brug lad det stå tomt og brug standard 290
-- **Overlappende opstart (sømløst skift)**: 5 minutter før den aktuelle kørsel slutter, startes den næste kørsel på forhånd; gamle og nye runners kører samtidigt, Cloudflare-tunneler understøtter flere forbindelser, trafik dirigeres automatisk til tilgængelige forbindelser, så brugerne næsten ikke mærker, når den gamle kørsel afsluttes (ved korte tests ≤6 minutter startes den 30 sekunder før)
+- **Overlappende opstart (sømløst skift)**: den næste kørsel startes på forhånd inden den aktuelle kørsel slutter; gamle og nye runners kører samtidigt, Cloudflare-tunneler understøtter flere forbindelser, trafik dirigeres automatisk til tilgængelige forbindelser, så brugerne næsten ikke bemærker afslutningen af den gamle kørsel. Starttidspunktet kan indstilles: keep-alive længere end `overlap_threshold` (standard 5 minutter) regnes som en lang kørsel og starter `overlap_long` (standard 5 minutter) før; kortere regnes som korte kørsler og starter `overlap_short` (standard 30 sekunder) før
 - Domænet og UUID er faste, så klientkonfigurationen gælder permanent efter én opsætning
 - Vil du stoppe, så gå til Actions og klik på Cancel – efter annullering genstartes det ikke automatisk
 
@@ -143,6 +143,9 @@ flowchart TD
    - **Run duration**: standard `290` (minutter), ved første test kan du skrive `5` for hurtig verifikation; lad det stå tomt til daglig brug
    - **Countdown output interval**: Interval for nedtællingsoutput, standard `1`, skriv `0` for at deaktivere det
    - **Countdown interval unit**: Enhed for nedtællingsintervallet, vælg `minutes` eller `seconds` i rullemenuen
+   - **Overlap threshold**: Tærskel for overlapning (minutter, standard `5`) — keep-alive længere end dette regnes som en lang kørsel
+   - **Overlap long**: Minutter før afslutning næste kørsel startes ved lange kørsler (standard `5`)
+   - **Overlap short**: Sekunder før afslutning næste kørsel startes ved korte kørsler (standard `30`)
      Kørselsvarighed (minutter, standard 290, maks. 340)
 5. Klik på den grønne **Run workflow** for at starte
 
