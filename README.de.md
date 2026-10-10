@@ -59,6 +59,10 @@ flowchart TD
 
 ## Ausführliche Konfigurationsschritte
 
+### Kostenlose Domain (keine Domain? hier starten)
+
+Keine eigene Domain? Beantragen Sie kostenlos eine auf https://my.dnshe.com/ (z. B. `.ccwu.cc`, 10 Jahre gültig) und delegieren Sie anschließend die NS-Einträge der Domain an Cloudflare.
+
 ### Schritt 1: Benannten Tunnel in Cloudflare erstellen
 
 
