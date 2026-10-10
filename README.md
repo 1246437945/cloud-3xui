@@ -70,7 +70,7 @@ Cloudflare 官网：https://www.cloudflare-cn.com （国内）/ https://www.clou
 
 ```mermaid
 flowchart TD
-    A["控制台 → Zero Trust<br/>→ Networks → Tunnels"] --> B["右上角 创建隧道"]
+    A["控制台 → Zero Trust<br/>→ 网络（Networks）→ 连接器（Tunnels）"] --> B["右上角 创建隧道"]
     B --> C["选 Cloudflared<br/>(推荐) → 选择 Cloudflared"]
     C --> D["输入隧道名称<br/>(例：github-3xui)<br/>→ 保存隧道"]
     D --> E["安装并运行连接器页<br/>复制 Token<br/>(eyJ 开头的一长串)"]
@@ -86,7 +86,7 @@ flowchart TD
 
 详细步骤：
 
-1. 打开 [Cloudflare Dashboard](https://dash.cloudflare.com)，左侧菜单进入 **Zero Trust** → **Networks** → **Tunnels**
+1. 打开 [Cloudflare Dashboard](https://dash.cloudflare.com)，左侧菜单进入 **Zero Trust** → **网络（Networks）** → **连接器（Tunnels）**
 2. 点击右上角 **创建隧道**
 3. **选择隧道类型**：选 **Cloudflared**（推荐），点击 **选择 Cloudflared**
 4. **为隧道命名**：输入名称（例如 `github-3xui`），点击 **保存隧道**
@@ -105,7 +105,7 @@ flowchart TD
    - 类型：`HTTP`
    - URL：`127.0.0.1:2053`
 
-7. 保存。Cloudflare 会自动创建 DNS 解析，无需手动添加。回到 Tunnels 列表能看到隧道状态为 **正常** 即配置成功。
+7. 保存。Cloudflare 会自动创建 DNS 解析，无需手动添加。回到连接器列表能看到隧道状态为 **正常** 即配置成功。
 
 ### 第二步：生成 UUID
 
