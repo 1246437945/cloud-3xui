@@ -72,7 +72,7 @@ Cloudflare 공식 사이트: https://www.cloudflare-cn.com (중국) / https://ww
 
 ```mermaid
 flowchart TD
-    A["控制台 → Zero Trust<br/>→ 网络（Networks）→ 连接器（Tunnels）"] --> B["右上角 创建隧道"]
+    A["控制台 → Zero Trust<br/>→ 네트워크 (Networks) → 커넥터 (Tunnels)"] --> B["右上角 创建隧道"]
     B --> C["选 Cloudflared<br/>(推荐) → 选择 Cloudflared"]
     C --> D["输入隧道名称<br/>(例：github-3xui)<br/>→ 保存隧道"]
     D --> E["安装并运行连接器页<br/>复制 Token<br/>(eyJ 开头的一长串)"]
@@ -88,7 +88,7 @@ flowchart TD
 
 상세 단계:
 
-1. [Cloudflare Dashboard](https://dash.cloudflare.com)를 열고 왼쪽 메뉴에서 **Zero Trust** → **Networks** → **Tunnels**로 이동
+1. [Cloudflare Dashboard](https://dash.cloudflare.com)를 열고 왼쪽 메뉴에서 **Zero Trust** → **네트워크 (Networks)** → **커넥터 (Tunnels)**로 이동
 2. 오른쪽 위의 **Create a tunnel** 클릭
 3. **터널 유형 선택**: **Cloudflared**(권장)를 선택하고 **Select Cloudflared** 클릭
 4. **터널 이름 지정**: 이름(예: `github-3xui`)을 입력하고 **Save tunnel** 클릭
@@ -106,7 +106,7 @@ flowchart TD
    - 도메인: 자신의 도메인 선택
    - 유형: `HTTP`
    - URL: `127.0.0.1:2053`
-7. 저장. Cloudflare가 DNS 레코드를 자동으로 생성. Tunnels 목록에서 상태가 **Healthy**이면 설정 성공.
+7. 저장. Cloudflare가 DNS 레코드를 자동으로 생성. 커넥터 (Tunnels) 목록에서 상태가 **Healthy**이면 설정 성공.
 
 
 ### 2단계: UUID 생성
