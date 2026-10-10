@@ -122,7 +122,6 @@ jobs:
           for i in $(seq 1 30); do
             grep -q "Registered tunnel connection" /tmp/tunnel.log && break
             sleep 2
-          echo ""
           done
           grep -q "Registered tunnel connection" /tmp/tunnel.log || { echo "隧道失败 Tunnel failed"; cat /tmp/tunnel.log; exit 1; }
           echo ""
