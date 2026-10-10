@@ -195,8 +195,8 @@ R : Vérifiez trois points : ① l'UUID a-t-il été correctement remplacé ; �
 **Q : Le redémarrage automatique ne s'est pas déclenché ?**
 R : Consultez le journal de l'étape **Trigger next run**. Si un code d'état HTTP autre que 204 s'affiche, vérifiez les paramètres d'autorisation Actions du dépôt.
 
-**Q : Est-il normal d'avoir une coupure de quelques minutes toutes les 5 heures ?**
-R : Oui, c'est normal. Il faut environ 3 à 5 minutes entre la fin du cycle précédent et la connexion du tunnel du cycle suivant ; le client se reconnecte automatiquement.
+**Q : La connexion sera-t-elle coupée lors de la rotation ?**
+R : Un démarrage chevauchant est utilisé — le cycle suivant est lancé avant la fin du cycle en cours, les anciens et nouveaux runners sont en ligne simultanément, donc en théorie il n'y a aucune coupure. Dans des cas extrêmes comme les files d'attente GitHub, de brèves fluctuations peuvent survenir ; le client se reconnectera automatiquement.
 
 **Q : Comment arrêter le renouvellement automatique ?**
 R : Accédez à la page Actions et annulez (Cancel) l'exécution en cours ; elle ne se déclenchera plus automatiquement.
