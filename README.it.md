@@ -34,8 +34,9 @@ flowchart TD
     C --> D["启动 Cloudflare 命名隧道"]
     D --> E["输出节点链接"]
     E --> F["保活 N 分钟<br/>(手动输入，默认 290)"]
-    F --> G["调用 API 触发下一轮<br/>(用默认值 290)"]
-    G --> A
+    F --> G["结束前 5 分钟<br/>提前触发下一轮"]
+    G --> H["新旧 runner 重叠运行<br/>流量无缝切换"]
+    H --> A
 
     style G fill:#f6821f,color:#fff
 ```
@@ -43,7 +44,8 @@ flowchart TD
 ## Rinnovo automatico
 
 - **La durata la decidi tu**: quando avvii Run workflow compila manualmente `run_minutes`, dura i minuti inseriti; se lasciato vuoto usa il predefinito 290
-- **L'avvio automatico usa il predefinito**: alla fine di ogni ciclo l'API avvia il successivo senza parametri, quindi ogni ciclo automatico dura 290 minuti
+- **Ereditarietà automatica dei parametri**: ogni ciclo passa `run_minutes` / `countdown_interval` / `countdown_unit` al successivo, l'intera catena usa i valori iniziali inseriti
+- **Avvio sovrapposto (passaggio senza interruzioni)**: 5 minuti prima della fine di ogni ciclo si avvia in anticipo il successivo, vecchio e nuovo runner sono online contemporaneamente, il tunnel Cloudflare supporta connessioni multiple, il traffico viene instradato automaticamente alle connessioni disponibili, l'utente quasi non percepisce l'uscita del vecchio ciclo (per test brevi ≤6 minuti l'avvio avviene 30 secondi prima)
 - Per un test rapido inserisci `5`, per l'uso quotidiano lascia vuoto (290)
 - Dominio e UUID sono fissi, configura il client una sola volta
 - Per fermarlo premi Cancel in Actions· dopo l'annullamento non si riavvierà da solo
@@ -190,6 +192,6 @@ A: Vai alla pagina Actions e fai Cancel sull'esecuzione corrente, non si riattiv
 ## Note
 
 - **Velocità**: il traffico passa per Cloudflare → i data center di GitHub (USA/UE), adatto solo a un uso temporaneo/leggero
-- **Breve interruzione**: a ogni passaggio del riavvio automatico ogni 5 ore c'è un'interruzione di circa 3-5 minuti (avvio della nuova macchina, installazione di 3x-ui, riconnessione del tunnel), il client si riconnette automaticamente
+- **Passaggio senza interruzioni**: con avvio sovrapposto, ogni ciclo avvia il successivo 5 minuti prima, vecchio e nuovo runner online contemporaneamente, teoricamente l'utente non percepisce nulla; in casi estremi (es. coda GitHub) possono esserci brevi fluttuazioni
 - **Conformità**: eseguire un proxy su GitHub Actions può violare i ToS con il rischio di ban dell'account, valuta tu stesso
 - **Sicurezza**: non pubblicare `CF_TUNNEL_TOKEN` / `PANEL_PASSWORD` / `VLESS_UUID` in luoghi pubblici
