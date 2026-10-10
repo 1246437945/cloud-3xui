@@ -46,7 +46,7 @@ flowchart TD
 - **Declanșarea automată folosește implicitul**: la finalul fiecărei runde API pornește următoarea fără parametri, deci fiecare rundă automată durează 290 de minute
 - Pentru test rapid introdu `5`, pentru uz zilnic lasă gol (290)
 - Domeniul și UUID sunt fixe, configurezi clientul o singură dată
-- Pentru oprire apasă Cancel în Actions, nu repornește automat
+- Pentru oprire apasă Cancel în Actions· după anulare nu repornește automat
 
 ## Adrese fixe
 
