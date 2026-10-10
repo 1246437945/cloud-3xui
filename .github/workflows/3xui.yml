@@ -4,12 +4,18 @@ on:
   workflow_dispatch:
     inputs:
       panel_password:
-        description: 'Panel password (required)'
-        required: true
-      run_minutes:
-        description: 'Run duration in minutes (max 350)'
+        description: 'Panel password (leave empty to use PANEL_PASSWORD secret)'
         required: false
-        default: '300'
+      run_minutes:
+        description: 'Run duration in minutes (default 290, max 340)'
+        required: false
+        default: '290'
+
+env:
+  VLESS_HOST: vless.my-github.ccwu.cc
+  PANEL_HOST: panel.my-github.ccwu.cc
+  WS_PORT: 8080
+  PANEL_PORT: 2053
 
 jobs:
   node:
@@ -17,28 +23,27 @@ jobs:
     timeout-minutes: 360
     steps:
       - name: Install 3x-ui
+        env:
+          PANEL_PASSWORD: ${{ inputs.panel_password || secrets.PANEL_PASSWORD }}
         run: |
+          [ -z "$PANEL_PASSWORD" ] && { echo "Set panel_password input or PANEL_PASSWORD secret"; exit 1; }
           curl -Ls https://raw.githubusercontent.com/MHSanaei/3x-ui/master/install.sh -o /tmp/install-3xui.sh
           sudo XUI_USERNAME="admin" \
-            XUI_PASSWORD="${{ inputs.panel_password }}" \
-            XUI_PANEL_PORT="2053" \
+            XUI_PASSWORD="$PANEL_PASSWORD" \
+            XUI_PANEL_PORT="${{ env.PANEL_PORT }}" \
             XUI_WEB_BASE_PATH="panel" \
             bash /tmp/install-3xui.sh
           sudo systemctl is-active x-ui
 
       - name: Create VLESS+WS inbound via API
-        env:
-          PANEL_PASSWORD: ${{ inputs.panel_password }}
         run: |
           sudo apt-get install -y -qq python3-requests > /dev/null 2>&1 || pip install -q requests
           python3 << 'PYEOF'
-          import requests, json, uuid, time, sys, os, subprocess
+          import requests, json, uuid, time, sys, subprocess
 
-          PANEL = "http://127.0.0.1:2053/panel"
-          WS_PORT = 8080
-          WS_PATH = "/ws"
+          PANEL = f"http://127.0.0.1:${{ env.PANEL_PORT }}/panel"
+          WS_PORT = int("${{ env.WS_PORT }}")
 
-          # get API token (bypasses CSRF)
           r = subprocess.run(["sudo", "/usr/local/x-ui/x-ui", "setting", "-getApiToken"],
                              capture_output=True, text=True, timeout=15)
           token = ""
@@ -47,15 +52,11 @@ jobs:
                   token = line.split("apiToken:")[1].strip()
                   break
           if not token:
-              print("No API token, stdout:", r.stdout[:300]); sys.exit(1)
-
+              print("No API token"); sys.exit(1)
           headers = {"Authorization": f"Bearer {token}"}
-
-          # wait for panel API
           for _ in range(30):
               try:
-                  rr = requests.get(PANEL + "/panel/api/inbounds/list",
-                                    headers=headers, timeout=5)
+                  rr = requests.get(PANEL + "/panel/api/inbounds/list", headers=headers, timeout=5)
                   if rr.status_code in (200, 401):
                       break
               except Exception:
@@ -64,23 +65,16 @@ jobs:
 
           client_uuid = str(uuid.uuid4())
           inbound = {
-              "enable": True,
-              "remark": "vless-ws",
-              "listen": "",
-              "port": WS_PORT,
-              "protocol": "vless",
-              "expiryTime": 0,
-              "total": 0,
+              "enable": True, "remark": "vless-ws", "listen": "", "port": WS_PORT,
+              "protocol": "vless", "expiryTime": 0, "total": 0,
               "settings": {
                   "clients": [{"id": client_uuid, "email": "gh-user", "enable": True,
                                "limitIp": 0, "totalGB": 0, "expiryTime": 0}],
-                  "decryption": "none",
-                  "fallbacks": []
+                  "decryption": "none", "fallbacks": []
               },
               "streamSettings": {
-                  "network": "ws",
-                  "security": "none",
-                  "wsSettings": {"path": WS_PATH, "headers": {}}
+                  "network": "ws", "security": "none",
+                  "wsSettings": {"path": "/ws", "headers": {}}
               },
               "sniffing": {"enabled": True, "destOverride": ["http", "tls"]}
           }
@@ -92,45 +86,46 @@ jobs:
           print("Inbound created OK")
           open("/tmp/vless_uuid.txt", "w").write(client_uuid)
           PYEOF
-          echo "UUID: $(cat /tmp/vless_uuid.txt)"
 
-      - name: Setup Cloudflare tunnels
+      - name: Start named Cloudflare tunnel
         run: |
           curl -Ls https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64 -o /tmp/cloudflared
           chmod +x /tmp/cloudflared
           sudo mv /tmp/cloudflared /usr/local/bin/cloudflared
-          # tunnel 1: panel
-          nohup cloudflared tunnel --url http://127.0.0.1:2053 --no-autoupdate > /tmp/tunnel-panel.log 2>&1 &
-          # tunnel 2: xhttp inbound
-          nohup cloudflared tunnel --url http://127.0.0.1:8080 --no-autoupdate > /tmp/tunnel-ws.log 2>&1 &
-          echo "Waiting for tunnel URLs..."
-          PANEL_URL=""; WS_TUNNEL_URL=""
-          for i in $(seq 1 60); do
-            [ -z "$PANEL_URL" ] && PANEL_URL=$(grep -oE 'https://[a-zA-Z0-9.-]+\.trycloudflare\.com' /tmp/tunnel-panel.log | head -1)
-            [ -z "$WS_TUNNEL_URL" ] && WS_TUNNEL_URL=$(grep -oE 'https://[a-zA-Z0-9.-]+\.trycloudflare\.com' /tmp/tunnel-ws.log | head -1)
-            [ -n "$PANEL_URL" ] && [ -n "$WS_TUNNEL_URL" ] && break
+          nohup cloudflared tunnel --no-autoupdate run --token ${{ secrets.CF_TUNNEL_TOKEN }} > /tmp/tunnel.log 2>&1 &
+          echo "Waiting for tunnel to connect..."
+          for i in $(seq 1 30); do
+            grep -q "Registered tunnel connection" /tmp/tunnel.log && break
             sleep 2
           done
-          [ -z "$PANEL_URL" ] || [ -z "$WS_TUNNEL_URL" ] && { echo "Tunnel failed"; exit 1; }
+          grep -q "Registered tunnel connection" /tmp/tunnel.log || { echo "Tunnel failed"; cat /tmp/tunnel.log; exit 1; }
           UUID=$(cat /tmp/vless_uuid.txt)
-          HOST=$(echo "$WS_TUNNEL_URL" | sed 's#https://##')
-          NODE="vless://${UUID}@${HOST}:443?encryption=none&security=tls&sni=${HOST}&type=ws&path=%2Fws#GitHub-3xui"
-          echo "$NODE" > /tmp/vless_node.txt
+          NODE="vless://${UUID}@${{ env.VLESS_HOST }}:443?encryption=none&security=tls&sni=${{ env.VLESS_HOST }}&type=ws&path=%2Fws#GitHub-3xui"
           echo ""
           echo "=================================================="
-          echo "  Panel: $PANEL_URL/panel  (admin / your password)"
+          echo "  Panel: https://${{ env.PANEL_HOST }}/panel  (admin / your password)"
           echo ""
-          echo "  VLESS node:"
+          echo "  VLESS node (permanent address):"
           echo "  $NODE"
           echo "=================================================="
 
       - name: Keep alive
         run: |
           MINS=${{ inputs.run_minutes }}
-          echo "Node alive for $MINS minutes (Cancel anytime)"
+          echo "Node alive for $MINS minutes, then auto-restart"
           END=$(( $(date +%s) + MINS * 60 ))
           while [ $(date +%s) -lt $END ]; do
             sleep 60
             sudo systemctl is-active x-ui >/dev/null || echo "WARNING: x-ui not active"
             pgrep -f "cloudflared tunnel" >/dev/null || { echo "WARNING: cloudflared died"; break; }
           done
+
+      - name: Trigger next run (auto-restart)
+        if: always()
+        run: |
+          echo "Triggering next run..."
+          curl -s -X POST \
+            -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+            -H "Accept: application/vnd.github+json" \
+            https://api.github.com/repos/${{ github.repository }}/actions/workflows/3xui.yml/dispatches \
+            -d '{"ref":"main"}' && echo "Next run triggered"
