@@ -71,7 +71,7 @@ flowchart TD
 
 ```mermaid
 flowchart TD
-    A["控制台 → Zero Trust<br/>→ 网络（Networks）→ 连接器（Tunnels）"] --> B["右上角 创建隧道"]
+    A["控制台 → Zero Trust<br/>→ شبکه‌ها (Networks) → اتصال‌دهنده‌ها (Tunnels)"] --> B["右上角 创建隧道"]
     B --> C["选 Cloudflared<br/>(推荐) → 选择 Cloudflared"]
     C --> D["输入隧道名称<br/>(例：github-3xui)<br/>→ 保存隧道"]
     D --> E["安装并运行连接器页<br/>复制 Token<br/>(eyJ 开头的一长串)"]
@@ -87,7 +87,7 @@ flowchart TD
 
 مراحل تفصیلی:
 
-1. [داشبورد Cloudflare](https://dash.cloudflare.com) را باز کنید و از منوی سمت چپ به **Zero Trust** ← **Networks** ← **Tunnels** بروید
+1. [داشبورد Cloudflare](https://dash.cloudflare.com) را باز کنید و از منوی سمت چپ به **Zero Trust** ← **شبکه‌ها (Networks)** ← **اتصال‌دهنده‌ها (Tunnels)** بروید
 2. روی **Create a tunnel** در گوشه بالا سمت راست کلیک کنید
 3. **نوع تونل را انتخاب کنید**: **Cloudflared** (پیشنهادی) را انتخاب و روی **Select Cloudflared** کلیک کنید
 4. **تونل را نام‌گذاری کنید**: نامی وارد کنید (مثلاً `github-3xui`) و روی **Save tunnel** کلیک کنید
@@ -105,7 +105,7 @@ flowchart TD
    - دامنه: دامنه خود را انتخاب کنید
    - نوع: `HTTP`
    - آدرس: `127.0.0.1:2053`
-7. ذخیره کنید. Cloudflare رکوردهای DNS را خودکار می‌سازد. وضعیت **Healthy** در فهرست Tunnels یعنی پیکربندی موفق.
+7. ذخیره کنید. Cloudflare رکوردهای DNS را خودکار می‌سازد. وضعیت **Healthy** در فهرست اتصال‌دهنده‌ها (Tunnels) یعنی پیکربندی موفق.
 
 
 ### گام دوم: تولید UUID
