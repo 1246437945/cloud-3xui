@@ -71,46 +71,31 @@ Vezérlőpult: https://dash.cloudflare.com
 
 ```mermaid
 flowchart TD
-    A["打开 Cloudflare Dashboard"] --> B["左侧 Zero Trust"]
-    B --> C["Hálózatok（Networks） → Csatlakozók（Tunnels）"]
-    C --> D["右上角 Create a tunnel"]
-    D --> E["选 Cloudflared → 下一步"]
-    E --> F["起名（例：github-3xui）→ 保存"]
-    F --> G["复制 Token<br/>(eyJ 开头的一长串)"]
-    G --> H["下一步 → Public hostnames"]
-    H --> I["添加第一条<br/>vless.你的域名.com → HTTP → 127.0.0.1:8080"]
-    H --> J["添加第二条<br/>panel.你的域名.com → HTTP → 127.0.0.1:2053"]
-    I --> K["保存完成"]
-    J --> K
+    A["控制台 → Zero Trust<br/>→ Networks → Tunnels"] --> B["右上角 创建隧道"]
+    B --> C["选 Cloudflared<br/>(推荐) → 选择 Cloudflared"]
+    C --> D["输入隧道名称<br/>(例：github-3xui)<br/>→ 保存隧道"]
+    D --> E["安装并运行连接器页<br/>复制 Token<br/>(eyJ 开头的一长串)"]
+    E --> F["下一步 → 路由隧道<br/>→ 已发布应用程序路由"]
+    F --> G["添加已发布应用程序路由<br/>子域 vless + 你的域<br/>类型 HTTP → URL 127.0.0.1:8080"]
+    F --> H["添加已发布应用程序路由<br/>子域 panel + 你的域<br/>类型 HTTP → URL 127.0.0.1:2053"]
+    G --> I["保存完成"]
+    H --> I
 
-    style G fill:#f6821f,color:#fff
-    style K fill:#1f9d55,color:#fff
+    style E fill:#f6821f,color:#fff
+    style I fill:#1f9d55,color:#fff
 ```
 
-1. Nyisd meg a [Cloudflare Dashboardot](https://dash.cloudflare.com), a bal oldali menüben lépj a **Zero Trust** menüpontra
-2. Bal oldalt **Hálózatok（Networks）** → **Csatlakozók（Tunnels）**, kattints jobb felül a **Create a tunnel** gombra
-3. Válaszd a **Cloudflared** típust, majd kattints a Tovább gombra
-4. Adj nevet a tunnelnek (pl. `github-3xui`), és mentsd el
-5. Az oldal egy telepítési parancsot mutat, kb. így:
-   ```
-   cloudflared.exe service install eyJhIjoiYzEyNGI2...
-   ```
-   Másold ki a hosszú, `eyJ`-val kezdődő karaktersort — ez a **Tunnel Token**, jól őrizd meg
-6. Kattints a Tovább gombra a **Public hostnames** (közzétett alkalmazás-útvonalak) részhez, majd kattints az **Add a public hostname** gombra, és add hozzá a két bejegyzést:
+Részletes lépések:
 
-   **Első bejegyzés (csomópont):**
-   - Subdomain (aldomain): `vless`
-   - Domain (domain): válaszd ki a saját domained
-   - Service Type (szolgáltatástípus): `HTTP`
-   - URL: `127.0.0.1:8080`
-
-   **Második bejegyzés (panel):**
-   - Subdomain (aldomain): `panel`
-   - Domain (domain): válaszd ki a saját domained
-   - Service Type (szolgáltatástípus): `HTTP`
-   - URL: `127.0.0.1:2053`
-
-7. Mentsd el. A Cloudflare automatikusan létrehozza a DNS-feloldást, kézzel nem kell hozzáadnod.
+1. Nyisd meg a [Cloudflare Dashboardot](https://dash.cloudflare.com), majd a bal oldali menüben menj a **Zero Trust** → **Networks** → **Tunnels** menüpontra
+2. Kattints jobb felül a **Tunnel létrehozása** gombra
+3. **A tunnel típusának kiválasztása**: válaszd a **Cloudflared** lehetőséget (ajánlott), majd kattints a **Cloudflared kiválasztása** gombra
+4. **A tunnel elnevezése**: írj be egy nevet (pl. `github-3xui`), majd kattints a **Tunnel mentése** gombra
+5. **A csatlakozó telepítése és futtatása**: az oldal megjelenít egy telepítési parancsot — másold ki belőle az `eyJ` karakterekkel kezdődő hosszú **Token** szöveget, és őrizd meg (később GitHub Secret-ként fogod menteni). Helyben **nem kell** telepítened semmit — kattints a Tovább gombra a folytatáshoz
+6. **A tunnel irányítása**: lépj a **Közzétett alkalmazásútvonalak** lapra, és kattints a **Közzétett alkalmazásútvonal hozzáadása** gombra — adj hozzá két bejegyzést:
+   **Első (csomópont):** Aldomain `vless`; Domain: válaszd ki a saját domained; Típus `HTTP`; URL `127.0.0.1:8080`
+   **Második (panel):** Aldomain `panel`; Domain: válaszd ki a saját domained; Típus `HTTP`; URL `127.0.0.1:2053`
+7. Mentsd el. A Cloudflare automatikusan létrehozza a DNS-rekordokat, kézzel nem kell hozzáadnod semmit. Térj vissza a Tunnels listához — ha a tunnel állapota **Egészséges (Healthy)**, a beállítás sikeres.
 
 ### 2. lépés: UUID generálása
 
