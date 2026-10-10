@@ -44,8 +44,8 @@ flowchart TD
 ## Automatyczne odnawianie
 
 - **Czas trwania zależy od Ciebie**: przy Run workflow wpisz ręcznie `run_minutes`, działa tyle minut ile wpiszesz; puste pole używa domyślnych 290
-- **Automatyczne dziedziczenie parametrów**: każda runda przekazuje `run_minutes` / `countdown_interval` / `countdown_unit` do następnej, cały łańcuch używa wartości początkowo wprowadzonych przez Ciebie
-- **Nakładające się uruchamianie (płynne przejście)**: 5 minut przed końcem każdej rundy następna jest uruchamiana wcześniej, stary i nowy runner są jednocześnie online, tunel Cloudflare obsługuje wiele połączeń, ruch jest automatycznie kierowany do dostępnych połączeń, użytkownik praktycznie nie odczuwa wyjścia starej rundy (przy krótkich testach ≤6 minut uruchamianie następuje 30 sekund wcześniej)
+- **Automatyczne dziedziczenie parametrów**: każda runda przekazuje `run_minutes` / `countdown_interval` / `countdown_unit` / `overlap_threshold` / `overlap_long` / `overlap_short` do następnej, cały łańcuch używa wartości początkowo wprowadzonych przez Ciebie
+- **Nakładające się uruchamianie (płynne przejście)**: wyzwala wcześniej następne uruchomienie przed zakończeniem bieżącego, stare i nowe runnery są jednocześnie online, tunel Cloudflare obsługuje wiele połączeń, ruch jest automatycznie rozdzielany na dostępne połączenia, użytkownik prawie nie odczuwa zakończenia starego. Moment wyzwolenia jest konfigurowalny: keep-alive większy niż `overlap_threshold` (domyślnie 5 minut) to długie uruchomienie, wyzwalane wcześniej o `overlap_long` (domyślnie 5 minut); mniejszy to krótkie uruchomienie, wyzwalane wcześniej o `overlap_short` (domyślnie 30 sekund)
 - Do szybkiego testu wpisz `5`, do codziennego użytku zostaw puste (290)
 - Domena i UUID są stałe, klienta konfigurujesz raz
 - Aby zatrzymać, kliknij Cancel w Actions· po anulowaniu nie uruchomi się ponownie sam
@@ -142,6 +142,12 @@ Szczegółowe kroki:
      Interwał wyświetlania odliczania (domyślnie 1, 0 aby wyłączyć)
    - **Countdown interval unit**: jednostka interwału odliczania, wybierz `minutes` lub `seconds` z listy rozwijanej
      Jednostka interwału wyświetlania odliczania
+   - **Overlap threshold**: próg nakładania (minuty, domyślnie `5`), keep-alive dłuższy niż ta wartość to długie uruchomienie
+     Próg nakładania (minuty, domyślnie 5): keep-alive dłuższy niż ta wartość to długie uruchomienie
+   - **Overlap long**: minuty wcześniejszego wyzwolenia dla długich uruchomień (domyślnie `5`)
+     Minuty wcześniejszego wyzwolenia dla długich uruchomień (domyślnie 5)
+   - **Overlap short**: sekundy wcześniejszego wyzwolenia dla krótkich uruchomień (domyślnie `30`)
+     Sekundy wcześniejszego wyzwolenia dla krótkich uruchomień (domyślnie 30)
 5. Kliknij zielony przycisk **Run workflow**, aby rozpocząć
 
 ### Krok 5: Pobranie linku do węzła
