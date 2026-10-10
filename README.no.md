@@ -200,8 +200,8 @@ A: Sjekk tre ting: ① om UUID-en er riktig byttet ut; ② om klientversjonen er
 **Q: Den automatiske omstarten ble ikke utløst?**
 A: Se på loggen for trinnet **Trigger next run**. Hvis den viser en HTTP-statuskode som ikke er 204, sjekk Actions-tillatelsesinnstillingene for repositoriet.
 
-**Q: Er det normalt at forbindelsen faller ut i noen minutter hver 5. time?**
-A: Normalt. Fra forrige runde slutter til neste tunnel er koblet til, tar det ca. 3–5 minutter; klienten kobler automatisk til igjen.
+**Q: Blir det brudd i forbindelsen under rotasjonen?**
+A: Vi bruker overlappende oppstart: neste runde trigges før den nåværende avsluttes, gamle og nye runnere er online samtidig, i teorien umerkelig. I ekstreme tilfeller (f.eks. GitHub-kø) kan det være korte svingninger, klienten kobler til igjen automatisk.
 
 **Q: Vil du stoppe automatisk fornyelse?**
 A: Cancel den gjeldende kjøringen på Actions-siden, så utløses ikke ny automatisk.
