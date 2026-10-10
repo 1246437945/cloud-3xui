@@ -44,8 +44,8 @@ flowchart TD
 ## Tự động gia hạn
 
 - **Thời gian do bạn quyết định**: khi Run workflow hãy nhập tay `run_minutes`, chạy đúng số phút đã nhập; để trống sẽ dùng mặc định 290
-- **Kế thừa tham số tự động**: mỗi lượt sẽ truyền `run_minutes` / `countdown_interval` / `countdown_unit` sang lượt tiếp theo, cả chuỗi dùng giá trị bạn nhập ban đầu
-- **Khởi động chồng lấp (chuyển đổi liền mạch)**: 5 phút trước khi mỗi lượt kết thúc, lượt tiếp theo được kích hoạt sớm, runner cũ và mới cùng online, tunnel Cloudflare hỗ trợ nhiều kết nối, lưu lượng tự động chuyển sang các kết nối khả dụng, người dùng gần như không cảm nhận được lượt cũ thoát ra (với test ngắn ≤6 phút thì kích hoạt sớm 30 giây)
+- **Kế thừa tham số tự động**: mỗi lượt sẽ truyền `run_minutes` / `countdown_interval` / `countdown_unit` / `overlap_threshold` / `overlap_long` / `overlap_short` sang lượt tiếp theo, cả chuỗi dùng giá trị bạn nhập ban đầu
+- **Khởi động chồng lấp (chuyển đổi liền mạch)**: kích hoạt sớm lượt tiếp theo trước khi lượt hiện tại kết thúc, runner cũ và mới cùng online, tunnel Cloudflare hỗ trợ nhiều kết nối, lưu lượng tự động chuyển sang các kết nối khả dụng, người dùng gần như không cảm nhận được khi lượt cũ thoát ra. Thời điểm kích hoạt có thể cấu hình: keep-alive lớn hơn `overlap_threshold` (mặc định 5 phút) được tính là lần chạy dài, kích hoạt sớm `overlap_long` (mặc định 5 phút); nhỏ hơn thì tính là lần chạy ngắn, kích hoạt sớm `overlap_short` (mặc định 30 giây)
 - Muốn test nhanh thì nhập `5`, dùng hàng ngày thì để trống (290)
 - Domain và UUID cố định, cấu hình client một lần là xong
 - Muốn dừng thì bấm Cancel trong Actions· sau khi hủy sẽ không tự khởi động lại
@@ -142,6 +142,12 @@ Các bước chi tiết:
      Khoảng thời gian xuất đếm ngược (mặc định 1, điền 0 để tắt)
    - **Countdown interval unit**: đơn vị khoảng thời gian đếm ngược, chọn `minutes` hoặc `seconds` trong menu thả xuống
      Đơn vị khoảng thời gian xuất đếm ngược
+   - **Overlap threshold**: ngưỡng chồng lấp (phút, mặc định `5`), keep-alive dài hơn giá trị này được tính là lần chạy dài
+     Ngưỡng chồng lấp (phút, mặc định 5): keep-alive dài hơn giá trị này được tính là lần chạy dài
+   - **Overlap long**: số phút kích hoạt sớm cho lần chạy dài (mặc định `5`)
+     Số phút kích hoạt sớm cho lần chạy dài (mặc định 5)
+   - **Overlap short**: số giây kích hoạt sớm cho lần chạy ngắn (mặc định `30`)
+     Số giây kích hoạt sớm cho lần chạy ngắn (mặc định 30)
 5. Nhấn nút **Run workflow** màu xanh để bắt đầu chạy
 
 ### Bước 5: Lấy Liên Kết Node
