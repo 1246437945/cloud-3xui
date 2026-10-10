@@ -44,8 +44,8 @@ flowchart TD
 ## Otomatik yenileme
 
 - **Süreye sen karar ver**: Run workflow çalıştırırken `run_minutes` alanını manuel doldur, yazdığın dakika kadar çalışır; boş bırakılırsa varsayılan 290 kullanılır
-- **Otomatik parametre devralma**: her tur `run_minutes` / `countdown_interval` / `countdown_unit` değerlerini sonrakine aktarır, tüm zincir başlangıçta girdiğin değerleri kullanır
-- **Örtüşen başlatma (kesintisiz geçiş)**: her turun bitiminden 5 dakika önce sonraki tur erken başlatılır, eski ve yeni runner aynı anda çevrimiçi, Cloudflare tüneli çoklu bağlantıyı destekler, trafik otomatik olarak kullanılabilir bağlantılara yönlendirilir, kullanıcı eski turun çıkışını neredeyse hissetmez (≤6 dakikalık kısa testlerde 30 saniye erken başlatılır)
+- **Otomatik parametre devralma**: her tur `run_minutes` / `countdown_interval` / `countdown_unit` / `overlap_threshold` / `overlap_long` / `overlap_short` değerlerini sonrakine aktarır, tüm zincir başlangıçta girdiğin değerleri kullanır
+- **Örtüşen başlatma (kesintisiz geçiş)**: mevcut çalıştırma bitmeden sonrakini erken tetikler, eski ve yeni runner’lar aynı anda çevrimiçi olur, Cloudflare tüneli birden fazla bağlantıyı destekler, trafik otomatik olarak kullanılabilir bağlantılara dağıtılır, kullanıcı eskinin çıkışını neredeyse hissetmez. Tetikleme zamanı yapılandırılabilir: `overlap_threshold` (varsayılan 5 dakika) değerinden büyük keep-alive uzun çalıştırma sayılır, `overlap_long` (varsayılan 5 dakika) erken tetiklenir; küçükse kısa çalıştırma sayılır, `overlap_short` (varsayılan 30 saniye) erken tetiklenir
 - Hızlı test için `5` yaz, günlük kullanımda boş bırak (290)
 - Alan adı ve UUID sabittir, istemciyi bir kez yapılandırman yeterli
 - Durdurmak için Actions'ta Cancel'e bas· iptalden sonra otomatik yeniden başlamaz
@@ -142,6 +142,12 @@ Ayrıntılı adımlar:
      Geri sayım çıktı aralığı (varsayılan 1, kapatmak için 0)
    - **Countdown interval unit**: geri sayım aralığı birimi, açılır menüden `minutes` veya `seconds` seçin
      Geri sayım çıktı aralığı birimi
+   - **Overlap threshold**: çakışma eşiği (dakika, varsayılan `5`), bundan uzun keep-alive uzun çalıştırma sayılır
+     Çakışma eşiği (dakika, varsayılan 5): bundan uzun keep-alive uzun çalıştırma sayılır
+   - **Overlap long**: uzun çalıştırmalar için erken tetikleme dakikası (varsayılan `5`)
+     Uzun çalıştırmalar için erken tetikleme dakikası (varsayılan 5)
+   - **Overlap short**: kısa çalıştırmalar için erken tetikleme saniyesi (varsayılan `30`)
+     Kısa çalıştırmalar için erken tetikleme saniyesi (varsayılan 30)
 5. Çalıştırmayı başlatmak için yeşil **Run workflow** düğmesine tıklayın
 
 ### Adım 5: Düğüm Bağlantısını Alın
