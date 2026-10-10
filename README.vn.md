@@ -200,8 +200,8 @@ Các bước chi tiết:
 **H: Tự động khởi động lại không được kích hoạt?**
 Đ: Xem nhật ký bước **Trigger next run**. Nếu hiển thị mã trạng thái HTTP khác 204, hãy kiểm tra cài đặt quyền Actions của kho.
 
-**H: Đứt kết nối vài phút mỗi 5 giờ có bình thường không?**
-Đ: Bình thường. Từ khi vòng trước kết thúc đến khi tunnel của vòng tiếp theo kết nối mất khoảng 3-5 phút, ứng dụng khách sẽ tự động kết nối lại.
+**H: Đứt kết nối khi luân chuyển không?**
+Đ: Dùng khởi động chồng lấp: vòng tiếp theo được kích hoạt trước khi vòng hiện tại kết thúc, runner cũ và mới cùng online, về lý thuyết không cảm nhận được. Trong trường hợp cực đoan (như GitHub xếp hàng) có thể có dao động ngắn, client sẽ tự động kết nối lại.
 
 **H: Muốn dừng tự động gia hạn?**
 Đ: Vào trang Actions, Cancel lần chạy hiện tại là được, sẽ không tự động kích hoạt nữa.
