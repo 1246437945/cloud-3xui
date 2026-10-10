@@ -44,9 +44,9 @@ flowchart TD
 ## Reconexión automática
 
 - **Usted fija la duración**: al hacer clic en Run workflow, escriba `run_minutes` manualmente; se ejecutará tantos minutos como indique; si lo deja vacío, se usará el valor predeterminado 290
-- **Herencia automática de parámetros**: cada ronda pasa `run_minutes` / `countdown_interval` / `countdown_unit` a la siguiente a través de la API, por lo que toda la cadena mantiene los valores que ingresaste al principio
+- **Herencia automática de parámetros**: cada ronda pasa `run_minutes` / `countdown_interval` / `countdown_unit` / `overlap_threshold` / `overlap_long` / `overlap_short` a la siguiente a través de la API, por lo que toda la cadena mantiene los valores que ingresaste al principio
 - Para una prueba rápida escriba `5`; para el uso diario, déjelo vacío y se usará el valor predeterminado 290
-- **Arranque superpuesto (cambio sin interrupciones)**: 5 minutos antes del final de la ronda actual, se inicia anticipadamente la siguiente ronda; los runners antiguo y nuevo funcionan simultáneamente, los túneles de Cloudflare admiten múltiples conexiones, el tráfico se dirige automáticamente a las conexiones disponibles, por lo que los usuarios apenas notan la salida de la ronda anterior (para pruebas cortas de ≤6 minutos, se inicia 30 segundos antes)
+- **Arranque superpuesto (cambio sin interrupciones)**: la siguiente ronda se inicia anticipadamente antes del final de la ronda actual; los runners antiguo y nuevo funcionan simultáneamente, los túneles de Cloudflare admiten múltiples conexiones, el tráfico se dirige automáticamente a las conexiones disponibles, por lo que los usuarios apenas notan la salida de la ronda anterior. El momento de inicio es configurable: un keep-alive superior a `overlap_threshold` (predeterminado 5 minutos) se considera ronda larga e inicia `overlap_long` (predeterminado 5 minutos) antes; las más cortas se consideran rondas cortas e inician `overlap_short` (predeterminado 30 segundos) antes
 - El dominio y el UUID son fijos: configure el cliente una vez y valdrá para siempre
 - Para detenerlo, vaya a Actions y pulse Cancel; una vez cancelado, no se reiniciará automáticamente
 
@@ -140,6 +140,9 @@ Pasos detallados:
    - **Run duration**: valor predeterminado `290` (minutos); para una primera prueba puede escribir `5` para una verificación rápida; para el uso diario, simplemente déjelo vacío
    - **Countdown output interval**: Intervalo de salida de la cuenta atrás, predeterminado `1`, escriba `0` para desactivarlo
    - **Countdown interval unit**: Unidad del intervalo de la cuenta atrás, seleccione `minutes` o `seconds` en el menú desplegable
+   - **Overlap threshold**: Umbral de superposición (minutos, predeterminado `5`): un keep-alive más largo se considera una ronda larga
+   - **Overlap long**: Minutos de antelación para iniciar la siguiente ronda en rondas largas (predeterminado `5`)
+   - **Overlap short**: Segundos de antelación para iniciar la siguiente ronda en rondas cortas (predeterminado `30`)
      Duración de ejecución (minutos, predeterminado 290, máximo 340)
 5. Haga clic en el botón verde **Run workflow** para iniciar.
 
