@@ -60,6 +60,10 @@ flowchart TD
 
 ## Pasos detallados de configuración
 
+### Dominio gratuito (¿sin dominio? empiece aquí)
+
+¿No tiene dominio propio? Solicite uno gratis en https://my.dnshe.com/ (por ejemplo, `.ccwu.cc`, válido por 10 años) y luego delegue los registros NS del dominio a Cloudflare.
+
 ### Paso 1: Crear un túnel con nombre en Cloudflare
 
 
