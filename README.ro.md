@@ -59,10 +59,6 @@ flowchart TD
 
 ## Pași detaliați de configurare
 
-### Domeniu gratuit (nu ai domeniu?)
-
-Nu ai domeniu propriu? Poți înregistra unul gratuit pe https://my.dnshe.com/ (ex. `.ccwu.cc`, valabil 10 ani), apoi direcționează serverele de nume (NS) ale domeniului către Cloudflare.
-
 ### Pasul 1: Creați un Named Tunnel în Cloudflare
 
 Site-ul oficial Cloudflare: https://www.cloudflare-cn.com (intern) / https://www.cloudflare.com (internațional)
@@ -71,46 +67,42 @@ Consolă: https://dash.cloudflare.com
 
 ```mermaid
 flowchart TD
-    A["打开 Cloudflare Dashboard"] --> B["左侧 Zero Trust"]
-    B --> C["Networks → Tunnels"]
-    C --> D["右上角 Create a tunnel"]
-    D --> E["选 Cloudflared → 下一步"]
-    E --> F["起名（例：github-3xui）→ 保存"]
-    F --> G["复制 Token<br/>(eyJ 开头的一长串)"]
-    G --> H["下一步 → Public hostnames"]
-    H --> I["添加第一条<br/>vless.你的域名.com → HTTP → 127.0.0.1:8080"]
-    H --> J["添加第二条<br/>panel.你的域名.com → HTTP → 127.0.0.1:2053"]
-    I --> K["保存完成"]
-    J --> K
+    A["控制台 → Zero Trust<br/>→ Networks → Tunnels"] --> B["右上角 创建隧道"]
+    B --> C["选 Cloudflared<br/>(推荐) → 选择 Cloudflared"]
+    C --> D["输入隧道名称<br/>(例：github-3xui)<br/>→ 保存隧道"]
+    D --> E["安装并运行连接器页<br/>复制 Token<br/>(eyJ 开头的一长串)"]
+    E --> F["下一步 → 路由隧道<br/>→ 已发布应用程序路由"]
+    F --> G["添加已发布应用程序路由<br/>子域 vless + 你的域<br/>类型 HTTP → URL 127.0.0.1:8080"]
+    F --> H["添加已发布应用程序路由<br/>子域 panel + 你的域<br/>类型 HTTP → URL 127.0.0.1:2053"]
+    G --> I["保存完成"]
+    H --> I
 
-    style G fill:#f6821f,color:#fff
-    style K fill:#1f9d55,color:#fff
+    style E fill:#f6821f,color:#fff
+    style I fill:#1f9d55,color:#fff
 ```
 
-1. Deschideți [Cloudflare Dashboard](https://dash.cloudflare.com), în meniul din stânga intrați la **Zero Trust**
-2. În stânga **Networks** → **Tunnels**, faceți clic pe **Create a tunnel** în colțul dreapta sus
-3. Selectați tipul **Cloudflared**, faceți clic pe următorul pas
-4. Dați tunelului un nume (de exemplu `github-3xui`), salvați
-5. Pagina va afișa o comandă de instalare, de forma:
-   ```
-   cloudflared.exe service install eyJhIjoiYzEyNGI2...
-   ```
-   Copiați șirul lung de caractere care începe cu `eyJ`, acesta este **Tunnel Token**, păstrați-l bine
-6. Faceți clic pe următorul pas pentru a intra la **Public hostnames** (Public Application Routes), faceți clic pe **Add a public hostname** și adăugați două:
+Pași detaliați:
+
+1. Deschideți [Cloudflare Dashboard](https://dash.cloudflare.com), din meniul din stânga intrați la **Zero Trust** → **Networks** → **Tunnels**
+2. Faceți clic pe **Creați un tunel** în colțul din dreapta sus
+3. **Selectați tipul de tunel**: alegeți **Cloudflared** (recomandat), faceți clic pe **Selectați Cloudflared**
+4. **Dați tunelului un nume**: introduceți un nume (de exemplu `github-3xui`), faceți clic pe **Salvați tunelul**
+5. **Instalați și rulați conectorul**: pagina va afișa o comandă de instalare, copiați șirul lung de caractere care începe cu `eyJ` — acesta este **Token**-ul, păstrați-l bine (îl veți folosi ulterior într-un GitHub Secret). **Nu este nevoie** să instalați nimic local, continuați cu pasul următor
+6. **Rutați tunelul**: intrați în fila **Rute de aplicații publicate**, faceți clic pe **Adăugați o rută de aplicație publicată** și adăugați două:
 
    **Primul (nodul):**
-   - Subdomain (subdomeniu): `vless`
-   - Domain (domeniu): selectați domeniul dvs.
-   - Service Type (tip serviciu): `HTTP`
+   - Subdomeniu: `vless`
+   - Domeniu: selectați domeniul dvs.
+   - Tip: `HTTP`
    - URL: `127.0.0.1:8080`
 
    **Al doilea (panoul):**
-   - Subdomain (subdomeniu): `panel`
-   - Domain (domeniu): selectați domeniul dvs.
-   - Service Type (tip serviciu): `HTTP`
+   - Subdomeniu: `panel`
+   - Domeniu: selectați domeniul dvs.
+   - Tip: `HTTP`
    - URL: `127.0.0.1:2053`
 
-7. Salvați. Cloudflare va crea automat rezoluția DNS, nu este nevoie de adăugare manuală.
+7. Salvați. Cloudflare va crea automat rezoluția DNS, nu este nevoie de adăugare manuală. Reveniți la lista Tunnels; dacă starea tunelului este **normal**, configurarea a reușit.
 
 ### Pasul 2: Generați un UUID
 
