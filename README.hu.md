@@ -189,8 +189,8 @@ V: Ellenőrizd három dolgot: ① az UUID-t helyesen cserélted-e le; ② elég 
 **K: Az automatikus újraindítás nem indult el?**
 V: Nézd meg a **Trigger next run** lépés naplóját. Ha nem 204-es HTTP státuszkódot mutat, ellenőrizd a repó Actions jogosultsági beállításait.
 
-**K: Normális, ha 5 óránként pár percre megszakad?**
-V: Normális. Az előző kör végétől a következő kör tunneljének csatlakozásáig kb. 3-5 perc telik el, a kliens automatikusan újracsatlakozik.
+**K: Megszakad a kapcsolat a váltáskor?**
+V: Átfedő indítást használunk: a következő kör még az aktuális vége előtt elindul, a régi és az új runner egyszerre online, elméletileg észrevehetetlen. Extrém esetben (pl. GitHub sor) lehet rövid ingadozás, a kliens automatikusan újracsatlakozik.
 
 **K: Le akarom állítani az automatikus megújítást?**
 V: Menj az Actions oldalra, és állítsd le (Cancel) az aktuális futtatást, többé nem indul el automatikusan.
