@@ -31,7 +31,7 @@ Depoda: Settings → Secrets and variables → Actions, üç tane ekleyin:
 |------|-------|
 | `CF_TUNNEL_TOKEN` | Cloudflare tünel token'ı |
 | `PANEL_PASSWORD` | Panel giriş şifresi |
-| `VLESS_UUID` | Düğüm UUID'si (sabit, istemcide kalıcı geçerli, https://1024tools.com/uuid/ adresinden üretin) |
+| `VLESS_UUID` | Düğüm UUID'si (sabit, istemcide kalıcı geçerli, https://1024tools.com/uuid/ adresinden üretin, **Bu UUID'yi mutlaka kaydedin, loglarda açık metin olarak görünmez, düğüm bağlantısını her birleştirdiğinizde buna ihtiyacınız olacak**) |
 
 ### 3. Çalıştırma
 
