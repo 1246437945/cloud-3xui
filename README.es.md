@@ -72,46 +72,42 @@ Panel de control: https://dash.cloudflare.com
 
 ```mermaid
 flowchart TD
-    A["打开 Cloudflare Dashboard"] --> B["左侧 Zero Trust"]
-    B --> C["Redes (Networks) → Conectores (Tunnels)"]
-    C --> D["右上角 Create a tunnel"]
-    D --> E["选 Cloudflared → 下一步"]
-    E --> F["起名（例：github-3xui）→ 保存"]
-    F --> G["复制 Token<br/>(eyJ 开头的一长串)"]
-    G --> H["下一步 → Public hostnames"]
-    H --> I["添加第一条<br/>vless.你的域名.com → HTTP → 127.0.0.1:8080"]
-    H --> J["添加第二条<br/>panel.你的域名.com → HTTP → 127.0.0.1:2053"]
-    I --> K["保存完成"]
-    J --> K
+    A["控制台 → Zero Trust<br/>→ 网络（Networks）→ 连接器（Tunnels）"] --> B["右上角 创建隧道"]
+    B --> C["选 Cloudflared<br/>(推荐) → 选择 Cloudflared"]
+    C --> D["输入隧道名称<br/>(例：github-3xui)<br/>→ 保存隧道"]
+    D --> E["安装并运行连接器页<br/>复制 Token<br/>(eyJ 开头的一长串)"]
+    E --> F["下一步 → 路由隧道<br/>→ 已发布应用程序路由"]
+    F --> G["添加已发布应用程序路由<br/>子域 vless + 你的域<br/>类型 HTTP → URL 127.0.0.1:8080"]
+    F --> H["添加已发布应用程序路由<br/>子域 panel + 你的域<br/>类型 HTTP → URL 127.0.0.1:2053"]
+    G --> I["保存完成"]
+    H --> I
 
-    style G fill:#f6821f,color:#fff
-    style K fill:#1f9d55,color:#fff
+    style E fill:#f6821f,color:#fff
+    style I fill:#1f9d55,color:#fff
 ```
 
-1. Abra [Cloudflare Dashboard](https://dash.cloudflare.com) y entre en **Zero Trust** en el menú de la izquierda.
-2. A la izquierda, vaya a **Redes (Networks)** → **Conectores (Tunnels)** y haga clic en **Create a tunnel** en la esquina superior derecha.
-3. Seleccione el tipo **Cloudflared** y haga clic en Siguiente.
-4. Asigne un nombre al túnel (por ejemplo, `github-3xui`) y guárdelo.
-5. La página mostrará un comando de instalación como este:
-   ```
-   cloudflared.exe service install eyJhIjoiYzEyNGI2...
-   ```
-   Copie la cadena larga que empieza por `eyJ`; ese es el **Tunnel Token**. Guárdelo en un lugar seguro.
-6. Haga clic en Siguiente para llegar a **Public hostnames**, haga clic en **Add a public hostname** y añada dos entradas:
+Pasos detallados:
 
-   **Primera entrada (nodo):**
-   - Subdomain: `vless`
-   - Domain: seleccione su dominio
-   - Service Type: `HTTP`
+1. Abre el [panel de Cloudflare](https://dash.cloudflare.com) y ve a **Zero Trust** → **Networks** → **Tunnels** en el menú izquierdo
+2. Haz clic en **Create a tunnel** en la esquina superior derecha
+3. **Selecciona el tipo de túnel**: elige **Cloudflared** (recomendado) y haz clic en **Select Cloudflared**
+4. **Nombra el túnel**: escribe un nombre (p. ej. `github-3xui`) y haz clic en **Save tunnel**
+5. **Instala y ejecuta el conector**: la página muestra un comando de instalación; copia el **Token** largo que empieza por `eyJ` y guárdalo (lo usarás como GitHub Secret). **No** necesitas instalar nada en local; continúa al siguiente paso
+6. **Enruta el túnel**: ve a la pestaña **Public hostnames**, haz clic en **Add a public hostname** y añade dos entradas:
+
+   **Primera (nodo):**
+   - Subdominio: `vless`
+   - Dominio: elige tu dominio
+   - Tipo: `HTTP`
    - URL: `127.0.0.1:8080`
 
-   **Segunda entrada (panel):**
-   - Subdomain: `panel`
-   - Domain: seleccione su dominio
-   - Service Type: `HTTP`
+   **Segunda (panel):**
+   - Subdominio: `panel`
+   - Dominio: elige tu dominio
+   - Tipo: `HTTP`
    - URL: `127.0.0.1:2053`
+7. Guarda. Cloudflare crea los registros DNS automáticamente. Si en la lista de Tunnels el estado es **Healthy**, la configuración es correcta.
 
-7. Guarde. Cloudflare creará los registros DNS automáticamente; no es necesario añadirlos manualmente.
 
 ### Paso 2: Generar un UUID
 
