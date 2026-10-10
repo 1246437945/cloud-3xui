@@ -34,8 +34,9 @@ flowchart TD
     C --> D["启动 Cloudflare 命名隧道"]
     D --> E["输出节点链接"]
     E --> F["保活 N 分钟<br/>(手动输入，默认 290)"]
-    F --> G["调用 API 触发下一轮<br/>(用默认值 290)"]
-    G --> A
+    F --> G["结束前 5 分钟<br/>提前触发下一轮"]
+    G --> H["新旧 runner 重叠运行<br/>流量无缝切换"]
+    H --> A
 
     style G fill:#f6821f,color:#fff
 ```
@@ -43,7 +44,8 @@ flowchart TD
 ## Perpanjangan otomatis
 
 - **Durasi kamu yang tentukan**: saat Run workflow isi `run_minutes` secara manual, berjalan sesuai menit yang diisi; kosongkan untuk memakai default 290
-- **Pemicu otomatis pakai default**: setiap ronde berakhir API memicu ronde berikutnya tanpa parameter, jadi setiap ronde otomatis berdurasi 290 menit
+- **Pewarisan parameter otomatis**: setiap ronde meneruskan `run_minutes` / `countdown_interval` / `countdown_unit` ke ronde berikutnya, seluruh rantai memakai nilai awal yang kamu isi
+- **Startup tumpang tindih (perpindahan mulus)**: 5 menit sebelum setiap ronde berakhir, ronde berikutnya dipicu lebih awal, runner lama dan baru online bersamaan, tunnel Cloudflare mendukung banyak koneksi, trafik otomatis dialihkan ke koneksi yang tersedia, pengguna hampir tidak merasakan ronde lama keluar (untuk pengujian singkat ≤6 menit, dipicu 30 detik lebih awal)
 - Untuk tes cepat isi `5`, pemakaian harian kosongkan saja (290)
 - Domain dan UUID tetap, konfigurasi client sekali saja
 - Untuk berhenti tekan Cancel di Actions· setelah dibatalkan tidak akan restart otomatis
@@ -190,6 +192,6 @@ A: Buka halaman Actions dan Cancel eksekusi yang sedang berjalan, tidak akan ter
 ## Hal yang Perlu Diperhatikan
 
 - **Kecepatan**: lalu lintas melewati Cloudflare → pusat data GitHub (AS/EU), hanya cocok untuk penggunaan sementara/ringan
-- **Gangguan singkat**: setiap pergantian restart otomatis tiap 5 jam terputus sekitar 3-5 menit (mesin baru dinyalakan, 3x-ui diinstal, tunnel terhubung ulang), klien akan terhubung ulang otomatis
+- **Perpindahan mulus**: dengan startup tumpang tindih, setiap ronde memicu ronde berikutnya 5 menit lebih awal, runner lama dan baru online bersamaan, secara teori pengguna tidak merasakan apa-apa; dalam kasus ekstrem (mis. antrean GitHub) mungkin ada fluktuasi singkat
 - **Kepatuhan**: menjalankan proxy di GitHub Actions berisiko melanggar ToS dan akun diblokir, pertimbangkan sendiri
 - **Keamanan**: jangan mempublikasikan `CF_TUNNEL_TOKEN` / `PANEL_PASSWORD` / `VLESS_UUID` di tempat umum
