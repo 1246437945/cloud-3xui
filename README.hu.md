@@ -72,7 +72,7 @@ Vezérlőpult: https://dash.cloudflare.com
 ```mermaid
 flowchart TD
     A["打开 Cloudflare Dashboard"] --> B["左侧 Zero Trust"]
-    B --> C["Networks → Tunnels"]
+    B --> C["Hálózatok（Networks） → Csatlakozók（Tunnels）"]
     C --> D["右上角 Create a tunnel"]
     D --> E["选 Cloudflared → 下一步"]
     E --> F["起名（例：github-3xui）→ 保存"]
@@ -88,7 +88,7 @@ flowchart TD
 ```
 
 1. Nyisd meg a [Cloudflare Dashboardot](https://dash.cloudflare.com), a bal oldali menüben lépj a **Zero Trust** menüpontra
-2. Bal oldalt **Networks** → **Tunnels**, kattints jobb felül a **Create a tunnel** gombra
+2. Bal oldalt **Hálózatok（Networks）** → **Csatlakozók（Tunnels）**, kattints jobb felül a **Create a tunnel** gombra
 3. Válaszd a **Cloudflared** típust, majd kattints a Tovább gombra
 4. Adj nevet a tunnelnek (pl. `github-3xui`), és mentsd el
 5. Az oldal egy telepítési parancsot mutat, kb. így:
