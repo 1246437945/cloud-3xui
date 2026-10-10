@@ -60,6 +60,10 @@ flowchart TD
 
 ## Detailed setup steps
 
+### Free domain (no domain? start here)
+
+Don't have your own domain? Apply for one for free at https://my.dnshe.com/ (e.g. `.ccwu.cc`, valid for 10 years), then point the domain's NS records to Cloudflare.
+
 ### Step 1: Create a named tunnel in Cloudflare
 
 
