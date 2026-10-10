@@ -59,6 +59,10 @@ flowchart TD
 
 ## 详细配置步骤
 
+### 免费域名（没有域名看这里）
+
+没有自己的域名？可以去 https://my.dnshe.com/ 免费申请一个（如 `.ccwu.cc`，有效期 10 年），然后把域名的 NS 托管到 Cloudflare 即可。
+
 ### 第一步：Cloudflare 创建命名隧道
 
 Cloudflare 官网：https://www.cloudflare-cn.com （国内）/ https://www.cloudflare.com （国际）
