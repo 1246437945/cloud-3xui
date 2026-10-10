@@ -44,9 +44,9 @@ flowchart TD
 ## Renouvellement automatique
 
 - **La durée de maintien en activité est entre vos mains** : saisissez manuellement `run_minutes` lorsque vous cliquez sur Run workflow – la valeur saisie correspond aux minutes d'exécution ; si vous laissez vide, la valeur par défaut 290 est utilisée
-- **Héritage automatique des paramètres** : chaque cycle transmet `run_minutes` / `countdown_interval` / `countdown_unit` au cycle suivant via l’API, donc toute la chaîne conserve les valeurs que vous avez saisies au départ
+- **Héritage automatique des paramètres** : chaque cycle transmet `run_minutes` / `countdown_interval` / `countdown_unit` / `overlap_threshold` / `overlap_long` / `overlap_short` au cycle suivant via l’API, donc toute la chaîne conserve les valeurs que vous avez saisies au départ
 - Pour un test ponctuel, saisissez `5` ; pour une utilisation quotidienne, laissez vide pour conserver les 290 par défaut
-- **Démarrage en chevauchement (bascule transparente)** : 5 minutes avant la fin du cycle en cours, le cycle suivant est déclenché en avance ; les anciens et nouveaux runners fonctionnent simultanément, les tunnels Cloudflare prennent en charge plusieurs connexions, le trafic est automatiquement dirigé vers les connexions disponibles, si bien que les utilisateurs remarquent à peine la fin de l’ancien cycle (pour les tests courts ≤6 minutes, il est déclenché 30 secondes à l’avance)
+- **Démarrage en chevauchement (bascule transparente)** : le cycle suivant est déclenché en avance avant la fin du cycle en cours ; les anciens et nouveaux runners fonctionnent simultanément, les tunnels Cloudflare prennent en charge plusieurs connexions, le trafic est automatiquement dirigé vers les connexions disponibles, si bien que les utilisateurs remarquent à peine la fin de l'ancien cycle. Le moment du déclenchement est configurable : un keep-alive supérieur à `overlap_threshold` (défaut 5 minutes) est considéré comme un cycle long et déclenche `overlap_long` (défaut 5 minutes) en avance ; les plus courts sont considérés comme des cycles courts et déclenchent `overlap_short` (défaut 30 secondes) en avance
 - Le nom de domaine et l'UUID sont fixes : configurez le client une fois, il reste valable en permanence
 - Pour arrêter, accédez à la page Actions et cliquez sur Cancel ; après l'annulation, il ne redémarrera plus automatiquement
 
@@ -139,6 +139,9 @@ flowchart TD
    - **Run duration** : `290` par défaut (en minutes) ; pour un premier test, vous pouvez saisir `5` pour une vérification rapide ; pour une utilisation quotidienne, laissez vide
    - **Countdown output interval**: Intervalle d'affichage du compte à rebours, par défaut `1`, saisissez `0` pour le désactiver
    - **Countdown interval unit**: Unité de l'intervalle d'affichage du compte à rebours, sélectionnez `minutes` ou `seconds` dans le menu déroulant
+   - **Overlap threshold** : Seuil de chevauchement (minutes, défaut `5`) — un keep-alive plus long est considéré comme un cycle long
+   - **Overlap long** : Minutes d'avance pour déclencher le cycle suivant pour les cycles longs (défaut `5`)
+   - **Overlap short** : Secondes d'avance pour déclencher le cycle suivant pour les cycles courts (défaut `30`)
      Durée d'exécution (en minutes, 290 par défaut, 340 au maximum)
 5. Cliquez sur le bouton vert **Run workflow** pour lancer l'exécution.
 
