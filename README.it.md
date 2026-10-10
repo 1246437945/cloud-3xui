@@ -59,6 +59,10 @@ flowchart TD
 
 ## Passaggi di configurazione dettagliati
 
+### Dominio gratuito (non hai un dominio?)
+
+Non hai un tuo dominio? Puoi registrarne uno gratis su https://my.dnshe.com/ (es. `.ccwu.cc`, valido 10 anni), poi punta i server dei nomi (NS) del dominio su Cloudflare.
+
 ### Primo passo: creare un named tunnel su Cloudflare
 
 Sito ufficiale di Cloudflare: https://www.cloudflare-cn.com (nazionale) / https://www.cloudflare.com (internazionale)
