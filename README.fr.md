@@ -33,9 +33,10 @@ flowchart TD
     B --> C["API 创建 VLESS+WS 入站"]
     C --> D["启动 Cloudflare 命名隧道"]
     D --> E["输出节点链接"]
-    E --> F["Maintien en activité pendant N minutes<br/>(saisie manuelle, 290 par défaut)"]
-    F --> G["Appeler l'API pour déclencher le cycle suivant<br/>(avec la valeur par défaut 290)"]
-    G --> A
+    E --> F["保活 N 分钟<br/>(手动输入，默认 290)"]
+    F --> G["结束前 5 分钟<br/>提前触发下一轮"]
+    G --> H["新旧 runner 重叠运行<br/>流量无缝切换"]
+    H --> A
 
     style G fill:#f6821f,color:#fff
 ```
@@ -43,8 +44,9 @@ flowchart TD
 ## Renouvellement automatique
 
 - **La durée de maintien en activité est entre vos mains** : saisissez manuellement `run_minutes` lorsque vous cliquez sur Run workflow – la valeur saisie correspond aux minutes d'exécution ; si vous laissez vide, la valeur par défaut 290 est utilisée
-- **Le déclenchement automatique utilise la valeur par défaut** : à la fin de chaque cycle, le cycle suivant est lancé via un appel à l'API ; ce déclenchement par API ne comporte pas de paramètres, donc chaque cycle de renouvellement automatique dure 290 minutes
+- **Héritage automatique des paramètres** : chaque cycle transmet `run_minutes` / `countdown_interval` / `countdown_unit` au cycle suivant via l’API, donc toute la chaîne conserve les valeurs que vous avez saisies au départ
 - Pour un test ponctuel, saisissez `5` ; pour une utilisation quotidienne, laissez vide pour conserver les 290 par défaut
+- **Démarrage en chevauchement (bascule transparente)** : 5 minutes avant la fin du cycle en cours, le cycle suivant est déclenché en avance ; les anciens et nouveaux runners fonctionnent simultanément, les tunnels Cloudflare prennent en charge plusieurs connexions, le trafic est automatiquement dirigé vers les connexions disponibles, si bien que les utilisateurs remarquent à peine la fin de l’ancien cycle (pour les tests courts ≤6 minutes, il est déclenché 30 secondes à l’avance)
 - Le nom de domaine et l'UUID sont fixes : configurez le client une fois, il reste valable en permanence
 - Pour arrêter, accédez à la page Actions et cliquez sur Cancel ; après l'annulation, il ne redémarrera plus automatiquement
 
@@ -199,6 +201,6 @@ R : Accédez à la page Actions et annulez (Cancel) l'exécution en cours ; elle
 ## Remarques
 
 - **Vitesse** : le trafic transite via Cloudflare → les centres de données GitHub (Amérique/Europe) ; convient uniquement à un usage temporaire ou léger
-- **Coupure brève** : à chaque bascule de redémarrage automatique, coupure d'environ 3 à 5 minutes (démarrage de la nouvelle machine, installation de 3x-ui, reconnexion du tunnel) ; le client se reconnecte automatiquement
+- **Bascule transparente** : un démarrage en chevauchement est utilisé — le cycle suivant est lancé 5 minutes avant la fin de chaque cycle, les anciens et nouveaux runners sont en ligne simultanément, donc en théorie les utilisateurs ne remarquent rien ; dans des cas extrêmes (file d’attente GitHub par ex.), de brèves fluctuations restent possibles
 - **Conformité** : exécuter un proxy sur GitHub Actions peut enfreindre les conditions d'utilisation et expose au risque de suspension du compte ; évaluez vous-même
 - **Sécurité** : ne publiez jamais `CF_TUNNEL_TOKEN` / `PANEL_PASSWORD` / `VLESS_UUID` dans un endroit public
