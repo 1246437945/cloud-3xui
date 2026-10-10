@@ -32,47 +32,35 @@ jobs:
         run: |
           sudo apt-get install -y -qq python3-requests > /dev/null 2>&1 || pip install -q requests
           python3 << 'PYEOF'
-          import requests, json, uuid, re, time, sys, os
+          import requests, json, uuid, time, sys, os, subprocess
 
           PANEL = "http://127.0.0.1:2053/panel"
-          USERNAME = "admin"
-          PASSWORD = os.environ.get("PANEL_PASSWORD", "")
           XHTTP_PORT = 8080
           XHTTP_PATH = "/xhttp"
 
-          # wait for panel
+          # get API token (bypasses CSRF)
+          r = subprocess.run(["sudo", "/usr/local/x-ui/x-ui", "setting", "-getApiToken"],
+                             capture_output=True, text=True, timeout=15)
+          token = ""
+          for line in r.stdout.splitlines():
+              if "apiToken:" in line:
+                  token = line.split("apiToken:")[1].strip()
+                  break
+          if not token:
+              print("No API token, stdout:", r.stdout[:300]); sys.exit(1)
+
+          headers = {"Authorization": f"Bearer {token}"}
+
+          # wait for panel API
           for _ in range(30):
               try:
-                  r = requests.get(PANEL + "/", timeout=5)
-                  if r.status_code == 200:
+                  rr = requests.get(PANEL + "/panel/api/inbounds/list",
+                                    headers=headers, timeout=5)
+                  if rr.status_code in (200, 401):
                       break
               except Exception:
                   pass
               time.sleep(2)
-          else:
-              print("Panel not responding"); sys.exit(1)
-
-          s = requests.Session()
-          # get public csrf token before login
-          try:
-              r = s.get(PANEL + "/csrf-token", timeout=10)
-              csrf = r.json().get("token", "")
-          except Exception:
-              csrf = ""
-          if not csrf:
-              m = re.search(r'<meta name="csrf-token" content="([^"]+)"', r.text)
-              csrf = m.group(1) if m else ""
-          # login
-          r = s.post(PANEL + "/login", data={"username": USERNAME, "password": PASSWORD},
-                     headers={"X-CSRF-Token": csrf}, timeout=10)
-          if r.status_code != 200:
-              print("Login failed:", r.status_code, r.text[:300]); sys.exit(1)
-          # refresh csrf after login
-          try:
-              r = s.get(PANEL + "/csrf-token", timeout=10)
-              csrf = r.json().get("token", csrf)
-          except Exception:
-              pass
 
           client_uuid = str(uuid.uuid4())
           inbound = {
@@ -96,13 +84,12 @@ jobs:
               },
               "sniffing": {"enabled": True, "destOverride": ["http", "tls"]}
           }
-          r = s.post(PANEL + "/panel/api/inbounds/add", json=inbound,
-                     headers={"X-CSRF-Token": csrf}, timeout=15)
-          print("Add inbound:", r.status_code)
-          if r.status_code != 200 or not r.json().get("success", False):
-              print(r.text[:500]); sys.exit(1)
+          rr = requests.post(PANEL + "/panel/api/inbounds/add", json=inbound,
+                             headers=headers, timeout=15)
+          print("Add inbound:", rr.status_code)
+          if rr.status_code != 200 or not rr.json().get("success", False):
+              print(rr.text[:500]); sys.exit(1)
           print("Inbound created OK")
-          # save uuid for next step
           open("/tmp/vless_uuid.txt", "w").write(client_uuid)
           PYEOF
           echo "UUID: $(cat /tmp/vless_uuid.txt)"
