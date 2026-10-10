@@ -29,7 +29,7 @@
 |------|-------|
 | `CF_TUNNEL_TOKEN` | Cloudflare 隧道 token |
 | `PANEL_PASSWORD` | 面板登录密码 |
-| `VLESS_UUID` | 节点 UUID（固定，客户端永久有效） |
+| `VLESS_UUID` | 节点 UUID（固定，客户端永久有效，自己去 https://1024tools.com/uuid/ 生成一个） |
 
 ### 3. 运行
 
