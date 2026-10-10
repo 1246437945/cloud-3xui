@@ -35,8 +35,8 @@ jobs:
           import requests, json, uuid, time, sys, os, subprocess
 
           PANEL = "http://127.0.0.1:2053/panel"
-          XHTTP_PORT = 8080
-          XHTTP_PATH = "/xhttp"
+          WS_PORT = 8080
+          WS_PATH = "/ws"
 
           # get API token (bypasses CSRF)
           r = subprocess.run(["sudo", "/usr/local/x-ui/x-ui", "setting", "-getApiToken"],
@@ -65,7 +65,7 @@ jobs:
           client_uuid = str(uuid.uuid4())
           inbound = {
               "enable": True,
-              "remark": "vless-xhttp",
+              "remark": "vless-ws",
               "listen": "",
               "port": XHTTP_PORT,
               "protocol": "vless",
@@ -78,9 +78,9 @@ jobs:
                   "fallbacks": []
               },
               "streamSettings": {
-                  "network": "xhttp",
+                  "network": "ws",
                   "security": "none",
-                  "xhttpSettings": {"path": XHTTP_PATH, "mode": "auto"}
+                  "wsSettings": {"path": WS_PATH, "headers": {}}
               },
               "sniffing": {"enabled": True, "destOverride": ["http", "tls"]}
           }
@@ -114,7 +114,7 @@ jobs:
           [ -z "$PANEL_URL" ] || [ -z "$XHTTP_URL" ] && { echo "Tunnel failed"; exit 1; }
           UUID=$(cat /tmp/vless_uuid.txt)
           HOST=$(echo "$XHTTP_URL" | sed 's#https://##')
-          NODE="vless://${UUID}@${HOST}:443?encryption=none&security=tls&sni=${HOST}&type=xhttp&path=%2Fxhttp&mode=auto#GitHub-3xui"
+          NODE="vless://${UUID}@${HOST}:443?encryption=none&security=tls&sni=${HOST}&type=ws&path=%2Fws#GitHub-3xui"
           echo "$NODE" > /tmp/vless_node.txt
           echo ""
           echo "=================================================="
