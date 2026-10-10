@@ -59,6 +59,10 @@ flowchart TD
 
 ## Detaljerte konfigurasjonstrinn
 
+### Gratis domene (har du ikke domene?)
+
+Har du ikke eget domene? Du kan registrere et gratis på https://my.dnshe.com/ (f.eks. `.ccwu.cc`, gyldig i 10 år), og deretter peke domenets NS til Cloudflare.
+
 ### Trinn 1: Opprette en navngitt tunnel i Cloudflare
 
 Cloudflares offisielle nettsted: https://www.cloudflare-cn.com (innenlands) / https://www.cloudflare.com (internasjonalt)
