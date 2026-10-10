@@ -31,7 +31,7 @@ GitHub Actions 무료 서버에 3x-ui 노드(VLESS + WebSocket + TLS) 구축. �
 |------|-------|
 | `CF_TUNNEL_TOKEN` | Cloudflare 터널 token |
 | `PANEL_PASSWORD` | 패널 로그인 비밀번호 |
-| `VLESS_UUID` | 노드 UUID (고정, 클라이언트에서 영구 유효. https://1024tools.com/uuid/ 에서 생성) |
+| `VLESS_UUID` | 노드 UUID (고정, 클라이언트에서 영구 유효. https://1024tools.com/uuid/ 에서 생성, **이 UUID를 반드시 메모해 두세요. 로그에 평문으로 표시되지 않으며, 노드 링크를 조립할 때마다 필요합니다**) |
 
 ### 3. 실행
 
