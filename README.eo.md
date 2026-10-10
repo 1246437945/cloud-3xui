@@ -33,9 +33,10 @@ flowchart TD
     B --> C["API 创建 VLESS+WS 入站"]
     C --> D["启动 Cloudflare 命名隧道"]
     D --> E["输出节点链接"]
-    E --> F["Teni viva N minutojn<br/>(mana enigo, defaŭlte 290)"]
-    F --> G["Voki API por ekigi la sekvan ciklon<br/>(uzante defaŭlton 290)"]
-    G --> A
+    E --> F["保活 N 分钟<br/>(手动输入，默认 290)"]
+    F --> G["结束前 5 分钟<br/>提前触发下一轮"]
+    G --> H["新旧 runner 重叠运行<br/>流量无缝切换"]
+    H --> A
 
     style G fill:#f6821f,color:#fff
 ```
@@ -43,8 +44,9 @@ flowchart TD
 ## Aŭtomata renovigo
 
 - **La daŭron vi decidas**: kiam vi alklakas Run workflow, plenigu mane `run_minutes` – ĝi rulos tiom da minutoj, kiom vi enigos; se vi lasos ĝin malplena, uziĝos la defaŭlto 290
-- **Aŭtomata ekigo uzas la defaŭlton**: je la fino de ĉiu ciklo la API estas vokata por lanĉi la sekvan ciklon, kaj la API-voko portas neniujn parametrojn, do ĉiu aŭtomate renovigata ciklo daŭras 290 minutojn
+- **Parametroj herediĝas aŭtomate**: ĉiu ciklo transdonas `run_minutes` / `countdown_interval` / `countdown_unit` al la sekva ciklo per la API, do la tuta ĉeno konservas la valorojn, kiujn vi unue enmetis
 - Por rapida testo tajpu `5`; por ĉiutaga uzado lasu ĝin malplena kaj uzu la defaŭlton 290
+- **Interkovra starto (seninterrompa ŝanĝo)**: 5 minutojn antaŭ la fino de la aktuala ciklo la sekva ciklo estas lanĉata anticipe; malnova kaj nova runner-oj funkcias samtempe, Cloudflare-tuneloj subtenas plurajn konektojn, trafiko aŭtomate direktiĝas al disponeblaj konektoj, do uzantoj apenaŭ rimarkas la finiĝon de la malnova ciklo (por mallongaj testoj ≤6 minutoj ĝi lanĉiĝas 30 sekundojn anticipe)
 - La domajno kaj UUID estas fiksaj, do la klienta agordo post unufoja agordo validas por ĉiam
 - Por haltigi, iru al Actions kaj alklaku Cancel – post nuligo ĝi ne restartiĝos aŭtomate
 
@@ -199,6 +201,6 @@ A: Iru al la Actions-paĝo kaj nuligu (Cancel) la aktualan rulon, kaj ĝi ne plu
 ## Atentigoj
 
 - **Rapido**: la trafiko iras per Cloudflare → GitHub-servilejoj (Usono/Eŭropo), taŭga nur por provizora/malpeza uzado
-- **Mallonga interrompo**: ĉe la aŭtomata restartigo ĉiujn 5 horojn la konekto ĉesiĝas ĉirkaŭ 3-5 minutojn (nova maŝino startas, 3x-ui instaliĝas, tunelo rekonektiĝas), la kliento aŭtomate rekonektiĝos
+- **Seninterrompa ŝanĝo**: oni uzas interkovran starton — la sekva ciklo lanĉiĝas 5 minutojn antaŭ la fino de ĉiu ciklo, malnova kaj nova runner-oj estas samtempe enretaj, do teorie uzantoj rimarkas nenion; en ekstremaj kazoj (ekz. GitHub-vico) tamen povas esti mallongaj fluktuoj
 - **Konformeco**: ruli prokurilon sur GitHub Actions povas malobservi la ToS kaj konduki al konta suspendo, taksu mem
 - **Sekureco**: ne publikigu `CF_TUNNEL_TOKEN` / `PANEL_PASSWORD` / `VLESS_UUID`
