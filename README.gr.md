@@ -61,6 +61,28 @@ flowchart TD
 
 ### Βήμα 1: Δημιουργία ονοματισμένης σήραγγας (named tunnel) στο Cloudflare
 
+Επίσημη ιστοσελίδα Cloudflare: https://www.cloudflare-cn.com (Κίνα) / https://www.cloudflare.com (Διεθνής)
+
+Κονσόλα: https://dash.cloudflare.com
+
+```mermaid
+flowchart TD
+    A["打开 Cloudflare Dashboard"] --> B["左侧 Zero Trust"]
+    B --> C["Networks → Tunnels"]
+    C --> D["右上角 Create a tunnel"]
+    D --> E["选 Cloudflared → 下一步"]
+    E --> F["起名（例：github-3xui）→ 保存"]
+    F --> G["复制 Token<br/>(eyJ 开头的一长串)"]
+    G --> H["下一步 → Public hostnames"]
+    H --> I["添加第一条<br/>vless.你的域名.com → HTTP → 127.0.0.1:8080"]
+    H --> J["添加第二条<br/>panel.你的域名.com → HTTP → 127.0.0.1:2053"]
+    I --> K["保存完成"]
+    J --> K
+
+    style G fill:#f6821f,color:#fff
+    style K fill:#1f9d55,color:#fff
+```
+
 1. Ανοίξτε το [Cloudflare Dashboard](https://dash.cloudflare.com) και μεταβείτε στο **Zero Trust** από το αριστερό μενού
 2. Στα αριστερά, **Networks** → **Tunnels**, κάντε κλικ στο **Create a tunnel** πάνω δεξιά
 3. Επιλέξτε τον τύπο **Cloudflared** και κάντε κλικ στο επόμενο
