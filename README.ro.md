@@ -136,6 +136,10 @@ Pași detaliați:
      Parola panoului (lăsată goală folosește secretul PANEL_PASSWORD)
    - **Run duration**: implicit `290` (minute), la primul test puteți introduce `5` pentru verificare rapidă
      Durata de rulare (minute, implicit 290, maxim 340)
+   - **Countdown output interval**: intervalul de afișare al numărătorii inverse, implicit `1`, introduceți `0` pentru dezactivare
+     Intervalul de afișare al numărătorii inverse (implicit 1, 0 pentru dezactivare)
+   - **Countdown interval unit**: unitatea intervalului numărătorii inverse, selectați `minutes` sau `seconds` din meniul derulant
+     Unitatea intervalului de afișare al numărătorii inverse
 5. Faceți clic pe butonul verde **Run workflow** pentru a porni
 
 ### Pasul 5: Obțineți linkul nodului
@@ -174,7 +178,7 @@ Pași detaliați:
 | Install 3x-ui | Instalați 3x-ui | Install 3x-ui | Instalează panoul cu scriptul oficial în mod non-interactiv |
 | Create VLESS+WS inbound via API | Creați inbound VLESS+WS prin API | Create VLESS+WS inbound via API | Autentificare cu API Token, creare automată a inbound-ului |
 | Start named Cloudflare tunnel | Porniți Named Tunnel-ul Cloudflare | Start named Cloudflare tunnel | Conectează tunelul cu domeniu fix folosind Token-ul |
-| Keep alive | Menține activ | Keep alive | Așteaptă numărul specificat de minute, monitorizează starea serviciilor |
+| Keep alive | Menține activ | Keep alive | Doarme numărul specificat de minute, verifică starea serviciilor în fiecare minut, afișează numărătoarea inversă la intervalul setat |
 | Trigger next run | Declanșează următoarea rulare | Trigger next run | Apelează API-ul pentru a porni automat următoarea rundă |
 
 ## Întrebări frecvente
