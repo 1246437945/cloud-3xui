@@ -200,8 +200,8 @@ A: Controleer drie punten: ① is de UUID correct vervangen; ② is de clientver
 **V: De automatische herstart wordt niet getriggerd?**
 A: Bekijk het log van de stap **Trigger next run**. Als er een HTTP-statuscode anders dan 204 wordt getoond, controleer je de Actions-machtigingsinstellingen van de repository.
 
-**V: Is het normaal dat de verbinding elke 5 uur een paar minuten wegvalt?**
-A: Ja, dat is normaal. Tussen het einde van de vorige ronde en het verbinden van de nieuwe tunnel zitten ongeveer 3–5 minuten; de client maakt automatisch opnieuw verbinding.
+**V: Valt de verbinding weg tijdens de rotatie?**
+A: We gebruiken overlappende start: de volgende run wordt getriggerd voordat de huidige eindigt, oude en nieuwe runners zijn tegelijk online, in theorie onmerkbaar. In extreme gevallen (bijv. GitHub-wachtrij) kan er een korte fluctuatie zijn, de client verbindt automatisch opnieuw.
 
 **V: Wil je de automatische verlenging stoppen?**
 A: Annuleer (Cancel) de huidige uitvoering op de Actions-pagina; er wordt dan niet automatisch opnieuw getriggerd.
