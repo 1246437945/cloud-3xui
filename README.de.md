@@ -135,6 +135,8 @@ Detaillierte Schritte:
    - **Panel password**: leer lassen (verwendet automatisch das `PANEL_PASSWORD`-Secret)
      Panel-Passwort (leer lassen = verwendet das PANEL_PASSWORD-Secret)
    - **Run duration**: Standard `290` (Minuten), beim ersten Test kannst du `5` für eine schnelle Prüfung eintragen; für den Alltag leer lassen
+   - **Countdown output interval**: Countdown-Ausgabeintervall, Standard `1`, zum Deaktivieren `0` eingeben
+   - **Countdown interval unit**: Einheit des Countdown-Ausgabeintervalls, wählen Sie `minutes` oder `seconds` aus dem Dropdown-Menü
      Laufzeit (Minuten, Standard 290, max. 340)
 5. Klicke auf das grüne **Run workflow**, um zu starten
 
@@ -174,7 +176,7 @@ Detaillierte Schritte:
 | Install 3x-ui | 3x-ui installieren | Install 3x-ui | Installiert das Panel nicht-interaktiv mit dem offiziellen Skript |
 | Create VLESS+WS inbound via API | VLESS+WS-Inbound per API erstellen | Create VLESS+WS inbound via API | Meldet sich per API-Token an und erstellt automatisch das Inbound |
 | Start named Cloudflare tunnel | Benannten Cloudflare-Tunnel starten | Start named Cloudflare tunnel | Verbindet den Tunnel mit fester Domain per Token |
-| Keep alive | Am Leben halten | Keep alive | Schläft die angegebene Minutenzahl und überwacht den Dienststatus |
+| Keep alive | Am Leben halten | Keep alive | Schläft die angegebene Minutenzahl, überwacht den Dienststatus und gibt den Countdown im eingestellten Intervall aus |
 | Trigger next run | Nächsten Lauf auslösen | Trigger next run | Ruft die API auf und startet automatisch die nächste Runde |
 
 ## Häufige Fragen
