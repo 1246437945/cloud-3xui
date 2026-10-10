@@ -195,8 +195,8 @@ A: Kontrolu tri aferojn: ① ĉu la UUID estas ĝuste anstataŭigita; ② ĉu la
 **Q: La aŭtomata restartigo ne ekis?**
 A: Rigardu la protokolon de la paŝo **Trigger next run**. Se aperas HTTP-statokodo alia ol 204, kontrolu la Actions-permesajn agordojn de la deponejo.
 
-**Q: Ĉu estas normale ke la konekto ĉesiĝas kelkajn minutojn ĉiujn 5 horojn?**
-A: Jes, estas normale. De la fino de la antaŭa ciklo ĝis la tunela konekto en la sekva ciklo necesas ĉirkaŭ 3-5 minutoj, la kliento aŭtomate rekonektiĝos.
+**D: Ĉu la konekto interrompiĝos dum la rotacio?**
+R: Oni uzas interkovran starton — la sekva ciklo lanĉiĝas antaŭ la fino de la aktuala, malnova kaj nova runner-oj estas samtempe enretaj, do teorie ne estas interrompo. En ekstremaj kazoj kiel GitHub-vicigo povas okazi mallongaj fluktuoj; la kliento aŭtomate rekonektiĝos.
 
 **Q: Ĉu vi volas haltigi la aŭtomatan renovigon?**
 A: Iru al la Actions-paĝo kaj nuligu (Cancel) la aktualan rulon, kaj ĝi ne plu ekigos aŭtomate.
