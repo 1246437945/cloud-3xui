@@ -30,6 +30,24 @@ on:
         options:
           - minutes
           - seconds
+      overlap_threshold:
+        description: |-
+          Overlap threshold in minutes (default 5)
+          重叠阈值（分钟，默认 5）：保活大于此值算长运行
+        required: false
+        default: '5'
+      overlap_long:
+        description: |-
+          Early trigger minutes before end for long runs (default 5)
+          长运行提前触发分钟数（默认 5）
+        required: false
+        default: '5'
+      overlap_short:
+        description: |-
+          Early trigger seconds before end for short runs (default 30)
+          短运行提前触发秒数（默认 30）
+        required: false
+        default: '30'
 
 permissions:
   actions: write
