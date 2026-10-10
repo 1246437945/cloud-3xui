@@ -61,6 +61,28 @@ flowchart TD
 
 ### Paŝo 1: Krei nomitan tunelon en Cloudflare
 
+
+Oficiala retejo de Cloudflare: https://www.cloudflare-cn.com (Ĉinio) / https://www.cloudflare.com (internacia)
+Regpanelo: https://dash.cloudflare.com
+
+```mermaid
+flowchart TD
+    A["打开 Cloudflare Dashboard"] --> B["左侧 Zero Trust"]
+    B --> C["Networks → Tunnels"]
+    C --> D["右上角 Create a tunnel"]
+    D --> E["选 Cloudflared → 下一步"]
+    E --> F["起名（例：github-3xui）→ 保存"]
+    F --> G["复制 Token<br/>(eyJ 开头的一长串)"]
+    G --> H["下一步 → Public hostnames"]
+    H --> I["添加第一条<br/>vless.你的域名.com → HTTP → 127.0.0.1:8080"]
+    H --> J["添加第二条<br/>panel.你的域名.com → HTTP → 127.0.0.1:2053"]
+    I --> K["保存完成"]
+    J --> K
+
+    style G fill:#f6821f,color:#fff
+    style K fill:#1f9d55,color:#fff
+```
+
 1. Malfermu la [Cloudflare Dashboard](https://dash.cloudflare.com), en la maldekstra menuo iru al **Zero Trust**
 2. Maldekstre **Networks** → **Tunnels**, supre dekstre alklaku **Create a tunnel**
 3. Elektu la tipon **Cloudflared** kaj alklaku pluiri
