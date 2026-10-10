@@ -59,6 +59,10 @@ flowchart TD
 
 ## Detalaj agordaj paŝoj
 
+### Senpaga domajno (ĉu vi ne havas domajnon? komencu ĉi tie)
+
+Ĉu vi ne havas propran domajnon? Petu senpagan ĉe https://my.dnshe.com/ (ekz. `.ccwu.cc`, valida dum 10 jaroj), kaj poste delegu la NS-registrojn de la domajno al Cloudflare.
+
 ### Paŝo 1: Krei nomitan tunelon en Cloudflare
 
 
