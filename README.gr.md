@@ -71,7 +71,7 @@ flowchart TD
 
 ```mermaid
 flowchart TD
-    A["控制台 → Zero Trust<br/>→ Networks → Tunnels"] --> B["右上角 创建隧道"]
+    A["控制台 → Zero Trust<br/>→ Δίκτυα（Networks）→ Συνδετήρες（Tunnels）"] --> B["右上角 创建隧道"]
     B --> C["选 Cloudflared<br/>(推荐) → 选择 Cloudflared"]
     C --> D["输入隧道名称<br/>(例：github-3xui)<br/>→ 保存隧道"]
     D --> E["安装并运行连接器页<br/>复制 Token<br/>(eyJ 开头的一长串)"]
@@ -87,7 +87,7 @@ flowchart TD
 
 Λεπτομερή βήματα:
 
-1. Ανοίξτε το [Cloudflare Dashboard](https://dash.cloudflare.com) και από το αριστερό μενού μεταβείτε στο **Zero Trust** → **Networks** → **Tunnels**
+1. Ανοίξτε το [Cloudflare Dashboard](https://dash.cloudflare.com) και από το αριστερό μενού μεταβείτε στο **Zero Trust** → **Δίκτυα（Networks）** → **Συνδετήρες（Tunnels）**
 2. Κάντε κλικ στην επάνω δεξιά γωνία στο **Δημιουργία σήραγγας**
 3. **Επιλογή τύπου σήραγγας**: επιλέξτε **Cloudflared** (συνιστάται) και κάντε κλικ στο **Επιλογή Cloudflared**
 4. **Ονομασία σήραγγας**: εισαγάγετε ένα όνομα (π.χ. `github-3xui`) και κάντε κλικ στο **Αποθήκευση σήραγγας**
