@@ -33,9 +33,10 @@ flowchart TD
     B --> C["API 创建 VLESS+WS 入站"]
     C --> D["启动 Cloudflare 命名隧道"]
     D --> E["输出节点链接"]
-    E --> F["Udržovat aktivní N minut<br/>(ruční zadání, výchozí 290)"]
-    F --> G["Volání API pro spuštění dalšího kola<br/>(s výchozí hodnotou 290)"]
-    G --> A
+    E --> F["保活 N 分钟<br/>(手动输入，默认 290)"]
+    F --> G["结束前 5 分钟<br/>提前触发下一轮"]
+    G --> H["新旧 runner 重叠运行<br/>流量无缝切换"]
+    H --> A
 
     style G fill:#f6821f,color:#fff
 ```
@@ -43,8 +44,9 @@ flowchart TD
 ## Automatické prodloužení
 
 - **Délku udržení určujete vy**: při kliknutí na Run workflow ručně vyplňte `run_minutes`, poběží tolik minut, kolik zadáte; pokud pole necháte prázdné, použije se výchozí hodnota 290
-- **Automatické spuštění používá výchozí hodnotu**: na konci každého kola se volá API pro spuštění dalšího kola, volání API nenese žádné parametry, takže každé automaticky prodloužené kolo trvá 290 minut
+- **Parametry se dědí automaticky**: každé kolo předá `run_minutes` / `countdown_interval` / `countdown_unit` dalšímu kolu přes API, takže celý řetězec používá hodnoty, které jste zadali na začátku
 - Pro rychlý test vyplňte `5`, pro běžné použití nechte prázdné a použije se výchozí 290
+- **Překrývající se start (plynulé přepnutí)**: 5 minut před koncem aktuálního kola se předem spustí další kolo; starý i nový runner běží současně, tunely Cloudflare podporují více připojení, provoz se automaticky směruje na dostupná připojení, takže uživatelé konec starého kola prakticky nepostřehnou (u krátkých testů ≤6 minut se spouští 30 sekund předem)
 - Doména i UUID jsou pevné, konfigurace klienta stačí nastavit jednou a platí trvale
 - Pro zastavení přejděte do Actions a klikněte na Cancel, po zrušení se automaticky nerestartuje
 
@@ -199,6 +201,6 @@ A: Na stránce Actions zrušte (Cancel) aktuální běh a automaticky se už nic
 ## Poznámky
 
 - **Rychlost**: provoz jde přes Cloudflare → datacentra GitHubu (USA/Evropa), vhodné pouze pro dočasné/lehké použití
-- **Krátký výpadek**: při automatickém restartu každých 5 hodin vypadne spojení asi na 3–5 minut (start nového stroje, instalace 3x-ui, opětovné připojení tunelu), klient se automaticky znovu připojí
+- **Plynulé přepnutí**: používá se překrývající se start — další kolo se spouští 5 minut před koncem každého kola, starý i nový runner jsou současně online, takže uživatelé teoreticky nic nepostřehnou; v extrémních případech (např. fronta GitHub) může dojít ke krátkodobému kolísání
 - **Podmínky**: běh proxy na GitHub Actions může porušovat ToS a vést k zablokování účtu, zvažte sami
 - **Bezpečnost**: nezveřejňujte `CF_TUNNEL_TOKEN` / `PANEL_PASSWORD` / `VLESS_UUID`
