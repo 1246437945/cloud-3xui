@@ -71,7 +71,7 @@ Consolă: https://dash.cloudflare.com
 
 ```mermaid
 flowchart TD
-    A["控制台 → Zero Trust<br/>→ Networks → Tunnels"] --> B["右上角 创建隧道"]
+    A["控制台 → Zero Trust<br/>→ Rețele（Networks）→ Conectori（Tunnels）"] --> B["右上角 创建隧道"]
     B --> C["选 Cloudflared<br/>(推荐) → 选择 Cloudflared"]
     C --> D["输入隧道名称<br/>(例：github-3xui)<br/>→ 保存隧道"]
     D --> E["安装并运行连接器页<br/>复制 Token<br/>(eyJ 开头的一长串)"]
@@ -87,7 +87,7 @@ flowchart TD
 
 Pași detaliați:
 
-1. Deschideți [Cloudflare Dashboard](https://dash.cloudflare.com), din meniul din stânga intrați la **Zero Trust** → **Networks** → **Tunnels**
+1. Deschideți [Cloudflare Dashboard](https://dash.cloudflare.com), din meniul din stânga intrați la **Zero Trust** → **Rețele（Networks）** → **Conectori（Tunnels）**
 2. Faceți clic pe **Creați un tunel** în colțul din dreapta sus
 3. **Selectați tipul de tunel**: alegeți **Cloudflared** (recomandat), faceți clic pe **Selectați Cloudflared**
 4. **Dați tunelului un nume**: introduceți un nume (de exemplu `github-3xui`), faceți clic pe **Salvați tunelul**
@@ -106,7 +106,7 @@ Pași detaliați:
    - Tip: `HTTP`
    - URL: `127.0.0.1:2053`
 
-7. Salvați. Cloudflare va crea automat rezoluția DNS, nu este nevoie de adăugare manuală. Reveniți la lista Tunnels; dacă starea tunelului este **normal**, configurarea a reușit.
+7. Salvați. Cloudflare va crea automat rezoluția DNS, nu este nevoie de adăugare manuală. Reveniți la lista Conectori; dacă starea tunelului este **normal**, configurarea a reușit.
 
 ### Pasul 2: Generați un UUID
 
