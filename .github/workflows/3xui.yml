@@ -145,8 +145,8 @@ jobs:
           if [ "$UNIT" = "seconds" ]; then INTERVAL_SEC=$INTERVAL; else INTERVAL_SEC=$((INTERVAL * 60)); fi
           ELAPSED=0; LAST_CD=0; LAST_HC=0
           while [ $(date +%s) -lt $END ]; do
-            sleep 10
-            ELAPSED=$((ELAPSED + 10))
+            sleep 1
+            ELAPSED=$((ELAPSED + 1))
             if [ $((ELAPSED - LAST_HC)) -ge 60 ]; then
               LAST_HC=$ELAPSED
               sudo systemctl is-active x-ui >/dev/null || echo "警告 WARNING: x-ui not active"
