@@ -34,8 +34,9 @@ flowchart TD
     C --> D["启动 Cloudflare 命名隧道"]
     D --> E["输出节点链接"]
     E --> F["保活 N 分钟<br/>(手动输入，默认 290)"]
-    F --> G["调用 API 触发下一轮<br/>(用默认值 290)"]
-    G --> A
+    F --> G["结束前 5 分钟<br/>提前触发下一轮"]
+    G --> H["新旧 runner 重叠运行<br/>流量无缝切换"]
+    H --> A
 
     style G fill:#f6821f,color:#fff
 ```
@@ -43,7 +44,8 @@ flowchart TD
 ## Automatisk fornyelse
 
 - **Du bestemmer varigheten**: fyll inn `run_minutes` manuelt ved Run workflow, den kjører så mange minutter som du skriver; tomt felt bruker standard 290
-- **Automatisk utløser bruker standard**: ved slutten av hver runde kaller API neste runde uten parametere, så hver automatisk runde varer 290 minutter
+- **Automatisk arv av parametere**: hver runde sender `run_minutes` / `countdown_interval` / `countdown_unit` videre til neste, hele kjeden bruker verdiene du opprinnelig fylte inn
+- **Overlappende oppstart (sømløs overgang)**: 5 minutter før hver runde slutter, startes neste tidligere, gammel og ny runner er online samtidig, Cloudflare-tunnelen støtter flere tilkoblinger, trafikken dirigeres automatisk til tilgjengelige tilkoblinger, brukeren merker nesten ikke at den gamle runden avsluttes (ved korte tester ≤6 minutter startes 30 sekunder tidligere)
 - For rask test skriv `5`, til daglig bruk la stå tomt (290)
 - Domene og UUID er faste, konfigurer klienten én gang
 - For å stoppe trykk Cancel i Actions· etter avbrytelse starter den ikke automatisk igjen
@@ -201,6 +203,6 @@ A: Cancel den gjeldende kjøringen på Actions-siden, så utløses ikke ny autom
 ## Merknader
 
 - **Hastighet**: trafikken går via Cloudflare → GitHub-datasentre (USA/Europa), kun egnet for midlertidig/lett bruk
-- **Kort avbrudd**: ved automatisk omstart hver 5. time faller forbindelsen ut i ca. 3–5 minutter (ny maskin starter, 3x-ui installeres, tunnelen kobles til igjen); klienten kobler automatisk til igjen
+- **Sømløs overgang**: med overlappende oppstart starter hver runde neste 5 minutter tidligere, gammel og ny runner online samtidig, teoretisk merker brukeren ingenting; i ekstreme tilfeller (f.eks. GitHub-kø) kan det være korte svingninger
 - **Samsvar**: å kjøre proxy på GitHub Actions kan bryte ToS, med risiko for utestengelse — vurder selv
 - **Sikkerhet**: ikke publiser `CF_TUNNEL_TOKEN` / `PANEL_PASSWORD` / `VLESS_UUID` noe offentlig sted
