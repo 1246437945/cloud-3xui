@@ -126,6 +126,9 @@ jobs:
           END=$(( $(date +%s) + MINS * 60 ))
           while [ $(date +%s) -lt $END ]; do
             sleep 60
+            LEFT=$(( (END - $(date +%s)) / 60 ))
+            H=$(( LEFT / 60 )); M=$(( LEFT % 60 ))
+            echo "剩余 $H 小时 $M 分钟 / Remaining ${H}h ${M}m"
             sudo systemctl is-active x-ui >/dev/null || echo "警告 WARNING: x-ui not active"
             pgrep -f "cloudflared tunnel" >/dev/null || { echo "警告 WARNING: cloudflared died"; break; }
           done
