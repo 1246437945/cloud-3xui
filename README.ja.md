@@ -136,6 +136,8 @@ flowchart TD
    - **Panel password**：空欄のまま（`PANEL_PASSWORD` secret を自動使用）
      パネルパスワード（空欄の場合は PANEL_PASSWORD secret を使用）
    - **Run duration**：デフォルト `290`（分）。初回テストでは `5` と入力して素早く確認できます。日常利用では空欄のままで構いません
+   - **Countdown output interval**: カウントダウンの出力間隔、デフォルト `1`、`0` で無効化
+   - **Countdown interval unit**: カウントダウン出力間隔の単位、ドロップダウンから `minutes` または `seconds` を選択
      実行時間（分、デフォルト 290、最大 340）
 5. 緑色の **Run workflow** をクリックして実行します
 
@@ -175,7 +177,7 @@ flowchart TD
 | Install 3x-ui | 安装 3x-ui | Install 3x-ui | 公式スクリプトでパネルを非対話インストール |
 | Create VLESS+WS inbound via API | 通过 API 创建 VLESS+WS 入站 | Create VLESS+WS inbound via API | API Token でログインし、インバウンドを自動作成 |
 | Start named Cloudflare tunnel | 启动 Cloudflare 命名隧道 | Start named Cloudflare tunnel | Token で固定ドメインのトンネルに接続 |
-| Keep alive | 保活 | Keep alive | 指定した分数スリープし、サービスの状態を監視 |
+| Keep alive | 保活 | Keep alive | 指定した分数スリープし、サービスの状態を監視し、設定した間隔でカウントダウンを出力 |
 | Trigger next run | 触发下一次运行 | Trigger next run | API を呼び出して次のラウンドを自動起動 |
 
 ## よくある質問
