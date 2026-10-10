@@ -135,6 +135,8 @@ Detalaj paŝoj:
    - **Panel password**: lasu malplena (aŭtomate uzos la `PANEL_PASSWORD` sekreton)
      Panela pasvorto (malplena = uzas la PANEL_PASSWORD sekreton)
    - **Run duration**: defaŭlte `290` (minutoj), por unua testo vi povas tajpi `5` por rapida kontrolo; por ĉiutaga uzado lasu malplena
+   - **Countdown output interval**: Intervalo de eligo de retronombrado, defaŭlta `1`, enigu `0` por malŝalti
+   - **Countdown interval unit**: Unuo de la intervalo de eligo de retronombrado, elektu `minutes` aŭ `seconds` el la falmenuo
      Rultempo (minutoj, defaŭlte 290, maksimume 340)
 5. Alklaku la verdan **Run workflow** por komenci
 
@@ -174,7 +176,7 @@ Detalaj paŝoj:
 | Install 3x-ui | Instali 3x-ui | Install 3x-ui | Instalas la panelon neinterage per la oficiala skripto |
 | Create VLESS+WS inbound via API | Krei VLESS+WS eniron per API | Create VLESS+WS inbound via API | Ensalutas per API-ĵetono kaj aŭtomate kreas la eniron |
 | Start named Cloudflare tunnel | Lanĉi nomitan Cloudflare-tunelon | Start named Cloudflare tunnel | Konektas la tunelon kun fiksa domajno per ĵetono |
-| Keep alive | Teni viva | Keep alive | Dormas la specifitan nombron da minutoj kaj kontrolas la servan staton |
+| Keep alive | Teni viva | Keep alive | Dormas la specifitan nombron da minutoj, kontrolas la servan staton kaj eligas la retronombradon laŭ la agordita intervalo |
 | Trigger next run | Ekigi la sekvan rulon | Trigger next run | Vokas la API kaj aŭtomate lanĉas la sekvan ciklon |
 
 ## Oftaj demandoj
