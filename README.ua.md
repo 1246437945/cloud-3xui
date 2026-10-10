@@ -61,6 +61,28 @@ flowchart TD
 
 ### Крок 1: Створіть Named Tunnel у Cloudflare
 
+Офіційний сайт Cloudflare: https://www.cloudflare-cn.com (внутрішній) / https://www.cloudflare.com (міжнародний)
+
+Консоль: https://dash.cloudflare.com
+
+```mermaid
+flowchart TD
+    A["打开 Cloudflare Dashboard"] --> B["左侧 Zero Trust"]
+    B --> C["Networks → Tunnels"]
+    C --> D["右上角 Create a tunnel"]
+    D --> E["选 Cloudflared → 下一步"]
+    E --> F["起名（例：github-3xui）→ 保存"]
+    F --> G["复制 Token<br/>(eyJ 开头的一长串)"]
+    G --> H["下一步 → Public hostnames"]
+    H --> I["添加第一条<br/>vless.你的域名.com → HTTP → 127.0.0.1:8080"]
+    H --> J["添加第二条<br/>panel.你的域名.com → HTTP → 127.0.0.1:2053"]
+    I --> K["保存完成"]
+    J --> K
+
+    style G fill:#f6821f,color:#fff
+    style K fill:#1f9d55,color:#fff
+```
+
 1. Відкрийте [Cloudflare Dashboard](https://dash.cloudflare.com), у лівому меню перейдіть до **Zero Trust**
 2. Ліворуч **Networks** → **Tunnels**, натисніть **Create a tunnel** у верхньому правому куті
 3. Оберіть тип **Cloudflared**, натисніть далі
