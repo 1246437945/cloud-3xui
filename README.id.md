@@ -31,7 +31,7 @@ Repo Settings → Secrets and variables → Actions, tambahkan tiga ini:
 |------|-------|
 | `CF_TUNNEL_TOKEN` | Token tunnel Cloudflare |
 | `PANEL_PASSWORD` | Kata sandi login panel |
-| `VLESS_UUID` | UUID node (tetap, berlaku permanen di klien, buat di https://1024tools.com/uuid/) |
+| `VLESS_UUID` | UUID node (tetap, berlaku permanen di klien, buat di https://1024tools.com/uuid/, **Pastikan untuk mencatat UUID ini, tidak akan ditampilkan secara jelas di log, Anda memerlukannya setiap kali menyusun tautan node**) |
 
 ### 3. Menjalankan
 
