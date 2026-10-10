@@ -46,7 +46,7 @@ flowchart TD
 - **L'avvio automatico usa il predefinito**: alla fine di ogni ciclo l'API avvia il successivo senza parametri, quindi ogni ciclo automatico dura 290 minuti
 - Per un test rapido inserisci `5`, per l'uso quotidiano lascia vuoto (290)
 - Dominio e UUID sono fissi, configura il client una sola volta
-- Per fermare premi Cancel in Actions, non si riavvierà da solo
+- Per fermarlo premi Cancel in Actions· dopo l'annullamento non si riavvierà da solo
 
 ## Indirizzi fissi
 
