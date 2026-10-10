@@ -59,6 +59,10 @@ flowchart TD
 
 ## Αναλυτικά βήματα ρύθμισης
 
+### Δωρεάν domain (αν δεν έχετε domain)
+
+Δεν έχετε δικό σας domain; Μπορείτε να καταχωρήσετε ένα δωρεάν στο https://my.dnshe.com/ (π.χ. `.ccwu.cc`, ισχύ 10 ετών) και στη συνέχεια να φιλοξενήσετε τους διακομιστές ονομάτων (NS) του domain στο Cloudflare.
+
 ### Βήμα 1: Δημιουργία ονοματισμένης σήραγγας (named tunnel) στο Cloudflare
 
 Επίσημη ιστοσελίδα Cloudflare: https://www.cloudflare-cn.com (Κίνα) / https://www.cloudflare.com (Διεθνής)
