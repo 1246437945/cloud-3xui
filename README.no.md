@@ -46,7 +46,7 @@ flowchart TD
 - **Automatisk utløser bruker standard**: ved slutten av hver runde kaller API neste runde uten parametere, så hver automatisk runde varer 290 minutter
 - For rask test skriv `5`, til daglig bruk la stå tomt (290)
 - Domene og UUID er faste, konfigurer klienten én gang
-- For å stoppe trykk Cancel i Actions, den starter ikke automatisk igjen
+- For å stoppe trykk Cancel i Actions· etter avbrytelse starter den ikke automatisk igjen
 
 ## Faste adresser
 
