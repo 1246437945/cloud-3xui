@@ -44,9 +44,9 @@ flowchart TD
 ## Automatické prodloužení
 
 - **Délku udržení určujete vy**: při kliknutí na Run workflow ručně vyplňte `run_minutes`, poběží tolik minut, kolik zadáte; pokud pole necháte prázdné, použije se výchozí hodnota 290
-- **Parametry se dědí automaticky**: každé kolo předá `run_minutes` / `countdown_interval` / `countdown_unit` dalšímu kolu přes API, takže celý řetězec používá hodnoty, které jste zadali na začátku
+- **Parametry se dědí automaticky**: každé kolo předá `run_minutes` / `countdown_interval` / `countdown_unit` / `overlap_threshold` / `overlap_long` / `overlap_short` dalšímu kolu přes API, takže celý řetězec používá hodnoty, které jste zadali na začátku
 - Pro rychlý test vyplňte `5`, pro běžné použití nechte prázdné a použije se výchozí 290
-- **Překrývající se start (plynulé přepnutí)**: 5 minut před koncem aktuálního kola se předem spustí další kolo; starý i nový runner běží současně, tunely Cloudflare podporují více připojení, provoz se automaticky směruje na dostupná připojení, takže uživatelé konec starého kola prakticky nepostřehnou (u krátkých testů ≤6 minut se spouští 30 sekund předem)
+- **Překrývající se start (plynulé přepnutí)**: další kolo se spustí předem ještě před koncem aktuálního kola; starý i nový runner běží současně, tunely Cloudflare podporují více připojení, provoz je automaticky směrován na dostupná připojení, takže uživatelé konec starého kola téměř nezaznamenají. Načasování spuštění je nastavitelné: keep-alive delší než `overlap_threshold` (výchozí 5 minut) se považuje za dlouhé kolo a spustí se `overlap_long` (výchozí 5 minut) předem; kratší se považují za krátká kola a spouštějí se `overlap_short` (výchozí 30 sekund) předem
 - Doména i UUID jsou pevné, konfigurace klienta stačí nastavit jednou a platí trvale
 - Pro zastavení přejděte do Actions a klikněte na Cancel, po zrušení se automaticky nerestartuje
 
@@ -139,6 +139,9 @@ Podrobné kroky:
    - **Run duration**: výchozí `290` (minut), při prvním testu můžete zadat `5` pro rychlé ověření; pro běžné použití nechte prázdné
    - **Countdown output interval**: Interval výpisu odpočtu, výchozí `1`, zadáním `0` se vypne
    - **Countdown interval unit**: Jednotka intervalu výpisu odpočtu, z rozevíracího seznamu vyberte `minutes` nebo `seconds`
+   - **Overlap threshold**: Práh překrytí (minuty, výchozí `5`) — keep-alive delší než tato hodnota se považuje za dlouhé kolo
+   - **Overlap long**: O kolik minut dříve spustit další kolo u dlouhých kol (výchozí `5`)
+   - **Overlap short**: O kolik sekund dříve spustit další kolo u krátkých kol (výchozí `30`)
      Doba běhu (v minutách, výchozí 290, max. 340)
 5. Kliknutím na zelené **Run workflow** spustíte běh
 
