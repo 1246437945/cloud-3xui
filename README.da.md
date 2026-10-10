@@ -59,6 +59,10 @@ flowchart TD
 
 ## Detaljerede konfigurationstrin
 
+### Gratis domæne (intet domæne? start her)
+
+Har du ikke dit eget domæne? Få et gratis på https://my.dnshe.com/ (f.eks. `.ccwu.cc`, gyldigt i 10 år), og peg derefter domænets NS-poster til Cloudflare.
+
 ### Trin 1: Opret navngivet tunnel i Cloudflare
 
 
