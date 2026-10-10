@@ -44,8 +44,8 @@ flowchart TD
 ## Automatikus megújítás
 
 - **Az időtartamot te szabod meg**: Run workflow indításakor töltsd ki kézzel a `run_minutes` mezőt, annyi percig fut, amennyit beírsz; üresen hagyva az alapértelmezett 290 érvényes
-- **Paraméterek automatikus öröklése**: minden kör továbbadja a `run_minutes` / `countdown_interval` / `countdown_unit` értékeket a következőnek, az egész lánc az eredetileg megadott értékeidet használja
-- **Átfedő indítás (zökkenőmentes átállás)**: minden kör vége előtt 5 perccel elindul a következő, a régi és az új runner egyszerre online, a Cloudflare tunnel több kapcsolatot támogat, a forgalom automatikusan a működő kapcsolatokra terelődik, a régi kör kilépésekor a felhasználó szinte semmit nem érez (rövid teszteknél ≤6 perc 30 másodperccel korábban indul)
+- **Paraméterek automatikus öröklése**: minden kör továbbadja a `run_minutes` / `countdown_interval` / `countdown_unit` / `overlap_threshold` / `overlap_long` / `overlap_short` értékeket a következőnek, az egész lánc az eredetileg megadott értékeidet használja
+- **Átfedő indítás (zökkenőmentes átállás)**: a következő futást korán indítja az aktuális vége előtt, a régi és az új runner egyszerre online van, a Cloudflare tunnel több kapcsolatot támogat, a forgalom automatikusan a működő kapcsolatokra terelődik, a felhasználó szinte észre sem veszi a régi kör kilépését. Az indítás időzítése konfigurálható: a `overlap_threshold` (alapértelmezett 5 perc) értéknél hosszabb keep-alive hosszú futásnak számít, `overlap_long` (alapértelmezett 5 perc) előbb indul; ha rövidebb, rövid futásnak számít, `overlap_short` (alapértelmezett 30 másodperc) előbb indul
 - Gyors teszthez írj `5`-öt, napi használatra hagyd üresen (290)
 - A domain és az UUID fix, a klienst egyszer kell beállítani
 - A leállításhoz nyomj Cancel-t az Actions oldalon· a törlés után nem indul újra automatikusan
@@ -131,6 +131,12 @@ Részletes lépések:
      Visszaszámlálás kimeneti intervallum (alapértelmezett 1, 0 a kikapcsoláshoz)
    - **Countdown interval unit**: visszaszámlálás intervallum mértékegysége, válasszon `minutes` vagy `seconds` a legördülő menüből
      Visszaszámlálás kimeneti intervallum mértékegysége
+   - **Overlap threshold**: átfedési küszöb (perc, alapértelmezett `5`), az ennél hosszabb keep-alive hosszú futásnak számít
+     Átfedési küszöb (perc, alapértelmezett 5): az ennél hosszabb keep-alive hosszú futásnak számít
+   - **Overlap long**: hosszú futások korai indításának percei (alapértelmezett `5`)
+     Hosszú futások korai indításának percei (alapértelmezett 5)
+   - **Overlap short**: rövid futások korai indításának másodpercei (alapértelmezett `30`)
+     Rövid futások korai indításának másodpercei (alapértelmezett 30)
 5. Kattints a zöld **Run workflow** gombra a futtatás indításához
 
 ### 5. lépés: A csomópont-link lekérése
