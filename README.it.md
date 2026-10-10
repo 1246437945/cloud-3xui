@@ -189,8 +189,8 @@ A: Controlla tre cose: ① che l'UUID sia stato sostituito correttamente; ② ch
 **Q: Il riavvio automatico non si è attivato?**
 A: Guarda il log del passo **Trigger next run**. Se mostra un codice di stato HTTP diverso da 204, controlla le impostazioni dei permessi Actions del repository.
 
-**Q: È normale che si disconnetta per qualche minuto ogni 5 ore?**
-A: Normale. Dalla fine del round precedente alla connessione del tunnel del round successivo servono circa 3-5 minuti, il client si riconnette automaticamente.
+**Q: Ci saranno disconnessioni durante il passaggio?**
+A: Usiamo l'avvio sovrapposto: il round successivo viene avviato prima della fine di quello corrente, i runner vecchi e nuovi sono online contemporaneamente, in teoria impercettibile. In casi estremi (es. coda GitHub) potrebbero esserci brevi fluttuazioni, il client si riconnetterà automaticamente.
 
 **Q: Vuoi fermare il rinnovo automatico?**
 A: Vai alla pagina Actions e fai Cancel sull'esecuzione corrente, non si riattiverà più automaticamente.
