@@ -71,7 +71,7 @@ Kontrol paneli: https://dash.cloudflare.com
 
 ```mermaid
 flowchart TD
-    A["控制台 → Zero Trust<br/>→ Networks → Tunnels"] --> B["右上角 创建隧道"]
+    A["控制台 → Zero Trust<br/>→ Ağlar（Networks）→ Bağlayıcılar（Tunnels）"] --> B["右上角 创建隧道"]
     B --> C["选 Cloudflared<br/>(推荐) → 选择 Cloudflared"]
     C --> D["输入隧道名称<br/>(例：github-3xui)<br/>→ 保存隧道"]
     D --> E["安装并运行连接器页<br/>复制 Token<br/>(eyJ 开头的一长串)"]
@@ -87,7 +87,7 @@ flowchart TD
 
 Ayrıntılı adımlar:
 
-1. [Cloudflare Dashboard](https://dash.cloudflare.com) sayfasını açın, sol menüden **Zero Trust** → **Networks** → **Tunnels** bölümüne girin
+1. [Cloudflare Dashboard](https://dash.cloudflare.com) sayfasını açın, sol menüden **Zero Trust** → **Ağlar（Networks）** → **Bağlayıcılar（Tunnels）** bölümüne girin
 2. Sağ üst köşedeki **Tünel oluştur** düğmesine tıklayın
 3. **Tünel türünü seçin**: **Cloudflared**'i seçin (önerilen), **Cloudflared seç** düğmesine tıklayın
 4. **Tünele ad verin**: bir ad girin (örneğin `github-3xui`), **Tüneli kaydet** düğmesine tıklayın
@@ -106,7 +106,7 @@ Ayrıntılı adımlar:
    - Tür: `HTTP`
    - URL: `127.0.0.1:2053`
 
-7. Kaydedin. Cloudflare DNS çözümlemesini otomatik oluşturur, elle eklemenize gerek yok. Tunnels listesine dönün; tünel durumu **normal** ise yapılandırma başarılıdır.
+7. Kaydedin. Cloudflare DNS çözümlemesini otomatik oluşturur, elle eklemenize gerek yok. Bağlayıcılar listesine dönün; tünel durumu **normal** ise yapılandırma başarılıdır.
 
 ### Adım 2: UUID Oluşturun
 
