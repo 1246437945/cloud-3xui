@@ -34,8 +34,9 @@ flowchart TD
     C --> D["启动 Cloudflare 命名隧道"]
     D --> E["输出节点链接"]
     E --> F["保活 N 分钟<br/>(手动输入，默认 290)"]
-    F --> G["调用 API 触发下一轮<br/>(用默认值 290)"]
-    G --> A
+    F --> G["结束前 5 分钟<br/>提前触发下一轮"]
+    G --> H["新旧 runner 重叠运行<br/>流量无缝切换"]
+    H --> A
 
     style G fill:#f6821f,color:#fff
 ```
@@ -43,7 +44,8 @@ flowchart TD
 ## Reînnoire automată
 
 - **Durata o stabilești tu**: la Run workflow completează manual `run_minutes`, rulează câte minute introduci; gol folosește implicitul 290
-- **Declanșarea automată folosește implicitul**: la finalul fiecărei runde API pornește următoarea fără parametri, deci fiecare rundă automată durează 290 de minute
+- **Moștenire automată a parametrilor**: fiecare rundă transmite `run_minutes` / `countdown_interval` / `countdown_unit` mai departe, întregul lanț folosește valorile introduse inițial de tine
+- **Pornire suprapusă (tranziție fără întreruperi)**: cu 5 minute înainte de sfârșitul fiecărei runde, următoarea este pornită mai devreme, runner-ul vechi și cel nou sunt online simultan, tunelul Cloudflare suportă conexiuni multiple, traficul este direcționat automat către conexiunile disponibile, utilizatorul aproape nu simte ieșirea rundei vechi (pentru teste scurte ≤6 minute, pornirea are loc cu 30 de secunde mai devreme)
 - Pentru test rapid introdu `5`, pentru uz zilnic lasă gol (290)
 - Domeniul și UUID sunt fixe, configurezi clientul o singură dată
 - Pentru oprire apasă Cancel în Actions· după anulare nu repornește automat
@@ -201,6 +203,6 @@ R: Mergeți la pagina Actions și faceți Cancel la rularea curentă, nu se va m
 ## Note
 
 - **Viteză**: traficul trece prin Cloudflare → serverele GitHub (SUA/Europa), potrivit doar pentru utilizare temporară/ușoară
-- **Întreruperi scurte**: la fiecare 5 ore, la repornirea automată, conexiunea cade circa 3-5 minute (pornirea mașinii noi, instalarea 3x-ui, reconectarea tunelului), clientul se reconectează automat
+- **Tranziție fără întreruperi**: cu pornire suprapusă, fiecare rundă pornește următoarea cu 5 minute mai devreme, runner-ul vechi și cel nou online simultan, teoretic utilizatorul nu percepe nimic; în cazuri extreme (ex. coada GitHub) pot apărea fluctuații scurte
 - **Conformitate**: rularea unui proxy pe GitHub Actions poate încălca ToS și poate duce la suspendarea contului, evaluați pe propria răspundere
 - **Securitate**: nu publicați `CF_TUNNEL_TOKEN` / `PANEL_PASSWORD` / `VLESS_UUID` în locuri publice
