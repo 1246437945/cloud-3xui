@@ -31,7 +31,7 @@ Repo Settings → Secrets and variables → Actions, add hozzá ezt a hármat:
 |------|-------|
 | `CF_TUNNEL_TOKEN` | Cloudflare tunnel token |
 | `PANEL_PASSWORD` | Panel belépési jelszó |
-| `VLESS_UUID` | Csomópont UUID (fix, a kliensben örökre érvényes, generálj egyet: https://1024tools.com/uuid/) |
+| `VLESS_UUID` | Csomópont UUID (fix, a kliensben örökre érvényes, generálj egyet: https://1024tools.com/uuid/, **Jegyezd meg ezt az UUID-t, nem jelenik meg nyíltan a naplókban, minden alkalommal szükséged lesz rá a csomópont-link összeállításához**) |
 
 ### 3. Futtatás
 
