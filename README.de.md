@@ -33,9 +33,10 @@ flowchart TD
     B --> C["API 创建 VLESS+WS 入站"]
     C --> D["启动 Cloudflare 命名隧道"]
     D --> E["输出节点链接"]
-    E --> F["N Minuten am Leben halten<br/>(manuelle Eingabe, Standard 290)"]
-    F --> G["API aufrufen, um die nächste Runde auszulösen<br/>(mit Standardwert 290)"]
-    G --> A
+    E --> F["保活 N 分钟<br/>(手动输入，默认 290)"]
+    F --> G["结束前 5 分钟<br/>提前触发下一轮"]
+    G --> H["新旧 runner 重叠运行<br/>流量无缝切换"]
+    H --> A
 
     style G fill:#f6821f,color:#fff
 ```
@@ -43,8 +44,9 @@ flowchart TD
 ## Automatische Verlängerung
 
 - **Die Dauer bestimmst du**: beim Klick auf Run workflow fülle manuell `run_minutes` aus – es läuft so viele Minuten, wie du eingibst; lässt du es leer, wird der Standardwert 290 verwendet
-- **Automatische Auslösung nutzt den Standardwert**: am Ende jeder Runde wird die API aufgerufen, um die nächste Runde zu starten; der API-Aufruf übergibt keine Parameter, daher dauert jede automatisch verlängerte Runde 290 Minuten
+- **Automatische Parametervererbung**: jede Runde übergibt `run_minutes` / `countdown_interval` / `countdown_unit` per API an die nächste Runde, sodass die gesamte Kette die ursprünglich eingegebenen Werte behält
 - Zum schnellen Testen trage `5` ein; für den Alltag lass es leer und nutze den Standard 290
+- **Überlappender Start (nahtloser Wechsel)**: 5 Minuten vor Ende der aktuellen Runde wird die nächste Runde vorab gestartet; alte und neue Runner laufen gleichzeitig, Cloudflare-Tunnel unterstützen mehrere Verbindungen, der Datenverkehr wird automatisch an verfügbare Verbindungen geleitet, sodass Nutzer das Ende der alten Runde kaum bemerken (bei kurzen Tests ≤6 Minuten wird 30 Sekunden vorher gestartet)
 - Domain und UUID sind fest, die Client-Konfiguration ist einmal eingerichtet dauerhaft gültig
 - Zum Stoppen gehe zu Actions und klicke auf Cancel – nach dem Abbrechen wird es nicht automatisch neu gestartet
 
@@ -199,6 +201,6 @@ A: Gehe auf die Actions-Seite und brich (Cancel) den aktuellen Lauf ab – danac
 ## Hinweise
 
 - **Geschwindigkeit**: Der Traffic läuft über Cloudflare → GitHub-Rechenzentren (USA/Europa), nur für temporäre/leichte Nutzung geeignet
-- **Kurze Unterbrechung**: Beim automatischen Neustart alle 5 Stunden bricht die Verbindung für ca. 3–5 Minuten ab (neue Maschine startet, 3x-ui wird installiert, Tunnel verbindet neu), der Client verbindet sich automatisch neu
+- **Nahtloser Wechsel**: Es wird ein überlappender Start verwendet — die nächste Runde wird 5 Minuten vor Ende jeder Runde gestartet, alte und neue Runner sind gleichzeitig online, sodass Nutzer theoretisch nichts bemerken; in Extremfällen (z. B. GitHub-Warteschlange) kann es dennoch zu kurzen Schwankungen kommen
 - **Compliance**: Ein Proxy auf GitHub Actions kann gegen die ToS verstoßen und zur Kontosperrung führen – selbst bewerten
 - **Sicherheit**: Veröffentliche `CF_TUNNEL_TOKEN` / `PANEL_PASSWORD` / `VLESS_UUID` nicht öffentlich
