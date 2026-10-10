@@ -200,8 +200,8 @@ O: Sprawdź trzy rzeczy: ① czy UUID został poprawnie podmieniony; ② czy wer
 **P: Automatyczny restart nie został wyzwolony?**
 O: Sprawdź log kroku **Trigger next run**. Jeśli widnieje kod HTTP inny niż 204, sprawdź ustawienia uprawnień Actions repozytorium.
 
-**P: Czy rozłączenie na kilka minut co 5 godzin jest normalne?**
-O: Tak. Od zakończenia poprzedniej rundy do połączenia nowego tunelu mija ok. 3–5 minut, a klient połączy się automatycznie ponownie.
+**P: Czy połączenie zostanie przerwane podczas rotacji?**
+O: Stosujemy nakładający się start: następna runda jest uruchamiana przed zakończeniem bieżącej, stary i nowy runner działają jednocześnie, teoretycznie niezauważalnie. W skrajnych przypadkach (np. kolejka GitHub) mogą wystąpić krótkie wahania, klient połączy się ponownie automatycznie.
 
 **P: Chcesz zatrzymać automatyczne odnawianie?**
 O: Na stronie Actions anuluj (Cancel) bieżące uruchomienie — kolejne nie zostanie automatycznie wyzwolone.
