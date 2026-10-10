@@ -146,7 +146,7 @@ jobs:
           # Overlap: trigger next run before this one ends for seamless handover
           # 重叠启动：本轮结束前提前触发下一轮，实现无缝切换
           OVERLAP_SEC=300
-          if [ $((MINS * 60)) -le 360 ]; then OVERLAP_SEC=30; fi
+          if [ "$MINS" -lt 5 ]; then OVERLAP_SEC=30; fi
           if [ "$OVERLAP_SEC" -ge 60 ]; then
             echo "重叠启动：结束前 $((OVERLAP_SEC / 60)) 分钟触发下一轮 Overlap: trigger next run $((OVERLAP_SEC / 60)) min before end"
           else
