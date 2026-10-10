@@ -136,6 +136,10 @@ Ayrıntılı adımlar:
      Panel şifresi (boş bırakılırsa PANEL_PASSWORD secret kullanılır)
    - **Run duration**: varsayılan `290` (dakika), ilk testte hızlı doğrulama için `5` yazabilirsiniz
      Çalışma süresi (dakika, varsayılan 290, en fazla 340)
+   - **Countdown output interval**: geri sayım çıktı aralığı, varsayılan `1`, kapatmak için `0` girin
+     Geri sayım çıktı aralığı (varsayılan 1, kapatmak için 0)
+   - **Countdown interval unit**: geri sayım aralığı birimi, açılır menüden `minutes` veya `seconds` seçin
+     Geri sayım çıktı aralığı birimi
 5. Çalıştırmayı başlatmak için yeşil **Run workflow** düğmesine tıklayın
 
 ### Adım 5: Düğüm Bağlantısını Alın
@@ -174,7 +178,7 @@ Ayrıntılı adımlar:
 | Install 3x-ui | 3x-ui kurun | Install 3x-ui | Resmi betikle etkileşimsiz panel kurulumu |
 | Create VLESS+WS inbound via API | API ile VLESS+WS inbound oluşturun | Create VLESS+WS inbound via API | API Token ile giriş, otomatik inbound oluşturma |
 | Start named Cloudflare tunnel | Cloudflare Named Tunnel başlatın | Start named Cloudflare tunnel | Token ile sabit alan adlı tünele bağlanın |
-| Keep alive | Canlı tut | Keep alive | Belirtilen dakika uyu, hizmet durumunu izle |
+| Keep alive | Canlı tut | Keep alive | Belirtilen dakika boyunca uyur, her dakika hizmet durumunu kontrol eder, ayarlanan aralıkta geri sayımı gösterir |
 | Trigger next run | Sonraki çalıştırmayı tetikle | Trigger next run | API çağrısıyla bir sonraki turu otomatik başlat |
 
 ## Sık Sorulan Sorular
