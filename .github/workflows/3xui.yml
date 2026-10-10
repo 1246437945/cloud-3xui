@@ -4,10 +4,14 @@ on:
   workflow_dispatch:
     inputs:
       panel_password:
-        description: 'Panel password (leave empty to use PANEL_PASSWORD secret)'
+        description: |-
+          Panel password (leave empty to use PANEL_PASSWORD secret)
+          面板密码（留空则使用 PANEL_PASSWORD secret）
         required: false
       run_minutes:
-        description: 'Run duration in minutes (default 290, max 340)'
+        description: |-
+          Run duration in minutes (default 290, max 340)
+          运行时长（分钟，默认 290，最多 340）
         required: false
         default: '290'
 
