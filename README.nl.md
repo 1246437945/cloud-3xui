@@ -136,6 +136,10 @@ Gedetailleerde stappen:
      Paneelwachtwoord (laat leeg om de `PANEL_PASSWORD`-secret te gebruiken)
    - **Run duration**：standaard `290` (minuten); voor de eerste test kun je `5` invullen voor een snelle verificatie
      Uitvoeringsduur (minuten, standaard 290, maximaal 340)
+   - **Countdown output interval**: aftel-uitvoerinterval, standaard `1`, vul `0` in om uit te schakelen
+     Aftel-uitvoerinterval (standaard 1, 0 om uit te schakelen)
+   - **Countdown interval unit**: eenheid van aftelinterval, kies `minutes` of `seconds` uit de dropdown
+     Eenheid van aftel-uitvoerinterval
 5. Klik op de groene **Run workflow** om te starten
 
 ### Stap 5: De node-link ophalen
@@ -174,7 +178,7 @@ Gedetailleerde stappen:
 | Install 3x-ui | 3x-ui installeren | Install 3x-ui | Paneel niet-interactief installeren met het officiële script |
 | Create VLESS+WS inbound via API | VLESS+WS-inbound aanmaken via de API | Create VLESS+WS inbound via API | Inloggen met de API Token en de inbound automatisch aanmaken |
 | Start named Cloudflare tunnel | Benoemde Cloudflare-tunnel starten | Start named Cloudflare tunnel | Met de Token verbinding maken met de tunnel met het vaste domein |
-| Keep alive | Keep alive | Keep alive | Het opgegeven aantal minuten wachten en de servicestatus bewaken |
+| Keep alive | Keep alive | Keep alive | Slaapt het opgegeven aantal minuten, controleert elke minuut de servicestatus, toont de aftelling met het ingestelde interval |
 | Trigger next run | Volgende uitvoering triggeren | Trigger next run | De API aanroepen om automatisch de volgende ronde te starten |
 
 ## Veelgestelde vragen
