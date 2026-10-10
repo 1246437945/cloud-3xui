@@ -132,6 +132,10 @@ Etapas detalhadas:
      Senha do painel (em branco = usa o secret `PANEL_PASSWORD`)
    - **Run duration**：padrão `290` (minutos); para o primeiro teste, você pode preencher `5` para uma verificação rápida
      Duração da execução (minutos, padrão 290, máximo 340)
+   - **Countdown output interval**: intervalo de exibição da contagem regressiva, padrão `1`, digite `0` para desativar
+     Intervalo de exibição da contagem regressiva (padrão 1, 0 para desativar)
+   - **Countdown interval unit**: unidade do intervalo da contagem regressiva, selecione `minutes` ou `seconds` no menu suspenso
+     Unidade do intervalo de exibição da contagem regressiva
 5. Clique no botão verde **Run workflow** para iniciar
 
 ### Etapa 5: Obter o link do nó
@@ -170,7 +174,7 @@ Etapas detalhadas:
 | Install 3x-ui | Instalar o 3x-ui | Install 3x-ui | Instala o painel de forma não interativa com o script oficial |
 | Create VLESS+WS inbound via API | Criar inbound VLESS+WS via API | Create VLESS+WS inbound via API | Login com o API Token e criação automática do inbound |
 | Start named Cloudflare tunnel | Iniciar o túnel nomeado do Cloudflare | Start named Cloudflare tunnel | Conecta ao túnel de domínio fixo usando o Token |
-| Keep alive | Manter ativo | Keep alive | Aguarda o número especificado de minutos e monitora o status dos serviços |
+| Keep alive | Manter ativo | Keep alive | Dorme pelo número de minutos especificado, verifica o status dos serviços a cada minuto, exibe a contagem regressiva no intervalo definido |
 | Trigger next run | Disparar a próxima execução | Trigger next run | Chama a API para iniciar automaticamente a próxima rodada |
 
 ## Perguntas frequentes
