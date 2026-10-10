@@ -44,9 +44,9 @@ flowchart TD
 ## Aŭtomata renovigo
 
 - **La daŭron vi decidas**: kiam vi alklakas Run workflow, plenigu mane `run_minutes` – ĝi rulos tiom da minutoj, kiom vi enigos; se vi lasos ĝin malplena, uziĝos la defaŭlto 290
-- **Parametroj herediĝas aŭtomate**: ĉiu ciklo transdonas `run_minutes` / `countdown_interval` / `countdown_unit` al la sekva ciklo per la API, do la tuta ĉeno konservas la valorojn, kiujn vi unue enmetis
+- **Parametroj herediĝas aŭtomate**: ĉiu ciklo transdonas `run_minutes` / `countdown_interval` / `countdown_unit` / `overlap_threshold` / `overlap_long` / `overlap_short` al la sekva ciklo per la API, do la tuta ĉeno konservas la valorojn, kiujn vi unue enmetis
 - Por rapida testo tajpu `5`; por ĉiutaga uzado lasu ĝin malplena kaj uzu la defaŭlton 290
-- **Interkovra starto (seninterrompa ŝanĝo)**: 5 minutojn antaŭ la fino de la aktuala ciklo la sekva ciklo estas lanĉata anticipe; malnova kaj nova runner-oj funkcias samtempe, Cloudflare-tuneloj subtenas plurajn konektojn, trafiko aŭtomate direktiĝas al disponeblaj konektoj, do uzantoj apenaŭ rimarkas la finiĝon de la malnova ciklo (por mallongaj testoj ≤6 minutoj ĝi lanĉiĝas 30 sekundojn anticipe)
+- **Interkovra starto (seninterrompa ŝanĝo)**: la sekva ciklo estas lanĉata anticipe antaŭ la fino de la aktuala ciklo; malnova kaj nova runner-oj funkcias samtempe, Cloudflare-tuneloj subtenas plurajn konektojn, trafiko estas aŭtomate direktata al disponeblaj konektoj, do uzantoj apenaŭ rimarkas la finiĝon de la malnova ciklo. La lanĉa tempo estas agordebla: keep-alive pli longa ol `overlap_threshold` (defaŭlte 5 minutoj) estas longa ciklo kaj lanĉas `overlap_long` (defaŭlte 5 minutojn) anticipe; pli mallongaj estas mallongaj cikloj kaj lanĉas `overlap_short` (defaŭlte 30 sekundojn) anticipe
 - La domajno kaj UUID estas fiksaj, do la klienta agordo post unufoja agordo validas por ĉiam
 - Por haltigi, iru al Actions kaj alklaku Cancel – post nuligo ĝi ne restartiĝos aŭtomate
 
@@ -139,6 +139,9 @@ Detalaj paŝoj:
    - **Run duration**: defaŭlte `290` (minutoj), por unua testo vi povas tajpi `5` por rapida kontrolo; por ĉiutaga uzado lasu malplena
    - **Countdown output interval**: Intervalo de eligo de retronombrado, defaŭlta `1`, enigu `0` por malŝalti
    - **Countdown interval unit**: Unuo de la intervalo de eligo de retronombrado, elektu `minutes` aŭ `seconds` el la falmenuo
+   - **Overlap threshold**: Sojlo de interkovro (minutoj, defaŭlte `5`) — keep-alive pli longa ol tio estas longa ciklo
+   - **Overlap long**: Kiom da minutoj antaŭ la fino lanĉi la sekvan ciklon ĉe longaj cikloj (defaŭlte `5`)
+   - **Overlap short**: Kiom da sekundoj antaŭ la fino lanĉi la sekvan ciklon ĉe mallongaj cikloj (defaŭlte `30`)
      Rultempo (minutoj, defaŭlte 290, maksimume 340)
 5. Alklaku la verdan **Run workflow** por komenci
 
