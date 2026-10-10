@@ -44,9 +44,9 @@ flowchart TD
 ## Automatische Verlängerung
 
 - **Die Dauer bestimmst du**: beim Klick auf Run workflow fülle manuell `run_minutes` aus – es läuft so viele Minuten, wie du eingibst; lässt du es leer, wird der Standardwert 290 verwendet
-- **Automatische Parametervererbung**: jede Runde übergibt `run_minutes` / `countdown_interval` / `countdown_unit` per API an die nächste Runde, sodass die gesamte Kette die ursprünglich eingegebenen Werte behält
+- **Automatische Parametervererbung**: jede Runde übergibt `run_minutes` / `countdown_interval` / `countdown_unit` / `overlap_threshold` / `overlap_long` / `overlap_short` per API an die nächste Runde, sodass die gesamte Kette die ursprünglich eingegebenen Werte behält
 - Zum schnellen Testen trage `5` ein; für den Alltag lass es leer und nutze den Standard 290
-- **Überlappender Start (nahtloser Wechsel)**: 5 Minuten vor Ende der aktuellen Runde wird die nächste Runde vorab gestartet; alte und neue Runner laufen gleichzeitig, Cloudflare-Tunnel unterstützen mehrere Verbindungen, der Datenverkehr wird automatisch an verfügbare Verbindungen geleitet, sodass Nutzer das Ende der alten Runde kaum bemerken (bei kurzen Tests ≤6 Minuten wird 30 Sekunden vorher gestartet)
+- **Überlappender Start (nahtloser Wechsel)**: die nächste Runde wird vorab noch vor Ende der aktuellen Runde gestartet; alte und neue Runner laufen gleichzeitig, Cloudflare-Tunnel unterstützen mehrere Verbindungen, der Datenverkehr wird automatisch an verfügbare Verbindungen geleitet, sodass Benutzer das Ende der alten Runde kaum bemerken. Der Startzeitpunkt ist konfigurierbar: keep-alive länger als `overlap_threshold` (Standard 5 Minuten) gilt als lange Runde und startet `overlap_long` (Standard 5 Minuten) vorher; kürzere gelten als kurze Runden und starten `overlap_short` (Standard 30 Sekunden) vorher
 - Domain und UUID sind fest, die Client-Konfiguration ist einmal eingerichtet dauerhaft gültig
 - Zum Stoppen gehe zu Actions und klicke auf Cancel – nach dem Abbrechen wird es nicht automatisch neu gestartet
 
@@ -139,6 +139,9 @@ Detaillierte Schritte:
    - **Run duration**: Standard `290` (Minuten), beim ersten Test kannst du `5` für eine schnelle Prüfung eintragen; für den Alltag leer lassen
    - **Countdown output interval**: Countdown-Ausgabeintervall, Standard `1`, zum Deaktivieren `0` eingeben
    - **Countdown interval unit**: Einheit des Countdown-Ausgabeintervalls, wählen Sie `minutes` oder `seconds` aus dem Dropdown-Menü
+   - **Overlap threshold**: Überlappungsschwelle (Minuten, Standard `5`) — keep-alive darüber gilt als lange Runde
+   - **Overlap long**: Minuten vor Ende zum vorzeitigen Starten bei langen Runden (Standard `5`)
+   - **Overlap short**: Sekunden vor Ende zum vorzeitigen Starten bei kurzen Runden (Standard `30`)
      Laufzeit (Minuten, Standard 290, max. 340)
 5. Klicke auf das grüne **Run workflow**, um zu starten
 
