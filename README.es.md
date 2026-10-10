@@ -136,6 +136,8 @@ Pasos detallados:
    - **Panel password**: déjelo vacío (usa automáticamente el secret `PANEL_PASSWORD`)
      Contraseña del panel (si se deja vacío, usa el secret PANEL_PASSWORD)
    - **Run duration**: valor predeterminado `290` (minutos); para una primera prueba puede escribir `5` para una verificación rápida; para el uso diario, simplemente déjelo vacío
+   - **Countdown output interval**: Intervalo de salida de la cuenta atrás, predeterminado `1`, escriba `0` para desactivarlo
+   - **Countdown interval unit**: Unidad del intervalo de la cuenta atrás, seleccione `minutes` o `seconds` en el menú desplegable
      Duración de ejecución (minutos, predeterminado 290, máximo 340)
 5. Haga clic en el botón verde **Run workflow** para iniciar.
 
@@ -175,7 +177,7 @@ Pasos detallados:
 | Install 3x-ui | 安装 3x-ui | Install 3x-ui | Instala el panel de forma no interactiva con el script oficial |
 | Create VLESS+WS inbound via API | 通过 API 创建 VLESS+WS 入站 | Create VLESS+WS inbound via API | Inicia sesión con el API Token y crea el inbound automáticamente |
 | Start named Cloudflare tunnel | 启动 Cloudflare 命名隧道 | Start named Cloudflare tunnel | Conecta al túnel de dominio fijo usando el Token |
-| Keep alive | 保活 | Keep alive | Duerme el número de minutos indicado mientras supervisa el estado de los servicios |
+| Keep alive | 保活 | Keep alive | Duerme el número de minutos indicado, supervisa el estado de los servicios e imprime la cuenta atrás en el intervalo configurado |
 | Trigger next run | 触发下一次运行 | Trigger next run | Llama a la API para iniciar automáticamente la siguiente ronda |
 
 ## Preguntas frecuentes
