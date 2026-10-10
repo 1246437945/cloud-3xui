@@ -59,6 +59,10 @@ flowchart TD
 
 ## Etapas detalhadas de configuração
 
+### Domínio grátis (sem domínio?)
+
+Não tem domínio próprio? Registre um gratuitamente em https://my.dnshe.com/ (ex.: `.ccwu.cc`, válido por 10 anos) e depois aponte os NS do domínio para a Cloudflare.
+
 ### Etapa 1: Criar um túnel nomeado no Cloudflare
 
 Site oficial da Cloudflare: https://www.cloudflare-cn.com (nacional) / https://www.cloudflare.com (internacional)
