@@ -71,7 +71,7 @@ Hallintapaneeli: https://dash.cloudflare.com
 
 ```mermaid
 flowchart TD
-    A["控制台 → Zero Trust<br/>→ 网络（Networks）→ 连接器（Tunnels）"] --> B["右上角 创建隧道"]
+    A["控制台 → Zero Trust<br/>→ Verkostot (Networks) → Liittimet (Tunnels)"] --> B["右上角 创建隧道"]
     B --> C["选 Cloudflared<br/>(推荐) → 选择 Cloudflared"]
     C --> D["输入隧道名称<br/>(例：github-3xui)<br/>→ 保存隧道"]
     D --> E["安装并运行连接器页<br/>复制 Token<br/>(eyJ 开头的一长串)"]
@@ -87,7 +87,7 @@ flowchart TD
 
 Yksityiskohtaiset vaiheet:
 
-1. Avaa [Cloudflare Dashboard](https://dash.cloudflare.com) ja siirry vasemmasta valikosta kohtaan **Zero Trust** → **Networks** → **Tunnels**
+1. Avaa [Cloudflare Dashboard](https://dash.cloudflare.com) ja siirry vasemmasta valikosta kohtaan **Zero Trust** → **Verkostot (Networks)** → **Liittimet (Tunnels)**
 2. Napsauta oikeassa yläkulmassa **Create a tunnel**
 3. **Valitse tunnelityyppi**: valitse **Cloudflared** (suositus) ja napsauta **Select Cloudflared**
 4. **Nimeä tunneli**: kirjoita nimi (esim. `github-3xui`) ja napsauta **Save tunnel**
@@ -105,7 +105,7 @@ Yksityiskohtaiset vaiheet:
    - Domain: valitse oma domainisi
    - Tyyppi: `HTTP`
    - URL: `127.0.0.1:2053`
-7. Tallenna. Cloudflare luo DNS-tietueet automaattisesti. Tila **Healthy** Tunnels-listassa tarkoittaa onnistunutta määritystä.
+7. Tallenna. Cloudflare luo DNS-tietueet automaattisesti. Tila **Healthy** Liittimet (Tunnels) -listassa tarkoittaa onnistunutta määritystä.
 
 
 ### Vaihe 2: Luo UUID
