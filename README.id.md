@@ -189,8 +189,8 @@ A: Periksa tiga hal: ① apakah UUID diganti dengan benar; ② apakah versi klie
 **Q: Restart otomatis tidak terpicu?**
 A: Lihat log langkah **Trigger next run**. Jika menampilkan kode status HTTP selain 204, periksa pengaturan izin Actions repo.
 
-**Q: Apakah normal terputus beberapa menit setiap 5 jam?**
-A: Normal. Dari akhir putaran sebelumnya hingga tunnel putaran berikutnya tersambung membutuhkan sekitar 3-5 menit, klien akan terhubung ulang secara otomatis.
+**Q: Apakah koneksi akan terputus saat rotasi?**
+A: Menggunakan overlapping startup: run berikutnya dipicu sebelum run saat ini berakhir, runner lama dan baru online bersamaan, secara teori tidak terasa. Pada kasus ekstrem (mis. antrean GitHub) mungkin ada fluktuasi singkat, klien akan reconnect otomatis.
 
 **Q: Ingin menghentikan perpanjangan otomatis?**
 A: Buka halaman Actions dan Cancel eksekusi yang sedang berjalan, tidak akan terpicu lagi secara otomatis.
