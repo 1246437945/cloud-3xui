@@ -71,7 +71,7 @@ Kontrollpanel: https://dash.cloudflare.com
 
 ```mermaid
 flowchart TD
-    A["控制台 → Zero Trust<br/>→ Networks → Tunnels"] --> B["右上角 创建隧道"]
+    A["控制台 → Zero Trust<br/>→ Nettverk（Networks）→ Koblinger（Tunnels）"] --> B["右上角 创建隧道"]
     B --> C["选 Cloudflared<br/>(推荐) → 选择 Cloudflared"]
     C --> D["输入隧道名称<br/>(例：github-3xui)<br/>→ 保存隧道"]
     D --> E["安装并运行连接器页<br/>复制 Token<br/>(eyJ 开头的一长串)"]
@@ -87,7 +87,7 @@ flowchart TD
 
 Detaljerte trinn:
 
-1. Åpne [Cloudflare-dashboardet](https://dash.cloudflare.com) og gå til **Zero Trust** → **Networks** → **Tunnels** i menyen til venstre
+1. Åpne [Cloudflare-dashboardet](https://dash.cloudflare.com) og gå til **Zero Trust** → **Nettverk（Networks）** → **Koblinger（Tunnels）** i menyen til venstre
 2. Klikk på **Opprett tunnel** øverst til høyre
 3. **Velg tunneltype**: velg **Cloudflared** (anbefalt) og klikk på **Velg Cloudflared**
 4. **Gi tunnelen et navn**: skriv inn et navn (f.eks. `github-3xui`) og klikk på **Lagre tunnel**
@@ -106,7 +106,7 @@ Detaljerte trinn:
    - Service Type (tjenestetype): `HTTP`
    - URL: `127.0.0.1:2053`
 
-7. Lagre. Cloudflare oppretter DNS-oppføringer automatisk — ingen manuell tilføying er nødvendig. Når tunnelstatusen i Tunnels-listen er **sunn**, er konfigurasjonen vellykket.
+7. Lagre. Cloudflare oppretter DNS-oppføringer automatisk — ingen manuell tilføying er nødvendig. Når tunnelstatusen i Koblinger-listen er **sunn**, er konfigurasjonen vellykket.
 
 ### Trinn 2: Generere en UUID
 
