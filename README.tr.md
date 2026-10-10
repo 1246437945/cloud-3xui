@@ -200,8 +200,8 @@ C: Üç şeyi kontrol edin: ① UUID doğru değiştirilmiş mi; ② istemci sü
 **S: Otomatik yeniden başlatma tetiklenmedi?**
 C: **Trigger next run** adımının günlüğüne bakın. 204 dışında bir HTTP durum kodu gösteriyorsa deponun Actions izin ayarlarını kontrol edin.
 
-**S: Her 5 saatte birkaç dakika kesinti normal mi?**
-C: Normal. Önceki turun bitiminden sonraki turun tüneli bağlanana kadar yaklaşık 3-5 dakika sürer, istemci otomatik yeniden bağlanır.
+**S: Rotasyon sırasında bağlantı kesilir mi?**
+C: Örtüşen başlatma kullanıyoruz: mevcut tur bitmeden sonraki tur tetiklenir, eski ve yeni runner aynı anda çevrimiçi olur, teorik olarak hissedilmez. Uç durumlarda (örn. GitHub kuyruğu) kısa dalgalanma olabilir, istemci otomatik olarak yeniden bağlanır.
 
 **S: Otomatik yenilemeyi durdurmak mı istiyorsunuz?**
 C: Actions sayfasına gidip mevcut çalıştırmayı Cancel etmeniz yeterli, otomatik olarak tekrar tetiklenmez.
