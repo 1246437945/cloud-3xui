@@ -46,7 +46,7 @@ flowchart TD
 - **Pemicu otomatis pakai default**: setiap ronde berakhir API memicu ronde berikutnya tanpa parameter, jadi setiap ronde otomatis berdurasi 290 menit
 - Untuk tes cepat isi `5`, pemakaian harian kosongkan saja (290)
 - Domain dan UUID tetap, konfigurasi client sekali saja
-- Untuk berhenti tekan Cancel di Actions, tidak akan restart otomatis
+- Untuk berhenti tekan Cancel di Actions· setelah dibatalkan tidak akan restart otomatis
 
 ## Alamat Tetap
 
