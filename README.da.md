@@ -139,6 +139,8 @@ flowchart TD
    - **Panel password**: lad stå tomt (bruger automatisk `PANEL_PASSWORD`-secretet)
      Panel-adgangskode (tom = bruger PANEL_PASSWORD-secret)
    - **Run duration**: standard `290` (minutter), ved første test kan du skrive `5` for hurtig verifikation; lad det stå tomt til daglig brug
+   - **Countdown output interval**: Interval for nedtællingsoutput, standard `1`, skriv `0` for at deaktivere det
+   - **Countdown interval unit**: Enhed for nedtællingsintervallet, vælg `minutes` eller `seconds` i rullemenuen
      Kørselsvarighed (minutter, standard 290, maks. 340)
 5. Klik på den grønne **Run workflow** for at starte
 
@@ -178,7 +180,7 @@ flowchart TD
 | Install 3x-ui | Installér 3x-ui | Install 3x-ui | Installerer panelet med det officielle script uden interaktion |
 | Create VLESS+WS inbound via API | Opret VLESS+WS inbound via API | Create VLESS+WS inbound via API | Logger ind med API-token og opretter inbound automatisk |
 | Start named Cloudflare tunnel | Start navngivet Cloudflare-tunnel | Start named Cloudflare tunnel | Forbinder tunnelen med fast domæne via token |
-| Keep alive | Hold i live | Keep alive | Sover i det angivne antal minutter og overvåger tjenesternes status |
+| Keep alive | Hold i live | Keep alive | Sover i det angivne antal minutter, overvåger tjenesternes status og udskriver nedtællingen med det indstillede interval |
 | Trigger next run | Udløs næste kørsel | Trigger next run | Kalder API'et og starter automatisk næste runde |
 
 ## Ofte stillede spørgsmål
