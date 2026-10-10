@@ -26,7 +26,7 @@ jobs:
         env:
           PANEL_PASSWORD: ${{ inputs.panel_password || secrets.PANEL_PASSWORD }}
         run: |
-          [ -z "$PANEL_PASSWORD" ] && { echo "Set panel_password input or PANEL_PASSWORD secret"; exit 1; }
+          [ -z "$PANEL_PASSWORD" ] && { echo "请设置 panel_password 参数或 PANEL_PASSWORD secret | Set panel_password input or PANEL_PASSWORD secret"; exit 1; }
           curl -Ls https://raw.githubusercontent.com/MHSanaei/3x-ui/master/install.sh -o /tmp/install-3xui.sh
           sudo XUI_USERNAME="admin" \
             XUI_PASSWORD="$PANEL_PASSWORD" \
@@ -54,7 +54,7 @@ jobs:
                   token = line.split("apiToken:")[1].strip()
                   break
           if not token:
-              print("No API token"); sys.exit(1)
+              print("未获取到 API token | No API token"); sys.exit(1)
           headers = {"Authorization": f"Bearer {token}"}
           for _ in range(30):
               try:
@@ -82,10 +82,10 @@ jobs:
           }
           rr = requests.post(PANEL + "/panel/api/inbounds/add", json=inbound,
                              headers=headers, timeout=15)
-          print("Add inbound:", rr.status_code)
+          print("创建入站 Add inbound:", rr.status_code)
           if rr.status_code != 200 or not rr.json().get("success", False):
               print(rr.text[:500]); sys.exit(1)
-          print("Inbound created OK")
+          print("入站创建成功 Inbound created OK")
           open("/tmp/vless_uuid.txt", "w").write(client_uuid)
           PYEOF
 
@@ -95,44 +95,44 @@ jobs:
           chmod +x /tmp/cloudflared
           sudo mv /tmp/cloudflared /usr/local/bin/cloudflared
           nohup cloudflared tunnel --no-autoupdate run --token ${{ secrets.CF_TUNNEL_TOKEN }} > /tmp/tunnel.log 2>&1 &
-          echo "Waiting for tunnel to connect..."
+          echo "等待隧道连接 Waiting for tunnel to connect..."
           for i in $(seq 1 30); do
             grep -q "Registered tunnel connection" /tmp/tunnel.log && break
             sleep 2
           done
-          grep -q "Registered tunnel connection" /tmp/tunnel.log || { echo "Tunnel failed"; cat /tmp/tunnel.log; exit 1; }
+          grep -q "Registered tunnel connection" /tmp/tunnel.log || { echo "隧道失败 Tunnel failed"; cat /tmp/tunnel.log; exit 1; }
           UUID=$(cat /tmp/vless_uuid.txt)
           # GitHub masks secrets in logs, so print UUID in two parts
           UUID_A=$(echo "$UUID" | cut -c1-18)
           UUID_B=$(echo "$UUID" | cut -c19-)
           echo ""
           echo "=================================================="
-          echo "  Panel: https://${{ env.PANEL_HOST }}/panel  (admin / your password)"
+          echo "  面板 Panel: https://${{ env.PANEL_HOST }}/panel  (admin / 你的密码 your password)"
           echo ""
-          echo "  VLESS node (replace YOUR_UUID with the two parts below joined):"
+          echo "  VLESS 节点 node（将 YOUR_UUID 替换为下面两段拼接 Replace YOUR_UUID with the two parts joined):"
           echo "  vless://YOUR_UUID@${{ env.VLESS_HOST }}:443?encryption=none&security=tls&sni=${{ env.VLESS_HOST }}&type=ws&path=%2Fws#GitHub-3xui"
           echo ""
-          echo "  UUID part 1: ${UUID_A}"
-          echo "  UUID part 2: ${UUID_B}"
+          echo "  UUID 第一段 part 1: ${UUID_A}"
+          echo "  UUID 第二段 part 2: ${UUID_B}"
           echo "=================================================="
 
       - name: Keep alive
         run: |
           MINS=${{ inputs.run_minutes }}
-          echo "Node alive for $MINS minutes, then auto-restart"
+          echo "节点运行 $MINS 分钟后自动重启 Node alive for $MINS minutes, then auto-restart"
           END=$(( $(date +%s) + MINS * 60 ))
           while [ $(date +%s) -lt $END ]; do
             sleep 60
-            sudo systemctl is-active x-ui >/dev/null || echo "WARNING: x-ui not active"
-            pgrep -f "cloudflared tunnel" >/dev/null || { echo "WARNING: cloudflared died"; break; }
+            sudo systemctl is-active x-ui >/dev/null || echo "警告 WARNING: x-ui not active"
+            pgrep -f "cloudflared tunnel" >/dev/null || { echo "警告 WARNING: cloudflared died"; break; }
           done
 
       - name: Trigger next run (auto-restart)
         if: always()
         run: |
-          echo "Triggering next run..."
+          echo "触发下一次运行 Triggering next run..."
           curl -s -X POST \
             -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
             -H "Accept: application/vnd.github+json" \
             https://api.github.com/repos/${{ github.repository }}/actions/workflows/3xui.yml/dispatches \
-            -d '{"ref":"main"}' && echo "Next run triggered"
+            -d '{"ref":"main"}' && echo "已触发下一次运行 Next run triggered"
