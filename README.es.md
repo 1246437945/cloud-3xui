@@ -33,12 +33,21 @@ flowchart TD
     B --> C["API 创建 VLESS+WS 入站"]
     C --> D["启动 Cloudflare 命名隧道"]
     D --> E["输出节点链接"]
-    E --> F["保活 290 分钟"]
-    F --> G["调用 API 触发下一轮"]
+    E --> F["Mantener vivo N minutos<br/>(entrada manual, predeterminado 290)"]
+    F --> G["Llamar a la API para iniciar la siguiente ronda<br/>(con el valor predeterminado 290)"]
     G --> A
 
     style G fill:#f6821f,color:#fff
 ```
+
+## Reconexión automática
+
+- **Usted fija la duración**: al hacer clic en Run workflow, escriba `run_minutes` manualmente; se ejecutará tantos minutos como indique; si lo deja vacío, se usará el valor predeterminado 290
+- **Los disparos automáticos usan el valor predeterminado**: al final de cada ronda se llama a la API para iniciar la siguiente; la llamada a la API no lleva parámetros, por lo que cada ronda automática dura 290 minutos
+- Para una prueba rápida escriba `5`; para el uso diario, déjelo vacío y se usará el valor predeterminado 290
+- El dominio y el UUID son fijos: configure el cliente una vez y valdrá para siempre
+- Para detenerlo, vaya a Actions y pulse Cancel; una vez cancelado, no se reiniciará automáticamente
+
 
 ## Direcciones fijas
 
@@ -104,7 +113,7 @@ flowchart TD
 4. En el formulario emergente:
    - **Panel password**: déjelo vacío (usa automáticamente el secret `PANEL_PASSWORD`)
      Contraseña del panel (si se deja vacío, usa el secret PANEL_PASSWORD)
-   - **Run duration**: valor predeterminado `290` (minutos); para una primera prueba puede escribir `5` para una verificación rápida
+   - **Run duration**: valor predeterminado `290` (minutos); para una primera prueba puede escribir `5` para una verificación rápida; para el uso diario, simplemente déjelo vacío
      Duración de ejecución (minutos, predeterminado 290, máximo 340)
 5. Haga clic en el botón verde **Run workflow** para iniciar.
 
