@@ -59,6 +59,10 @@ flowchart TD
 
 ## Các Bước Cấu Hình Chi Tiết
 
+### Tên miền miễn phí (chưa có tên miền?)
+
+Chưa có tên miền riêng? Bạn có thể đăng ký một tên miền miễn phí tại https://my.dnshe.com/ (ví dụ `.ccwu.cc`, hiệu lực 10 năm), rồi trỏ NS của tên miền về Cloudflare.
+
 ### Bước 1: Tạo Named Tunnel trong Cloudflare
 
 Trang chủ chính thức của Cloudflare: https://www.cloudflare-cn.com (trong nước) / https://www.cloudflare.com (quốc tế)
