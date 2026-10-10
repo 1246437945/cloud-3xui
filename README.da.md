@@ -199,8 +199,8 @@ A: Tjek tre ting: ① om UUID'et er erstattet korrekt; ② om klientversionen er
 **Q: Den automatiske genstart blev ikke udløst?**
 A: Se loggen for trinnet **Trigger next run**. Hvis der vises en anden HTTP-statuskode end 204, tjek Actions-rettighedsindstillingerne i repositoryet.
 
-**Q: Er det normalt, at forbindelsen afbrydes i et par minutter hver 5. time?**
-A: Ja, det er normalt. Fra forrige rundes afslutning til tunnelen er forbundet i næste runde går der ca. 3-5 minutter, og klienten genopretter automatisk forbindelsen.
+**Q: Bliver forbindelsen afbrudt under rotation?**
+A: Der bruges overlappende opstart — næste kørsel startes før den aktuelle slutter, gamle og nye runners er online samtidigt, så i teorien er der ingen afbrydelse. I ekstreme tilfælde som GitHub-kø kan der forekomme korte udsving; klienten genopretter automatisk forbindelsen.
 
 **Q: Vil du stoppe den automatiske fornyelse?**
 A: Gå til Actions-siden og annuller (Cancel) den aktuelle kørsel – så udløses der ikke flere automatisk.
