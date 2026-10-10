@@ -66,46 +66,42 @@ Cloudflare 官网：https://www.cloudflare-cn.com （国内）/ https://www.clou
 
 ```mermaid
 flowchart TD
-    A["打开 Cloudflare Dashboard"] --> B["左侧 Zero Trust"]
-    B --> C["Networks → Tunnels"]
-    C --> D["右上角 Create a tunnel"]
-    D --> E["选 Cloudflared → 下一步"]
-    E --> F["起名（例：github-3xui）→ 保存"]
-    F --> G["复制 Token<br/>(eyJ 开头的一长串)"]
-    G --> H["下一步 → Public hostnames"]
-    H --> I["添加第一条<br/>vless.你的域名.com → HTTP → 127.0.0.1:8080"]
-    H --> J["添加第二条<br/>panel.你的域名.com → HTTP → 127.0.0.1:2053"]
-    I --> K["保存完成"]
-    J --> K
+    A["控制台 → Zero Trust<br/>→ Networks → Tunnels"] --> B["右上角 创建隧道"]
+    B --> C["选 Cloudflared<br/>(推荐) → 选择 Cloudflared"]
+    C --> D["输入隧道名称<br/>(例：github-3xui)<br/>→ 保存隧道"]
+    D --> E["安装并运行连接器页<br/>复制 Token<br/>(eyJ 开头的一长串)"]
+    E --> F["下一步 → 路由隧道<br/>→ 已发布应用程序路由"]
+    F --> G["添加已发布应用程序路由<br/>子域 vless + 你的域<br/>类型 HTTP → URL 127.0.0.1:8080"]
+    F --> H["添加已发布应用程序路由<br/>子域 panel + 你的域<br/>类型 HTTP → URL 127.0.0.1:2053"]
+    G --> I["保存完成"]
+    H --> I
 
-    style G fill:#f6821f,color:#fff
-    style K fill:#1f9d55,color:#fff
+    style E fill:#f6821f,color:#fff
+    style I fill:#1f9d55,color:#fff
 ```
 
-1. 打开 [Cloudflare Dashboard](https://dash.cloudflare.com)，左侧菜单进入 **Zero Trust**
-2. 左侧 **Networks** → **Tunnels**，点击右上角 **Create a tunnel**
-3. 选择 **Cloudflared** 类型，点击下一步
-4. 给隧道起个名字（例如 `github-3xui`），保存
-5. 页面会显示一条安装命令，形如：
-   ```
-   cloudflared.exe service install eyJhIjoiYzEyNGI2...
-   ```
-   复制其中 `eyJ` 开头的一长串字符，这就是 **Tunnel Token**，保存好
-6. 点击下一步进入 **Public hostnames**（已发布应用程序路由），点击 **Add a public hostname** 添加两条：
+详细步骤：
+
+1. 打开 [Cloudflare Dashboard](https://dash.cloudflare.com)，左侧菜单进入 **Zero Trust** → **Networks** → **Tunnels**
+2. 点击右上角 **创建隧道**
+3. **选择隧道类型**：选 **Cloudflared**（推荐），点击 **选择 Cloudflared**
+4. **为隧道命名**：输入名称（例如 `github-3xui`），点击 **保存隧道**
+5. **安装并运行连接器**：页面会显示一条安装命令，复制其中 `eyJ` 开头的一长串 **Token**，保存好（后面存到 GitHub Secret 用）。**不需要**在本地安装，点下一步继续
+6. **路由隧道**：进入 **已发布应用程序路由** 标签页，点击 **添加已发布应用程序路由**，添加两条：
 
    **第一条（节点）：**
-   - Subdomain（子域）：`vless`
-   - Domain（域名）：选择你的域名
-   - Service Type（服务类型）：`HTTP`
+   - 子域名：`vless`
+   - 域：选择你的域名
+   - 类型：`HTTP`
    - URL：`127.0.0.1:8080`
 
    **第二条（面板）：**
-   - Subdomain（子域）：`panel`
-   - Domain（域名）：选择你的域名
-   - Service Type（服务类型）：`HTTP`
+   - 子域名：`panel`
+   - 域：选择你的域名
+   - 类型：`HTTP`
    - URL：`127.0.0.1:2053`
 
-7. 保存。Cloudflare 会自动创建 DNS 解析，无需手动添加。
+7. 保存。Cloudflare 会自动创建 DNS 解析，无需手动添加。回到 Tunnels 列表能看到隧道状态为 **正常** 即配置成功。
 
 ### 第二步：生成 UUID
 
