@@ -46,7 +46,7 @@ flowchart TD
 - **Otomatik tetikleme varsayılanı kullanır**: her turun sonunda API parametresiz şekilde sonrakini başlatır, yani her otomatik tur 290 dakika sürer
 - Hızlı test için `5` yaz, günlük kullanımda boş bırak (290)
 - Alan adı ve UUID sabittir, istemciyi bir kez yapılandırman yeterli
-- Durdurmak için Actions'ta Cancel'e bas, otomatik yeniden başlamaz
+- Durdurmak için Actions'ta Cancel'e bas· iptalden sonra otomatik yeniden başlamaz
 
 ## Sabit Adresler
 
