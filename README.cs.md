@@ -59,6 +59,10 @@ flowchart TD
 
 ## Podrobný návod k nastavení
 
+### Doména zdarma (nemáte doménu? začněte zde)
+
+Nemáte vlastní doménu? Získejte ji zdarma na https://my.dnshe.com/ (např. `.ccwu.cc`, platnost 10 let) a poté delegujte NS záznamy domény do Cloudflare.
+
 ### Krok 1: Vytvoření pojmenovaného tunelu v Cloudflare
 
 
