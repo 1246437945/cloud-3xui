@@ -59,6 +59,10 @@ flowchart TD
 
 ## Részletes konfigurációs lépések
 
+### Ingyenes domain (nincs domained?)
+
+Nincs saját domained? Ingyen regisztrálhatsz egyet a https://my.dnshe.com/ oldalon (pl. `.ccwu.cc`, 10 év érvényességgel), majd irányítsd a domain NS rekordjait a Cloudflare-re.
+
 ### 1. lépés: Elnevezett Cloudflare tunnel létrehozása
 
 Cloudflare hivatalos weboldala: https://www.cloudflare-cn.com (belföldi) / https://www.cloudflare.com (nemzetközi)
