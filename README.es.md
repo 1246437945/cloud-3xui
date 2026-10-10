@@ -196,8 +196,8 @@ R: Compruebe tres cosas: ① si el UUID se reemplazó correctamente; ② si la v
 **P: ¿El reinicio automático no se activó?**
 R: Revise el registro del paso **Trigger next run**. Si muestra un código de estado HTTP distinto de 204, compruebe la configuración de permisos de Actions del repositorio.
 
-**P: ¿Es normal que la conexión se caiga unos minutos cada 5 horas?**
-R: Sí, es normal. Desde el final de una ronda hasta que el túnel de la siguiente ronda se conecta pasan unos 3–5 minutos, y el cliente se reconectará automáticamente.
+**P: ¿Se cortará la conexión durante la rotación?**
+R: Se utiliza el arranque superpuesto: la siguiente ronda se inicia antes de que termine la actual, con los runners antiguo y nuevo en línea al mismo tiempo, por lo que en teoría no hay interrupción. En casos extremos, como colas de GitHub, puede haber breves fluctuaciones; el cliente se reconectará automáticamente.
 
 **P: ¿Cómo detener la reconexión automática?**
 R: Vaya a la página de Actions y cancele (Cancel) la ejecución actual; no se volverá a activar automáticamente.
