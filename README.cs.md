@@ -33,12 +33,20 @@ flowchart TD
     B --> C["API 创建 VLESS+WS 入站"]
     C --> D["启动 Cloudflare 命名隧道"]
     D --> E["输出节点链接"]
-    E --> F["保活 290 分钟"]
-    F --> G["调用 API 触发下一轮"]
+    E --> F["Udržovat aktivní N minut<br/>(ruční zadání, výchozí 290)"]
+    F --> G["Volání API pro spuštění dalšího kola<br/>(s výchozí hodnotou 290)"]
     G --> A
 
     style G fill:#f6821f,color:#fff
 ```
+
+## Automatické prodloužení
+
+- **Délku udržení určujete vy**: při kliknutí na Run workflow ručně vyplňte `run_minutes`, poběží tolik minut, kolik zadáte; pokud pole necháte prázdné, použije se výchozí hodnota 290
+- **Automatické spuštění používá výchozí hodnotu**: na konci každého kola se volá API pro spuštění dalšího kola, volání API nenese žádné parametry, takže každé automaticky prodloužené kolo trvá 290 minut
+- Pro rychlý test vyplňte `5`, pro běžné použití nechte prázdné a použije se výchozí 290
+- Doména i UUID jsou pevné, konfigurace klienta stačí nastavit jednou a platí trvale
+- Pro zastavení přejděte do Actions a klikněte na Cancel, po zrušení se automaticky nerestartuje
 
 ## Pevné adresy
 
@@ -104,7 +112,7 @@ flowchart TD
 4. Ve vyskakovacím formuláři:
    - **Panel password**: nechte prázdné (automaticky se použije `PANEL_PASSWORD` secret)
      Heslo panelu (prázdné = použije se PANEL_PASSWORD secret)
-   - **Run duration**: výchozí `290` (minut), při prvním testu můžete zadat `5` pro rychlé ověření
+   - **Run duration**: výchozí `290` (minut), při prvním testu můžete zadat `5` pro rychlé ověření; pro běžné použití nechte prázdné
      Doba běhu (v minutách, výchozí 290, max. 340)
 5. Kliknutím na zelené **Run workflow** spustíte běh
 
