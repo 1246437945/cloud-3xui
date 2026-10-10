@@ -72,7 +72,7 @@ Panel de control: https://dash.cloudflare.com
 
 ```mermaid
 flowchart TD
-    A["控制台 → Zero Trust<br/>→ 网络（Networks）→ 连接器（Tunnels）"] --> B["右上角 创建隧道"]
+    A["控制台 → Zero Trust<br/>→ Redes (Networks) → Conectores (Tunnels)"] --> B["右上角 创建隧道"]
     B --> C["选 Cloudflared<br/>(推荐) → 选择 Cloudflared"]
     C --> D["输入隧道名称<br/>(例：github-3xui)<br/>→ 保存隧道"]
     D --> E["安装并运行连接器页<br/>复制 Token<br/>(eyJ 开头的一长串)"]
@@ -88,7 +88,7 @@ flowchart TD
 
 Pasos detallados:
 
-1. Abre el [panel de Cloudflare](https://dash.cloudflare.com) y ve a **Zero Trust** → **Networks** → **Tunnels** en el menú izquierdo
+1. Abre el [panel de Cloudflare](https://dash.cloudflare.com) y ve a **Zero Trust** → **Redes (Networks)** → **Conectores (Tunnels)** en el menú izquierdo
 2. Haz clic en **Create a tunnel** en la esquina superior derecha
 3. **Selecciona el tipo de túnel**: elige **Cloudflared** (recomendado) y haz clic en **Select Cloudflared**
 4. **Nombra el túnel**: escribe un nombre (p. ej. `github-3xui`) y haz clic en **Save tunnel**
@@ -106,7 +106,7 @@ Pasos detallados:
    - Dominio: elige tu dominio
    - Tipo: `HTTP`
    - URL: `127.0.0.1:2053`
-7. Guarda. Cloudflare crea los registros DNS automáticamente. Si en la lista de Tunnels el estado es **Healthy**, la configuración es correcta.
+7. Guarda. Cloudflare crea los registros DNS automáticamente. Si en la lista de conectores (Tunnels) el estado es **Healthy**, la configuración es correcta.
 
 
 ### Paso 2: Generar un UUID
