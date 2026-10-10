@@ -200,8 +200,8 @@ R: Verificați trei lucruri: ① dacă UUID-ul a fost înlocuit corect; ② dac�
 **Î: Repornirea automată nu s-a declanșat?**
 R: Consultați jurnalul pasului **Trigger next run**. Dacă afișează un cod de stare HTTP diferit de 204, verificați setările de permisiuni Actions ale repository-ului.
 
-**Î: Este normal să pice conexiunea câteva minute la fiecare 5 ore?**
-R: Normal. De la încheierea rundei anterioare până la conectarea tunelului din runda următoare durează circa 3-5 minute, clientul se reconectează automat.
+**Î: Se întrerupe conexiunea la rotație?**
+R: Folosim pornire suprapusă: runda următoare este declanșată înainte de încheierea celei curente, runner-ele vechi și nou sunt online simultan, teoretic insesizabil. În cazuri extreme (ex. coadă GitHub) pot apărea fluctuații scurte, clientul se reconectează automat.
 
 **Î: Doriți să opriți reînnoirea automată?**
 R: Mergeți la pagina Actions și faceți Cancel la rularea curentă, nu se va mai declanșa automat.
