@@ -125,6 +125,10 @@ Langkah detail:
      Kata sandi panel (jika dikosongkan menggunakan secret PANEL_PASSWORD)
    - **Run duration**: default `290` (menit), untuk pengujian pertama isi `5` untuk verifikasi cepat
      Durasi berjalan (menit, default 290, maksimal 340)
+   - **Countdown output interval**: interval keluaran hitung mundur, default `1`, isi `0` untuk menonaktifkan
+     Interval keluaran hitung mundur (default 1, isi 0 untuk menonaktifkan)
+   - **Countdown interval unit**: satuan interval hitung mundur, pilih `minutes` atau `seconds` dari dropdown
+     Satuan interval keluaran hitung mundur
 5. Klik tombol hijau **Run workflow** untuk mulai menjalankan
 
 ### Langkah 5: Mendapatkan link node
@@ -163,7 +167,7 @@ Langkah detail:
 | Install 3x-ui | Menginstal 3x-ui | Install 3x-ui | Menginstal panel secara non-interaktif dengan skrip resmi |
 | Create VLESS+WS inbound via API | Membuat inbound VLESS+WS via API | Create VLESS+WS inbound via API | Login dengan API Token, membuat inbound otomatis |
 | Start named Cloudflare tunnel | Memulai named tunnel Cloudflare | Start named Cloudflare tunnel | Menghubungkan ke tunnel domain tetap dengan Token |
-| Keep alive | Menjaga tetap hidup | Keep alive | Tidur selama jumlah menit yang ditentukan, memantau status layanan |
+| Keep alive | Menjaga tetap hidup | Keep alive | Tidur selama menit yang ditentukan, memeriksa status layanan setiap menit, menampilkan hitung mundur sesuai interval yang ditetapkan |
 | Trigger next run | Memicu eksekusi berikutnya | Trigger next run | Memanggil API untuk memicu putaran berikutnya secara otomatis |
 
 ## Pertanyaan Umum
