@@ -59,10 +59,6 @@ flowchart TD
 
 ## Detaylı Yapılandırma Adımları
 
-### Ücretsiz alan adı (alan adınız yok mu?)
-
-Kendi alan adınız yok mu? https://my.dnshe.com/ adresinden ücretsiz bir tane alabilirsiniz (örn. `.ccwu.cc`, 10 yıl geçerli), ardından alan adının NS kayıtlarını Cloudflare'e yönlendirin.
-
 ### Adım 1: Cloudflare Named Tunnel Oluşturun
 
 Resmi Cloudflare sitesi: https://www.cloudflare-cn.com (yerel) / https://www.cloudflare.com (uluslararası)
@@ -71,46 +67,42 @@ Kontrol paneli: https://dash.cloudflare.com
 
 ```mermaid
 flowchart TD
-    A["打开 Cloudflare Dashboard"] --> B["左侧 Zero Trust"]
-    B --> C["Networks → Tunnels"]
-    C --> D["右上角 Create a tunnel"]
-    D --> E["选 Cloudflared → 下一步"]
-    E --> F["起名（例：github-3xui）→ 保存"]
-    F --> G["复制 Token<br/>(eyJ 开头的一长串)"]
-    G --> H["下一步 → Public hostnames"]
-    H --> I["添加第一条<br/>vless.你的域名.com → HTTP → 127.0.0.1:8080"]
-    H --> J["添加第二条<br/>panel.你的域名.com → HTTP → 127.0.0.1:2053"]
-    I --> K["保存完成"]
-    J --> K
+    A["控制台 → Zero Trust<br/>→ Networks → Tunnels"] --> B["右上角 创建隧道"]
+    B --> C["选 Cloudflared<br/>(推荐) → 选择 Cloudflared"]
+    C --> D["输入隧道名称<br/>(例：github-3xui)<br/>→ 保存隧道"]
+    D --> E["安装并运行连接器页<br/>复制 Token<br/>(eyJ 开头的一长串)"]
+    E --> F["下一步 → 路由隧道<br/>→ 已发布应用程序路由"]
+    F --> G["添加已发布应用程序路由<br/>子域 vless + 你的域<br/>类型 HTTP → URL 127.0.0.1:8080"]
+    F --> H["添加已发布应用程序路由<br/>子域 panel + 你的域<br/>类型 HTTP → URL 127.0.0.1:2053"]
+    G --> I["保存完成"]
+    H --> I
 
-    style G fill:#f6821f,color:#fff
-    style K fill:#1f9d55,color:#fff
+    style E fill:#f6821f,color:#fff
+    style I fill:#1f9d55,color:#fff
 ```
 
-1. [Cloudflare Dashboard](https://dash.cloudflare.com) sayfasını açın, sol menüden **Zero Trust** bölümüne girin
-2. Solda **Networks** → **Tunnels**, sağ üstteki **Create a tunnel** düğmesine tıklayın
-3. **Cloudflared** türünü seçin, ileriye tıklayın
-4. Tünele bir ad verin (örneğin `github-3xui`), kaydedin
-5. Sayfada şu biçimde bir kurulum komutu görünür:
-   ```
-   cloudflared.exe service install eyJhIjoiYzEyNGI2...
-   ```
-   `eyJ` ile başlayan uzun karakter dizisini kopyalayın, bu **Tunnel Token**'dır, iyi saklayın
-6. İleriye tıklayıp **Public hostnames** (Yayınlanan Uygulama Yolları) bölümüne girin, **Add a public hostname** düğmesine tıklayıp iki tane ekleyin:
+Ayrıntılı adımlar:
+
+1. [Cloudflare Dashboard](https://dash.cloudflare.com) sayfasını açın, sol menüden **Zero Trust** → **Networks** → **Tunnels** bölümüne girin
+2. Sağ üst köşedeki **Tünel oluştur** düğmesine tıklayın
+3. **Tünel türünü seçin**: **Cloudflared**'i seçin (önerilen), **Cloudflared seç** düğmesine tıklayın
+4. **Tünele ad verin**: bir ad girin (örneğin `github-3xui`), **Tüneli kaydet** düğmesine tıklayın
+5. **Bağlayıcıyı kurun ve çalıştırın**: sayfada bir kurulum komutu görünür, `eyJ` ile başlayan uzun karakter dizisini (**Token**) kopyalayıp iyi saklayın (daha sonra GitHub Secret'e ekleyeceksiniz). Yerel olarak kurmanıza **gerek yok**, ileriye tıklayıp devam edin
+6. **Tüneli yönlendirin**: **Yayınlanan uygulama yolları** sekmesine girin, **Yayınlanan uygulama yolu ekle** düğmesine tıklayın ve iki tane ekleyin:
 
    **Birincisi (düğüm):**
-   - Subdomain (alt alan adı): `vless`
-   - Domain (alan adı): alan adınızı seçin
-   - Service Type (hizmet türü): `HTTP`
+   - Alt alan adı: `vless`
+   - Alan adı: alan adınızı seçin
+   - Tür: `HTTP`
    - URL: `127.0.0.1:8080`
 
    **İkincisi (panel):**
-   - Subdomain (alt alan adı): `panel`
-   - Domain (alan adı): alan adınızı seçin
-   - Service Type (hizmet türü): `HTTP`
+   - Alt alan adı: `panel`
+   - Alan adı: alan adınızı seçin
+   - Tür: `HTTP`
    - URL: `127.0.0.1:2053`
 
-7. Kaydedin. Cloudflare DNS çözümlemesini otomatik oluşturur, elle eklemenize gerek yok.
+7. Kaydedin. Cloudflare DNS çözümlemesini otomatik oluşturur, elle eklemenize gerek yok. Tunnels listesine dönün; tünel durumu **normal** ise yapılandırma başarılıdır.
 
 ### Adım 2: UUID Oluşturun
 
