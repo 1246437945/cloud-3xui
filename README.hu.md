@@ -125,6 +125,10 @@ Részletes lépések:
      Panel-jelszó (üresen hagyva a PANEL_PASSWORD secretet használja)
    - **Run duration**: alapértelmezett `290` (perc), az első teszthez megadhatsz `5`-öt a gyors ellenőrzéshez
      Futási idő (perc, alapértelmezett 290, maximum 340)
+   - **Countdown output interval**: visszaszámlálás kimeneti intervallum, alapértelmezett `1`, `0` a kikapcsoláshoz
+     Visszaszámlálás kimeneti intervallum (alapértelmezett 1, 0 a kikapcsoláshoz)
+   - **Countdown interval unit**: visszaszámlálás intervallum mértékegysége, válasszon `minutes` vagy `seconds` a legördülő menüből
+     Visszaszámlálás kimeneti intervallum mértékegysége
 5. Kattints a zöld **Run workflow** gombra a futtatás indításához
 
 ### 5. lépés: A csomópont-link lekérése
@@ -163,7 +167,7 @@ Részletes lépések:
 | Install 3x-ui | 3x-ui telepítése | Install 3x-ui | A panel nem interaktív telepítése a hivatalos szkripttel |
 | Create VLESS+WS inbound via API | VLESS+WS inbound létrehozása API-n keresztül | Create VLESS+WS inbound via API | Bejelentkezés API Tokennel, az inbound automatikus létrehozása |
 | Start named Cloudflare tunnel | Elnevezett Cloudflare tunnel indítása | Start named Cloudflare tunnel | Csatlakozás a fix domainű tunnelhez Tokennel |
-| Keep alive | Életben tartás | Keep alive | Alvás a megadott percszámig, a szolgáltatások állapotának figyelése |
+| Keep alive | Életben tartás | Keep alive | A megadott percig alszik, percenként ellenőrzi a szolgáltatások állapotát, a beállított időközönként kiírja a visszaszámlálást |
 | Trigger next run | A következő futtatás indítása | Trigger next run | API-hívás a következő kör automatikus elindításához |
 
 ## Gyakori kérdések
