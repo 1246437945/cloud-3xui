@@ -195,8 +195,8 @@ A: Zkontrolujte tři věci: ① zda je UUID nahrazeno správně; ② zda je verz
 **Q: Automatický restart se nespustil?**
 A: Podívejte se na log kroku **Trigger next run**. Pokud se zobrazí jiný HTTP stavový kód než 204, zkontrolujte nastavení oprávnění Actions v repozitáři.
 
-**Q: Je normální, že se každých 5 hodin na pár minut přeruší spojení?**
-A: Ano, je to normální. Od konce předchozího kola do připojení tunelu v dalším kole to trvá asi 3–5 minut, klient se automaticky znovu připojí.
+**Q: Dojde při rotaci k výpadku?**
+A: Používá se překrývající se start — další kolo se spustí ještě před koncem aktuálního, starý i nový runner běží současně, takže teoreticky nedojde k žádnému výpadku. V extrémních případech, např. při frontě GitHubu, může dojít ke krátkému kolísání; klient se automaticky znovu připojí.
 
 **Q: Chci zastavit automatické prodloužení?**
 A: Na stránce Actions zrušte (Cancel) aktuální běh a automaticky se už nic nespustí.
