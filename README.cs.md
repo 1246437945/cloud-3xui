@@ -31,7 +31,7 @@ Nastavení repozitáře Settings → Secrets and variables → Actions, přidejt
 |------|-------|
 | `CF_TUNNEL_TOKEN` | Token tunelu Cloudflare |
 | `PANEL_PASSWORD` | Heslo do panelu |
-| `VLESS_UUID` | UUID uzlu (pevné, pro klienty trvale platné; vygenerujte na https://1024tools.com/uuid/) |
+| `VLESS_UUID` | UUID uzlu (pevné, pro klienty trvale platné; vygenerujte na https://1024tools.com/uuid/, **Tento UUID si nezapomeňte poznamenat — v protokolech se nezobrazí v otevřené podobě a budete ho potřebovat při každém sestavování odkazu uzlu**) |
 
 ### 3. Spuštění
 
