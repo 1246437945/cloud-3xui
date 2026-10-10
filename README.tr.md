@@ -1,53 +1,172 @@
 [简体中文](README.md) | [English](README.en.md) | [Русский](README.ru.md) | [日本語](README.ja.md) | [한국어](README.ko.md) | [Español](README.es.md) | [العربية](README.ar.md) | [Čeština](README.cs.md) | [Dansk](README.da.md) | [Deutsch](README.de.md) | [Esperanto](README.eo.md) | [فارسی](README.fa.md) | [Suomi](README.fi.md) | [Français](README.fr.md) | [Ελληνικά](README.gr.md) | [Magyar](README.hu.md) | [Bahasa Indonesia](README.id.md) | [Italiano](README.it.md) | [മലയാളം](README.ml.md) | [Nederlands](README.nl.md) | [Norsk](README.no.md) | [Polski](README.pl.md) | [Português](README.ptbr.md) | [Română](README.ro.md) | [Türkçe](README.tr.md) | [Українська](README.ua.md) | [Tiếng Việt](README.vn.md)
 
-# cloud-3xui
+# ☁️ cloud-3xui — GitHub Ücretsiz VLESS Nodu
 
-GitHub Actions ücretsiz sunucularında 3x-ui düğümü (VLESS + WebSocket + TLS) kurun; sabit alan adı ve otomatik yenileme ile.
+GitHub Actions'in ücretsiz sunucularında 3x-ui paneli + VLESS nodu otomatik kurun; sabit alan adı, bağlantı kesilince otomatik yenileme.
 
-## Nasıl çalışır
+## Mimari Şeması
 
-Her çalıştırma, GitHub Ubuntu sunucusuna 3x-ui panelini otomatik kurar, panel API'si ile VLESS+WS inbound oluşturur ve ardından paneli ve düğümü Cloudflare adlandırılmış tünel (sabit alan adı) ile dışa açar. Her çalıştırma yaklaşık 5 saat sürer ve bitmeden otomatik olarak bir sonrakini tetikler — düğüm adresi asla değişmez.
+```mermaid
+flowchart LR
+    subgraph GitHub["GitHub Actions Runner (Ubuntu)"]
+        XUI["3x-ui 面板\n:2053"]
+        XRAY["Xray VLESS+WS\n:8080"]
+    end
+    subgraph CF["Cloudflare"]
+        TUN["命名隧道\n(固定域名)"]
+    end
+    USER["用户客户端\nv2rayN / NekoBox 等"]
 
-## Sabit adresler
+    XUI --> TUN
+    XRAY --> TUN
+    TUN --> USER
 
-- Düğüm: `vless.my-github.ccwu.cc:443` (VLESS + WS + TLS)
-- Panel: `https://panel.my-github.ccwu.cc/panel` (kullanıcı adı `admin`)
+    style TUN fill:#f6821f,color:#fff
+    style USER fill:#1f9d55,color:#fff
+```
 
-## İlk kurulum
+## Otomatik Yenileme Akışı
 
-### 1. Cloudflare adlandırılmış tünel
+```mermaid
+flowchart TD
+    A["手动 Run workflow\n(或上一轮自动触发)"] --> B["安装 3x-ui"]
+    B --> C["API 创建 VLESS+WS 入站"]
+    C --> D["启动 Cloudflare 命名隧道"]
+    D --> E["输出节点链接"]
+    E --> F["保活 290 分钟"]
+    F --> G["调用 API 触发下一轮"]
+    G --> A
 
-1. Cloudflare Dashboard → Zero Trust → Networks → Tunnels → Create tunnel (Cloudflared)
-2. Adlandırdıktan sonra token'ı kopyalayın (`eyJ` ile başlayan dize)
-3. Tünelin Public hostnames sekmesinde iki kayıt ekleyin:
-   - `vless.alanadiniz.com` → HTTP → `127.0.0.1:8080`
-   - `panel.alanadiniz.com` → HTTP → `127.0.0.1:2053`
+    style G fill:#f6821f,color:#fff
+```
 
-### 2. GitHub Secrets
+## Sabit Adresler
 
-Depoda: Settings → Secrets and variables → Actions, üç tane ekleyin:
+| Kullanım | Adres |
+|------|------|
+| Düğüm | `vless.my-github.ccwu.cc:443`（VLESS + WebSocket + TLS） |
+| Panel | `https://panel.my-github.ccwu.cc/panel`（kullanıcı adı `admin`） |
 
-| Name | Value |
-|------|-------|
-| `CF_TUNNEL_TOKEN` | Cloudflare tünel token'ı |
-| `PANEL_PASSWORD` | Panel giriş şifresi |
-| `VLESS_UUID` | Düğüm UUID'si (sabit, istemcide kalıcı geçerli, https://1024tools.com/uuid/ adresinden üretin, **Bu UUID'yi mutlaka kaydedin, loglarda açık metin olarak görünmez, düğüm bağlantısını her birleştirdiğinizde buna ihtiyacınız olacak**) |
+> ⚠️ Yukarıdaki alan adları örnektir, kendi alan adınızla değiştirin.
 
-### 3. Çalıştırma
+## Detaylı Yapılandırma Adımları
 
-Actions → 3x-ui VLESS Node → Run workflow (parametreler isteğe bağlı, secret'leri otomatik kullanır).
+### Adım 1: Cloudflare Named Tunnel Oluşturun
 
-Loglarda tam `vless://` bağlantısını bulup v2rayN / v2rayNG / Streisand / NekoBox içine aktarın.
+1. [Cloudflare Dashboard](https://dash.cloudflare.com) sayfasını açın, sol menüden **Zero Trust** bölümüne girin
+2. Solda **Networks** → **Tunnels**, sağ üstteki **Create a tunnel** düğmesine tıklayın
+3. **Cloudflared** türünü seçin, ileriye tıklayın
+4. Tünele bir ad verin (örneğin `github-3xui`), kaydedin
+5. Sayfada şu biçimde bir kurulum komutu görünür:
+   ```
+   cloudflared.exe service install eyJhIjoiYzEyNGI2...
+   ```
+   `eyJ` ile başlayan uzun karakter dizisini kopyalayın, bu **Tunnel Token**'dır, iyi saklayın
+6. İleriye tıklayıp **Public hostnames** (Yayınlanan Uygulama Yolları) bölümüne girin, **Add a public hostname** düğmesine tıklayıp iki tane ekleyin:
 
-## Otomatik yenileme
+   **Birincisi (düğüm):**
+   - Subdomain (alt alan adı): `vless`
+   - Domain (alan adı): alan adınızı seçin
+   - Service Type (hizmet türü): `HTTP`
+   - URL: `127.0.0.1:8080`
 
-- Her çalıştırma `run_minutes` dakika sürer (varsayılan 290), bitiminde otomatik olarak bir sonrakini tetikler
-- Alan adı ve UUID sabittir, istemciyi bir kez yapılandırmanız yeterli
-- Durdurmak için Actions'ta Cancel'e basın — iptalden sonra kendiliğinden yeniden başlamaz
+   **İkincisi (panel):**
+   - Subdomain (alt alan adı): `panel`
+   - Domain (alan adı): alan adınızı seçin
+   - Service Type (hizmet türü): `HTTP`
+   - URL: `127.0.0.1:2053`
+
+7. Kaydedin. Cloudflare DNS çözümlemesini otomatik oluşturur, elle eklemenize gerek yok.
+
+### Adım 2: UUID Oluşturun
+
+1. https://1024tools.com/uuid/ adresini açın
+2. Oluşturulan UUID'yi kopyalayın (örneğin `cbfc229f-9d34-4fef-9990-8baa82a7327b`)
+3. **Bu UUID'yi mutlaka not edin**; iş akışı günlüğünde açık metin olarak görünmez, düğüm bağlantısını her oluşturduğunuzda buna ihtiyacınız olur
+
+### Adım 3: GitHub'a Secrets Ekleyin
+
+1. Bu depoya girin, **Settings** sekmesine tıklayın
+2. Solda **Secrets and variables** → **Actions**
+3. Sağ üstteki **New repository secret** düğmesine tıklayın ve üçünü sırayla ekleyin:
+
+   | Name | Secret (değer) | Açıklama |
+   |------|-------------|------|
+   | `CF_TUNNEL_TOKEN` | 1. adımda kopyaladığınız Tunnel Token | Cloudflare tünel kimlik bilgisi |
+   | `PANEL_PASSWORD` | Belirlediğiniz panel şifresi | 3x-ui panel giriş şifresi |
+   | `VLESS_UUID` | 2. adımda oluşturduğunuz UUID | Düğüm UUID'si, sabit değişmez |
+
+### Adım 4: İş Akışını Çalıştırın
+
+1. Deponun üstündeki **Actions** sekmesine tıklayın
+2. Solda **3x-ui VLESS Node** öğesini seçin
+3. Sağdaki **Run workflow** düğmesine tıklayın
+4. Açılan formda:
+   - **Panel password**: boş bırakın (otomatik olarak `PANEL_PASSWORD` secret kullanılır)
+     Panel şifresi (boş bırakılırsa PANEL_PASSWORD secret kullanılır)
+   - **Run duration**: varsayılan `290` (dakika), ilk testte hızlı doğrulama için `5` yazabilirsiniz
+     Çalışma süresi (dakika, varsayılan 290, en fazla 340)
+5. Çalıştırmayı başlatmak için yeşil **Run workflow** düğmesine tıklayın
+
+### Adım 5: Düğüm Bağlantısını Alın
+
+1. Yaklaşık 2-3 dakika bekleyin, çalışan göreve tıklayıp detay sayfasına girin
+2. **Start named Cloudflare tunnel** adımını genişletin, günlük çıktısını inceleyin:
+   ```
+   ==================================================
+     面板 Panel: https://panel.my-github.ccwu.cc/panel  (admin / 你的密码 your password)
+
+     VLESS 节点 node:
+     vless://YOUR_UUID@vless.my-github.ccwu.cc:443?encryption=none&security=tls&sni=vless.my-github.ccwu.cc&type=ws&path=%2Fws#GitHub-3xui
+
+     把 YOUR_UUID 换成你在 VLESS_UUID secret 里填的 UUID
+     Replace YOUR_UUID with the UUID from your VLESS_UUID secret
+   ==================================================
+   ```
+3. `vless://` bağlantısını kopyalayın, `YOUR_UUID` kısmını kendi UUID'nizle değiştirin
+4. v2rayN / v2rayNG / Streisand / NekoBox gibi istemcilere yapıştırıp kullanın
+
+### Adım 6: Otomatik Yenilemeyi Doğrulayın (isteğe bağlı)
+
+1. İlk çalıştırmada süreyi `5` dakika olarak ayarlayın
+2. 5 dakika sonra son adım **Trigger next run** günlüğüne bakın, şunu göstermelidir:
+   ```
+   HTTP 204
+   已触发下一次运行 Next run triggered
+   ```
+3. Actions listesine dönün, otomatik tetiklenen yeni bir çalıştırma görünmelidir
+4. Doğruladıktan sonra yeniden çalıştırıp süreyi normal kullanım için `290` olarak değiştirin
+
+## İş Akışı Adımları Açıklaması
+
+| Adım | Türkçe | English | Açıklama |
+|------|--------|---------|------|
+| Install 3x-ui | 3x-ui kurun | Install 3x-ui | Resmi betikle etkileşimsiz panel kurulumu |
+| Create VLESS+WS inbound via API | API ile VLESS+WS inbound oluşturun | Create VLESS+WS inbound via API | API Token ile giriş, otomatik inbound oluşturma |
+| Start named Cloudflare tunnel | Cloudflare Named Tunnel başlatın | Start named Cloudflare tunnel | Token ile sabit alan adlı tünele bağlanın |
+| Keep alive | Canlı tut | Keep alive | Belirtilen dakika uyu, hizmet durumunu izle |
+| Trigger next run | Sonraki çalıştırmayı tetikle | Trigger next run | API çağrısıyla bir sonraki turu otomatik başlat |
+
+## Sık Sorulan Sorular
+
+**S: Günlükteki düğüm bağlantısında UUID `***` olarak görünüyor?**
+C: Bu GitHub'un secret koruma mekanizmasıdır. `YOUR_UUID` kısmını `VLESS_UUID` secret'ına girdiğiniz kendi UUID'nizle değiştirmeniz yeterli.
+
+**S: İstemci testi başarısız (-1)?**
+C: Üç şeyi kontrol edin: ① UUID doğru değiştirilmiş mi; ② istemci sürümü güncel mi (v2rayN 7.x+); ③ Cloudflare tüneli düzgün bağlanmış mı (günlüğe bakın).
+
+**S: Otomatik yeniden başlatma tetiklenmedi?**
+C: **Trigger next run** adımının günlüğüne bakın. 204 dışında bir HTTP durum kodu gösteriyorsa deponun Actions izin ayarlarını kontrol edin.
+
+**S: Her 5 saatte birkaç dakika kesinti normal mi?**
+C: Normal. Önceki turun bitiminden sonraki turun tüneli bağlanana kadar yaklaşık 3-5 dakika sürer, istemci otomatik yeniden bağlanır.
+
+**S: Otomatik yenilemeyi durdurmak mı istiyorsunuz?**
+C: Actions sayfasına gidip mevcut çalıştırmayı Cancel etmeniz yeterli, otomatik olarak tekrar tetiklenmez.
 
 ## Notlar
 
-- **Hız**: trafik Cloudflare → GitHub veri merkezleri (ABD/Avrupa) üzerinden geçer, yalnızca geçici / hafif kullanım için uygundur
-- **Kısa kesintiler**: her 5 saatteki otomatik yeniden başlatmada yaklaşık 3-5 dakikalık kesinti olur (yeni makinenin başlaması, 3x-ui kurulumu, tünelin yeniden bağlanması), istemci otomatik yeniden bağlanır
-- **Uyumluluk**: GitHub Actions'ta proxy çalıştırmak ToS'yi ihlal edebilir ve hesap yasağına yol açabilir, riski kendiniz değerlendirin
-- `CF_TUNNEL_TOKEN` / `PANEL_PASSWORD` / `VLESS_UUID` değerlerini herkese açık yerlerde **paylaşmayın**
+- **Hız**: Trafik Cloudflare → GitHub sunucuları (ABD/Avrupa) üzerinden geçer, yalnızca geçici/hafif kullanım için uygundur
+- **Kısa kesintiler**: Her 5 saatte otomatik yeniden başlatma geçişinde yaklaşık 3-5 dakika kesinti olur (yeni makine başlatma, 3x-ui kurulumu, tünel yeniden bağlanma), istemci otomatik yeniden bağlanıp kurtarır
+- **Uyumluluk**: GitHub Actions'ta proxy çalıştırmak ToS ihlali nedeniyle hesap kapatma riski taşır, kendiniz değerlendirin
+- **Güvenlik**: `CF_TUNNEL_TOKEN` / `PANEL_PASSWORD` / `VLESS_UUID` değerlerini herkese açık yerlerde paylaşmayın
