@@ -44,8 +44,8 @@ flowchart TD
 ## Renovação automática
 
 - **A duração é você quem decide**: ao executar Run workflow preencha `run_minutes` manualmente, dura os minutos informados; vazio usa o padrão 290
-- **Herança automática de parâmetros**: cada ciclo repassa `run_minutes` / `countdown_interval` / `countdown_unit` para o próximo, toda a cadeia usa os valores que você preencheu inicialmente
-- **Inicialização sobreposta (transição perfeita)**: 5 minutos antes do fim de cada ciclo, o próximo é iniciado antecipadamente, runner antigo e novo ficam online simultaneamente, o túnel Cloudflare suporta múltiplas conexões, o tráfego é direcionado automaticamente para as conexões disponíveis, o usuário quase não percebe a saída do ciclo antigo (para testes curtos ≤6 minutos, inicia 30 segundos antes)
+- **Herança automática de parâmetros**: cada ciclo repassa `run_minutes` / `countdown_interval` / `countdown_unit` / `overlap_threshold` / `overlap_long` / `overlap_short` para o próximo, toda a cadeia usa os valores que você preencheu inicialmente
+- **Inicialização sobreposta (transição perfeita)**: aciona antecipadamente a próxima execução antes que a atual termine, runners antigos e novos ficam online simultaneamente, o túnel Cloudflare suporta múltiplas conexões, o tráfego é distribuído automaticamente para as conexões disponíveis, o usuário quase não percebe a saída do ciclo antigo. O momento do acionamento é configurável: keep-alive maior que `overlap_threshold` (padrão 5 minutos) conta como execução longa, acionada `overlap_long` (padrão 5 minutos) antes; menor conta como execução curta, acionada `overlap_short` (padrão 30 segundos) antes
 - Para teste rápido digite `5`, para uso diário deixe vazio (290)
 - Domínio e UUID são fixos, configure o cliente uma única vez
 - Para parar clique Cancel em Actions· após o cancelamento não reiniciará sozinho
@@ -138,6 +138,12 @@ Etapas detalhadas:
      Intervalo de exibição da contagem regressiva (padrão 1, 0 para desativar)
    - **Countdown interval unit**: unidade do intervalo da contagem regressiva, selecione `minutes` ou `seconds` no menu suspenso
      Unidade do intervalo de exibição da contagem regressiva
+   - **Overlap threshold**: limite de sobreposição (minutos, padrão `5`), keep-alive maior que isso conta como execução longa
+     Limite de sobreposição (minutos, padrão 5): keep-alive maior que isso conta como execução longa
+   - **Overlap long**: minutos de acionamento antecipado para execuções longas (padrão `5`)
+     Minutos de acionamento antecipado para execuções longas (padrão 5)
+   - **Overlap short**: segundos de acionamento antecipado para execuções curtas (padrão `30`)
+     Segundos de acionamento antecipado para execuções curtas (padrão 30)
 5. Clique no botão verde **Run workflow** para iniciar
 
 ### Etapa 5: Obter o link do nó
