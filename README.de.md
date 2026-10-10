@@ -195,8 +195,8 @@ A: Prüfe drei Dinge: ① ob die UUID korrekt ersetzt wurde; ② ob die Client-V
 **Q: Der automatische Neustart wurde nicht ausgelöst?**
 A: Sieh dir das Log des Schritts **Trigger next run** an. Wenn ein anderer HTTP-Statuscode als 204 angezeigt wird, prüfe die Actions-Berechtigungseinstellungen des Repositorys.
 
-**Q: Ist es normal, dass die Verbindung alle 5 Stunden für einige Minuten abbricht?**
-A: Ja, das ist normal. Vom Ende der vorherigen Runde bis zur Tunnelverbindung in der nächsten Runde dauert es etwa 3–5 Minuten, der Client verbindet sich automatisch neu.
+**F: Bricht die Verbindung bei der Rotation ab?**
+A: Es wird ein überlappender Start verwendet — die nächste Runde wird gestartet, bevor die aktuelle endet; alte und neue Runner sind gleichzeitig online, sodass theoretisch keine Unterbrechung auftritt. In Extremfällen, z. B. bei GitHub-Warteschlangen, kann es zu kurzen Schwankungen kommen; der Client verbindet sich automatisch neu.
 
 **Q: Die automatische Verlängerung stoppen?**
 A: Gehe auf die Actions-Seite und brich (Cancel) den aktuellen Lauf ab – danach wird nichts mehr automatisch ausgelöst.
