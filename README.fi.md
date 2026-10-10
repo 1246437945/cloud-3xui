@@ -33,9 +33,10 @@ flowchart TD
     B --> C["API 创建 VLESS+WS 入站"]
     C --> D["启动 Cloudflare 命名隧道"]
     D --> E["输出节点链接"]
-    E --> F["Pidä elossa N minuuttia<br/>(manuaalinen syöte, oletus 290)"]
-    F --> G["Kutsu API:ia käynnistääksesi seuraavan kierroksen<br/>(oletusarvolla 290)"]
-    G --> A
+    E --> F["保活 N 分钟<br/>(手动输入，默认 290)"]
+    F --> G["结束前 5 分钟<br/>提前触发下一轮"]
+    G --> H["新旧 runner 重叠运行<br/>流量无缝切换"]
+    H --> A
 
     style G fill:#f6821f,color:#fff
 ```
@@ -43,8 +44,9 @@ flowchart TD
 ## Automaattinen elvytys
 
 - **Elossaoloaika on sinun päätettävissäsi**: syötä `run_minutes` manuaalisesti, kun napsautat Run workflow – mitä syötät, niin monta minuuttia se toimii; jos jätät tyhjäksi, käytetään oletusarvoa 290
-- **Automaattinen käynnistys käyttää oletusarvoa**: kunkin kierroksen lopussa seuraava kierros käynnistetään kutsumalla API:ia; API-käynnistys ei sisällä parametreja, joten jokainen automaattisen elvytyksen kierros kestää 290 minuuttia
+- **Parametrit periytyvät automaattisesti**: jokainen kierros välittää `run_minutes` / `countdown_interval` / `countdown_unit` seuraavalle kierrokselle API:n kautta, joten koko ketju säilyttää ensimmäisellä kerralla syöttämäsi arvot
 - Jos haluat kokeilla väliaikaisesti, syötä `5`; normaalikäytössä jätä tyhjäksi, niin käytetään oletusta 290
+- **Päällekkäinen käynnistys (saumaton vaihto)**: 5 minuuttia ennen nykyisen kierroksen päättymistä seuraava kierros käynnistetään etukäteen; vanha ja uusi runner toimivat yhtä aikaa, Cloudflare-tunnelit tukevat useita yhteyksiä, liikenne ohjataan automaattisesti käytettävissä oleviin yhteyksiin, joten käyttäjät tuskin huomaavat vanhan kierroksen päättyvän (lyhyissä ≤6 minuutin testeissä käynnistys tapahtuu 30 sekuntia etukäteen)
 - Verkkotunnus ja UUID ovat kiinteät – määritä asiakasohjelma kerran, niin se toimii pysyvästi
 - Jos haluat pysäyttää, siirry Actions-sivulle ja napsauta Cancel – peruutuksen jälkeen se ei enää käynnisty automaattisesti
 
@@ -199,6 +201,6 @@ V: Siirry Actions-sivulle ja peruuta (Cancel) nykyinen ajo – se ei enää käy
 ## Huomioitavaa
 
 - **Nopeus**: liikenne kulkee Cloudflare → GitHubin palvelinkeskukset (Yhdysvallat/Eurooppa) -reitin kautta, sopii vain tilapäiseen/kevyeen käyttöön
-- **Lyhyt katkos**: jokaisen automaattisen uudelleenkäynnistyksen vaihdon yhteydessä on noin 3–5 minuutin katkos (uuden koneen käynnistys, 3x-ui:n asennus, tunnelin uudelleenyhdistys), asiakasohjelma yhdistää automaattisesti uudelleen
+- **Saumaton vaihto**: käytetään päällekkäistä käynnistystä — seuraava kierros käynnistetään 5 minuuttia ennen kunkin kierroksen päättymistä, vanha ja uusi runner ovat yhtä aikaa verkossa, joten käyttäjät eivät teoriassa huomaa mitään; äärimmäisissä tapauksissa (esim. GitHub-jono) voi silti esiintyä lyhyitä vaihteluita
 - **Sääntöjenmukaisuus**: välityspalvelimen ajaminen GitHub Actionsissa saattaa rikkoa käyttöehtoja ja aiheuttaa tilin jäädytyksen riskin; arvioi itse
 - **Turvallisuus**: älä julkaise `CF_TUNNEL_TOKEN` / `PANEL_PASSWORD` / `VLESS_UUID` julkisesti
