@@ -31,7 +31,7 @@ Dans le dépôt : Settings → Secrets and variables → Actions, ajoutez-en tro
 |------|-------|
 | `CF_TUNNEL_TOKEN` | Token du tunnel Cloudflare |
 | `PANEL_PASSWORD` | Mot de passe de connexion au panneau |
-| `VLESS_UUID` | UUID du nœud (fixe, valable en permanence dans le client, générez-en un vous-même sur https://1024tools.com/uuid/) |
+| `VLESS_UUID` | UUID du nœud (fixe, valable en permanence dans le client, générez-en un vous-même sur https://1024tools.com/uuid/, **Notez bien cet UUID : il n'apparaîtra pas en clair dans les journaux, et vous en aurez besoin à chaque fois que vous assemblerez le lien du nœud**) |
 
 ### 3. Exécution
 
