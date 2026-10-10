@@ -41,7 +41,7 @@ jobs:
         run: |
           sudo apt-get install -y -qq python3-requests > /dev/null 2>&1 || pip install -q requests
           python3 << 'PYEOF'
-          import requests, json, uuid, time, sys, subprocess
+          import requests, json, uuid, time, sys, os, subprocess
 
           PANEL = f"http://127.0.0.1:${{ env.PANEL_PORT }}/panel"
           WS_PORT = int("${{ env.WS_PORT }}")
