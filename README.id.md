@@ -59,6 +59,10 @@ flowchart TD
 
 ## Langkah Konfigurasi Detail
 
+### Domain gratis (belum punya domain?)
+
+Belum punya domain sendiri? Anda bisa mendaftarkan satu secara gratis di https://my.dnshe.com/ (misalnya `.ccwu.cc`, berlaku 10 tahun), lalu arahkan NS domain tersebut ke Cloudflare.
+
 ### Langkah 1: Membuat named tunnel Cloudflare
 
 Situs resmi Cloudflare: https://www.cloudflare-cn.com (domestik) / https://www.cloudflare.com (internasional)
