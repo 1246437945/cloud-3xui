@@ -194,8 +194,8 @@ A: Check three things: ① whether the UUID was replaced correctly; ② whether 
 **Q: The automatic restart didn't trigger?**
 A: Check the log of the **Trigger next run** step. If it shows an HTTP status code other than 204, check the repository's Actions permission settings.
 
-**Q: Is it normal for the connection to drop for a few minutes every 5 hours?**
-A: Yes, that's normal. It takes about 3–5 minutes from the end of one round until the tunnel of the next round is connected, and the client will reconnect automatically.
+**Q: Will the connection drop during rotation?**
+A: Overlapping startup is used — the next round is launched before the current one ends, with old and new runners online simultaneously, so in theory it is seamless. In extreme cases such as GitHub queueing there may be brief fluctuations; the client will reconnect automatically.
 
 **Q: Want to stop the automatic keep-alive?**
 A: Just go to the Actions page and Cancel the current run — it won't trigger again automatically.
