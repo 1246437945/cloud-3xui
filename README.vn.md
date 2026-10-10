@@ -34,8 +34,9 @@ flowchart TD
     C --> D["启动 Cloudflare 命名隧道"]
     D --> E["输出节点链接"]
     E --> F["保活 N 分钟<br/>(手动输入，默认 290)"]
-    F --> G["调用 API 触发下一轮<br/>(用默认值 290)"]
-    G --> A
+    F --> G["结束前 5 分钟<br/>提前触发下一轮"]
+    G --> H["新旧 runner 重叠运行<br/>流量无缝切换"]
+    H --> A
 
     style G fill:#f6821f,color:#fff
 ```
@@ -43,7 +44,8 @@ flowchart TD
 ## Tự động gia hạn
 
 - **Thời gian do bạn quyết định**: khi Run workflow hãy nhập tay `run_minutes`, chạy đúng số phút đã nhập; để trống sẽ dùng mặc định 290
-- **Kích hoạt tự động dùng mặc định**: cuối mỗi lượt API sẽ kích hoạt lượt tiếp theo mà không kèm tham số, nên mỗi lượt tự động đều là 290 phút
+- **Kế thừa tham số tự động**: mỗi lượt sẽ truyền `run_minutes` / `countdown_interval` / `countdown_unit` sang lượt tiếp theo, cả chuỗi dùng giá trị bạn nhập ban đầu
+- **Khởi động chồng lấp (chuyển đổi liền mạch)**: 5 phút trước khi mỗi lượt kết thúc, lượt tiếp theo được kích hoạt sớm, runner cũ và mới cùng online, tunnel Cloudflare hỗ trợ nhiều kết nối, lưu lượng tự động chuyển sang các kết nối khả dụng, người dùng gần như không cảm nhận được lượt cũ thoát ra (với test ngắn ≤6 phút thì kích hoạt sớm 30 giây)
 - Muốn test nhanh thì nhập `5`, dùng hàng ngày thì để trống (290)
 - Domain và UUID cố định, cấu hình client một lần là xong
 - Muốn dừng thì bấm Cancel trong Actions· sau khi hủy sẽ không tự khởi động lại
@@ -201,6 +203,6 @@ Các bước chi tiết:
 ## Lưu Ý
 
 - **Tốc độ**: Lưu lượng đi qua Cloudflare → máy chủ GitHub (Mỹ/Châu Âu), chỉ phù hợp dùng tạm thời/nhẹ
-- **Gián đoạn ngắn**: Mỗi 5 giờ khi tự động khởi động lại chuyển giao, đứt khoảng 3-5 phút (khởi động máy mới, cài 3x-ui, kết nối lại tunnel), ứng dụng khách sẽ tự động kết nối lại
+- **Chuyển đổi liền mạch**: với khởi động chồng lấp, mỗi lượt kích hoạt lượt tiếp theo sớm 5 phút, runner cũ và mới cùng online, về lý thuyết người dùng không cảm nhận gì; trong trường hợp cực đoan (ví dụ hàng đợi GitHub) vẫn có thể có dao động ngắn
 - **Tuân thủ**: Chạy proxy trên GitHub Actions có nguy cơ vi phạm ToS bị khóa tài khoản, tự đánh giá
 - **Bảo mật**: Đừng đăng `CF_TUNNEL_TOKEN` / `PANEL_PASSWORD` / `VLESS_UUID` ở nơi công khai
