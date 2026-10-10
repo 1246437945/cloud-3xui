@@ -104,7 +104,7 @@ flowchart TD
 4. 在弹出的表单中：
    - **Panel password**：留空（自动使用 `PANEL_PASSWORD` secret）
      面板密码（留空则使用 PANEL_PASSWORD secret）
-   - **Run duration**：默认 `290`（分钟），首次测试可填 `5` 快速验证
+   - **Run duration**：默认 `290`（分钟），首次测试可填 `5` 快速验证；日常使用留空即可
      运行时长（分钟，默认 290，最多 340）
 5. 点击绿色的 **Run workflow** 开始运行
 
