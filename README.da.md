@@ -33,9 +33,10 @@ flowchart TD
     B --> C["API 创建 VLESS+WS 入站"]
     C --> D["启动 Cloudflare 命名隧道"]
     D --> E["输出节点链接"]
-    E --> F["Hold i live i N minutter<br/>(manuel indtastning, standard 290)"]
-    F --> G["Kald API for at udløse næste runde<br/>(med standardværdien 290)"]
-    G --> A
+    E --> F["保活 N 分钟<br/>(手动输入，默认 290)"]
+    F --> G["结束前 5 分钟<br/>提前触发下一轮"]
+    G --> H["新旧 runner 重叠运行<br/>流量无缝切换"]
+    H --> A
 
     style G fill:#f6821f,color:#fff
 ```
@@ -43,8 +44,9 @@ flowchart TD
 ## Automatisk fornyelse
 
 - **Varigheden bestemmer du**: når du klikker på Run workflow, udfyld manuelt `run_minutes` – det kører det antal minutter, du indtaster; lader du det stå tomt, bruges standardværdien 290
-- **Automatisk udløsning bruger standardværdien**: ved slutningen af hver runde kaldes API'et for at starte næste runde, og API-kaldet medtager ingen parametre, så hver automatisk fornyet runde er 290 minutter
+- **Parametre nedarves automatisk**: hver kørsel sender `run_minutes` / `countdown_interval` / `countdown_unit` videre til næste kørsel via API’en, så hele kæden bruger de værdier, du indtastede først
 - Til en hurtig test skriv `5`; til daglig brug lad det stå tomt og brug standard 290
+- **Overlappende opstart (sømløst skift)**: 5 minutter før den aktuelle kørsel slutter, startes den næste kørsel på forhånd; gamle og nye runners kører samtidigt, Cloudflare-tunneler understøtter flere forbindelser, trafik dirigeres automatisk til tilgængelige forbindelser, så brugerne næsten ikke mærker, når den gamle kørsel afsluttes (ved korte tests ≤6 minutter startes den 30 sekunder før)
 - Domænet og UUID er faste, så klientkonfigurationen gælder permanent efter én opsætning
 - Vil du stoppe, så gå til Actions og klik på Cancel – efter annullering genstartes det ikke automatisk
 
@@ -203,6 +205,6 @@ A: Gå til Actions-siden og annuller (Cancel) den aktuelle kørsel – så udlø
 ## Bemærkninger
 
 - **Hastighed**: trafikken går via Cloudflare → GitHubs datacentre (USA/Europa), kun egnet til midlertidig/let brug
-- **Kort afbrydelse**: ved den automatiske genstart hver 5. time afbrydes forbindelsen i ca. 3-5 minutter (ny maskine starter, 3x-ui installeres, tunnelen genforbindes), klienten genopretter automatisk
+- **Sømløst skift**: overlappende opstart anvendes — næste kørsel startes 5 minutter før hver kørsel slutter, gamle og nye runners er online samtidigt, så brugerne bemærker i teorien intet; i ekstreme tilfælde (f.eks. GitHub-kø) kan der stadig forekomme korte udsving
 - **Overholdelse**: at køre proxy på GitHub Actions kan overtræde ToS og føre til kontosuspension – vurder selv
 - **Sikkerhed**: offentliggør ikke `CF_TUNNEL_TOKEN` / `PANEL_PASSWORD` / `VLESS_UUID`
