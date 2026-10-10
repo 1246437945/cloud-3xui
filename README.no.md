@@ -59,10 +59,6 @@ flowchart TD
 
 ## Detaljerte konfigurasjonstrinn
 
-### Gratis domene (har du ikke domene?)
-
-Har du ikke eget domene? Du kan registrere et gratis på https://my.dnshe.com/ (f.eks. `.ccwu.cc`, gyldig i 10 år), og deretter peke domenets NS til Cloudflare.
-
 ### Trinn 1: Opprette en navngitt tunnel i Cloudflare
 
 Cloudflares offisielle nettsted: https://www.cloudflare-cn.com (innenlands) / https://www.cloudflare.com (internasjonalt)
@@ -71,32 +67,28 @@ Kontrollpanel: https://dash.cloudflare.com
 
 ```mermaid
 flowchart TD
-    A["打开 Cloudflare Dashboard"] --> B["左侧 Zero Trust"]
-    B --> C["Networks → Tunnels"]
-    C --> D["右上角 Create a tunnel"]
-    D --> E["选 Cloudflared → 下一步"]
-    E --> F["起名（例：github-3xui）→ 保存"]
-    F --> G["复制 Token<br/>(eyJ 开头的一长串)"]
-    G --> H["下一步 → Public hostnames"]
-    H --> I["添加第一条<br/>vless.你的域名.com → HTTP → 127.0.0.1:8080"]
-    H --> J["添加第二条<br/>panel.你的域名.com → HTTP → 127.0.0.1:2053"]
-    I --> K["保存完成"]
-    J --> K
+    A["控制台 → Zero Trust<br/>→ Networks → Tunnels"] --> B["右上角 创建隧道"]
+    B --> C["选 Cloudflared<br/>(推荐) → 选择 Cloudflared"]
+    C --> D["输入隧道名称<br/>(例：github-3xui)<br/>→ 保存隧道"]
+    D --> E["安装并运行连接器页<br/>复制 Token<br/>(eyJ 开头的一长串)"]
+    E --> F["下一步 → 路由隧道<br/>→ 已发布应用程序路由"]
+    F --> G["添加已发布应用程序路由<br/>子域 vless + 你的域<br/>类型 HTTP → URL 127.0.0.1:8080"]
+    F --> H["添加已发布应用程序路由<br/>子域 panel + 你的域<br/>类型 HTTP → URL 127.0.0.1:2053"]
+    G --> I["保存完成"]
+    H --> I
 
-    style G fill:#f6821f,color:#fff
-    style K fill:#1f9d55,color:#fff
+    style E fill:#f6821f,color:#fff
+    style I fill:#1f9d55,color:#fff
 ```
 
-1. Åpne [Cloudflare-dashboardet](https://dash.cloudflare.com) og gå til **Zero Trust** i menyen til venstre
-2. Gå til **Networks** → **Tunnels** til venstre, og klikk **Create a tunnel** øverst til høyre
-3. Velg typen **Cloudflared** og klikk neste
-4. Gi tunnelen et navn (f.eks. `github-3xui`) og lagre
-5. Siden viser en installasjonskommando, for eksempel:
-   ```
-   cloudflared.exe service install eyJhIjoiYzEyNGI2...
-   ```
-   Kopier den lange tegnstrengen som starter med `eyJ` — dette er **Tunnel Token** — og ta godt vare på den
-6. Klikk neste for å gå til **Public hostnames** (publiserte applikasjonsruter), og klikk **Add a public hostname** for å legge til to:
+Detaljerte trinn:
+
+1. Åpne [Cloudflare-dashboardet](https://dash.cloudflare.com) og gå til **Zero Trust** → **Networks** → **Tunnels** i menyen til venstre
+2. Klikk på **Opprett tunnel** øverst til høyre
+3. **Velg tunneltype**: velg **Cloudflared** (anbefalt) og klikk på **Velg Cloudflared**
+4. **Gi tunnelen et navn**: skriv inn et navn (f.eks. `github-3xui`) og klikk på **Lagre tunnel**
+5. **Installer og kjør kontakten**: siden viser en installasjonskommando. Kopier den lange tegnstrengen som starter med `eyJ` — dette er **Token** — og ta godt vare på den (den skal lagres som en GitHub Secret senere). Du trenger **ikke** å installere noe lokalt; klikk neste for å fortsette
+6. **Rute tunnelen**: gå til fanen **publiserte applikasjonsruter** og klikk på **Legg til publisert applikasjonsrute** for å legge til to:
 
    **Første (node):**
    - Subdomain (underdomene): `vless`
@@ -110,7 +102,7 @@ flowchart TD
    - Service Type (tjenestetype): `HTTP`
    - URL: `127.0.0.1:2053`
 
-7. Lagre. Cloudflare oppretter DNS-oppføringer automatisk — ingen manuell tilføying er nødvendig.
+7. Lagre. Cloudflare oppretter DNS-oppføringer automatisk — ingen manuell tilføying er nødvendig. Når tunnelstatusen i Tunnels-listen er **sunn**, er konfigurasjonen vellykket.
 
 ### Trinn 2: Generere en UUID
 
