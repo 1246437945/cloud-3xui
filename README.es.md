@@ -33,9 +33,10 @@ flowchart TD
     B --> C["API 创建 VLESS+WS 入站"]
     C --> D["启动 Cloudflare 命名隧道"]
     D --> E["输出节点链接"]
-    E --> F["Mantener vivo N minutos<br/>(entrada manual, predeterminado 290)"]
-    F --> G["Llamar a la API para iniciar la siguiente ronda<br/>(con el valor predeterminado 290)"]
-    G --> A
+    E --> F["保活 N 分钟<br/>(手动输入，默认 290)"]
+    F --> G["结束前 5 分钟<br/>提前触发下一轮"]
+    G --> H["新旧 runner 重叠运行<br/>流量无缝切换"]
+    H --> A
 
     style G fill:#f6821f,color:#fff
 ```
@@ -43,8 +44,9 @@ flowchart TD
 ## Reconexión automática
 
 - **Usted fija la duración**: al hacer clic en Run workflow, escriba `run_minutes` manualmente; se ejecutará tantos minutos como indique; si lo deja vacío, se usará el valor predeterminado 290
-- **Los disparos automáticos usan el valor predeterminado**: al final de cada ronda se llama a la API para iniciar la siguiente; la llamada a la API no lleva parámetros, por lo que cada ronda automática dura 290 minutos
+- **Herencia automática de parámetros**: cada ronda pasa `run_minutes` / `countdown_interval` / `countdown_unit` a la siguiente a través de la API, por lo que toda la cadena mantiene los valores que ingresaste al principio
 - Para una prueba rápida escriba `5`; para el uso diario, déjelo vacío y se usará el valor predeterminado 290
+- **Arranque superpuesto (cambio sin interrupciones)**: 5 minutos antes del final de la ronda actual, se inicia anticipadamente la siguiente ronda; los runners antiguo y nuevo funcionan simultáneamente, los túneles de Cloudflare admiten múltiples conexiones, el tráfico se dirige automáticamente a las conexiones disponibles, por lo que los usuarios apenas notan la salida de la ronda anterior (para pruebas cortas de ≤6 minutos, se inicia 30 segundos antes)
 - El dominio y el UUID son fijos: configure el cliente una vez y valdrá para siempre
 - Para detenerlo, vaya a Actions y pulse Cancel; una vez cancelado, no se reiniciará automáticamente
 
@@ -200,6 +202,6 @@ R: Vaya a la página de Actions y cancele (Cancel) la ejecución actual; no se v
 ## Notas
 
 - **Velocidad**: el tráfico pasa por Cloudflare → centros de datos de GitHub (EE. UU./Europa), por lo que solo es apto para uso temporal/ligero
-- **Interrupciones breves**: en cada relevo de reinicio automático cada 5 horas hay unos 3–5 minutos de corte (arranque de la nueva máquina, instalación de 3x-ui, reconexión del túnel); el cliente se reconectará automáticamente
+- **Cambio sin interrupciones**: se utiliza el arranque superpuesto — la siguiente ronda se lanza 5 minutos antes del final de cada ronda, los runners antiguo y nuevo están en línea simultáneamente, por lo que en teoría los usuarios no notan nada; en casos extremos (p. ej., cola de GitHub) aún puede haber fluctuaciones breves
 - **Cumplimiento**: ejecutar un proxy en GitHub Actions conlleva el riesgo de violar los ToS y que le suspendan la cuenta; evalúelo usted mismo
 - **Seguridad**: no publique `CF_TUNNEL_TOKEN` / `PANEL_PASSWORD` / `VLESS_UUID` en ningún lugar público
