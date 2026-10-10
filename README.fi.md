@@ -44,9 +44,9 @@ flowchart TD
 ## Automaattinen elvytys
 
 - **Elossaoloaika on sinun päätettävissäsi**: syötä `run_minutes` manuaalisesti, kun napsautat Run workflow – mitä syötät, niin monta minuuttia se toimii; jos jätät tyhjäksi, käytetään oletusarvoa 290
-- **Parametrit periytyvät automaattisesti**: jokainen kierros välittää `run_minutes` / `countdown_interval` / `countdown_unit` seuraavalle kierrokselle API:n kautta, joten koko ketju säilyttää ensimmäisellä kerralla syöttämäsi arvot
+- **Parametrit periytyvät automaattisesti**: jokainen kierros välittää `run_minutes` / `countdown_interval` / `countdown_unit` / `overlap_threshold` / `overlap_long` / `overlap_short` seuraavalle kierrokselle API:n kautta, joten koko ketju säilyttää ensimmäisellä kerralla syöttämäsi arvot
 - Jos haluat kokeilla väliaikaisesti, syötä `5`; normaalikäytössä jätä tyhjäksi, niin käytetään oletusta 290
-- **Päällekkäinen käynnistys (saumaton vaihto)**: 5 minuuttia ennen nykyisen kierroksen päättymistä seuraava kierros käynnistetään etukäteen; vanha ja uusi runner toimivat yhtä aikaa, Cloudflare-tunnelit tukevat useita yhteyksiä, liikenne ohjataan automaattisesti käytettävissä oleviin yhteyksiin, joten käyttäjät tuskin huomaavat vanhan kierroksen päättyvän (lyhyissä ≤6 minuutin testeissä käynnistys tapahtuu 30 sekuntia etukäteen)
+- **Päällekkäinen käynnistys (saumaton vaihto)**: seuraava kierros käynnistetään etukäteen ennen nykyisen kierroksen päättymistä; vanha ja uusi runner toimivat yhtä aikaa, Cloudflare-tunnelit tukevat useita yhteyksiä, liikenne ohjataan automaattisesti käytettävissä oleviin yhteyksiin, joten käyttäjät tuskin huomaavat vanhan kierroksen päättymistä. Käynnistysajankohta on säädettävissä: `overlap_threshold` (oletus 5 minuuttia) pidempi keep-alive on pitkä kierros ja käynnistää `overlap_long` (oletus 5 minuuttia) etukäteen; lyhyemmät ovat lyhyitä kierroksia ja käynnistävät `overlap_short` (oletus 30 sekuntia) etukäteen
 - Verkkotunnus ja UUID ovat kiinteät – määritä asiakasohjelma kerran, niin se toimii pysyvästi
 - Jos haluat pysäyttää, siirry Actions-sivulle ja napsauta Cancel – peruutuksen jälkeen se ei enää käynnisty automaattisesti
 
@@ -139,6 +139,9 @@ Yksityiskohtaiset vaiheet:
    - **Run duration**: oletus `290` (minuuttia); ensimmäisessä testissä voit syöttää `5` nopeaa varmennusta varten; normaalikäytössä jätä tyhjäksi
    - **Countdown output interval**: Lähtölaskennan tulostusväli, oletus `1`, poista käytöstä syöttämällä `0`
    - **Countdown interval unit**: Lähtölaskennan tulostusvälin yksikkö, valitse `minutes` tai `seconds` pudotusvalikosta
+   - **Overlap threshold**: Päällekkäisyyden raja (minuuttia, oletus `5`) — tätä pidempi keep-alive on pitkä kierros
+   - **Overlap long**: Kuinka monta minuuttia ennen loppua seuraava kierros käynnistetään pitkillä kierroksilla (oletus `5`)
+   - **Overlap short**: Kuinka monta sekuntia ennen loppua seuraava kierros käynnistetään lyhyillä kierroksilla (oletus `30`)
      Ajoaika (minuuttia, oletus 290, enintään 340)
 5. Napsauta vihreää **Run workflow**-painiketta aloittaaksesi ajon.
 
