@@ -33,12 +33,20 @@ flowchart TD
     B --> C["API 创建 VLESS+WS 入站"]
     C --> D["启动 Cloudflare 命名隧道"]
     D --> E["输出节点链接"]
-    E --> F["保活 290 分钟"]
-    F --> G["调用 API 触发下一轮"]
+    E --> F["Teni viva N minutojn<br/>(mana enigo, defaŭlte 290)"]
+    F --> G["Voki API por ekigi la sekvan ciklon<br/>(uzante defaŭlton 290)"]
     G --> A
 
     style G fill:#f6821f,color:#fff
 ```
+
+## Aŭtomata renovigo
+
+- **La daŭron vi decidas**: kiam vi alklakas Run workflow, plenigu mane `run_minutes` – ĝi rulos tiom da minutoj, kiom vi enigos; se vi lasos ĝin malplena, uziĝos la defaŭlto 290
+- **Aŭtomata ekigo uzas la defaŭlton**: je la fino de ĉiu ciklo la API estas vokata por lanĉi la sekvan ciklon, kaj la API-voko portas neniujn parametrojn, do ĉiu aŭtomate renovigata ciklo daŭras 290 minutojn
+- Por rapida testo tajpu `5`; por ĉiutaga uzado lasu ĝin malplena kaj uzu la defaŭlton 290
+- La domajno kaj UUID estas fiksaj, do la klienta agordo post unufoja agordo validas por ĉiam
+- Por haltigi, iru al Actions kaj alklaku Cancel – post nuligo ĝi ne restartiĝos aŭtomate
 
 ## Fiksaj adresoj
 
@@ -104,7 +112,7 @@ flowchart TD
 4. En la aperanta formularo:
    - **Panel password**: lasu malplena (aŭtomate uzos la `PANEL_PASSWORD` sekreton)
      Panela pasvorto (malplena = uzas la PANEL_PASSWORD sekreton)
-   - **Run duration**: defaŭlte `290` (minutoj), por unua testo vi povas tajpi `5` por rapida kontrolo
+   - **Run duration**: defaŭlte `290` (minutoj), por unua testo vi povas tajpi `5` por rapida kontrolo; por ĉiutaga uzado lasu malplena
      Rultempo (minutoj, defaŭlte 290, maksimume 340)
 5. Alklaku la verdan **Run workflow** por komenci
 
