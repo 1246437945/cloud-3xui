@@ -33,12 +33,20 @@ flowchart TD
     B --> C["API 创建 VLESS+WS 入站"]
     C --> D["启动 Cloudflare 命名隧道"]
     D --> E["输出节点链接"]
-    E --> F["保活 290 分钟"]
-    F --> G["调用 API 触发下一轮"]
+    E --> F["N Minuten am Leben halten<br/>(manuelle Eingabe, Standard 290)"]
+    F --> G["API aufrufen, um die nächste Runde auszulösen<br/>(mit Standardwert 290)"]
     G --> A
 
     style G fill:#f6821f,color:#fff
 ```
+
+## Automatische Verlängerung
+
+- **Die Dauer bestimmst du**: beim Klick auf Run workflow fülle manuell `run_minutes` aus – es läuft so viele Minuten, wie du eingibst; lässt du es leer, wird der Standardwert 290 verwendet
+- **Automatische Auslösung nutzt den Standardwert**: am Ende jeder Runde wird die API aufgerufen, um die nächste Runde zu starten; der API-Aufruf übergibt keine Parameter, daher dauert jede automatisch verlängerte Runde 290 Minuten
+- Zum schnellen Testen trage `5` ein; für den Alltag lass es leer und nutze den Standard 290
+- Domain und UUID sind fest, die Client-Konfiguration ist einmal eingerichtet dauerhaft gültig
+- Zum Stoppen gehe zu Actions und klicke auf Cancel – nach dem Abbrechen wird es nicht automatisch neu gestartet
 
 ## Feste Adressen
 
@@ -104,7 +112,7 @@ flowchart TD
 4. Im eingeblendeten Formular:
    - **Panel password**: leer lassen (verwendet automatisch das `PANEL_PASSWORD`-Secret)
      Panel-Passwort (leer lassen = verwendet das PANEL_PASSWORD-Secret)
-   - **Run duration**: Standard `290` (Minuten), beim ersten Test kannst du `5` für eine schnelle Prüfung eintragen
+   - **Run duration**: Standard `290` (Minuten), beim ersten Test kannst du `5` für eine schnelle Prüfung eintragen; für den Alltag leer lassen
      Laufzeit (Minuten, Standard 290, max. 340)
 5. Klicke auf das grüne **Run workflow**, um zu starten
 
