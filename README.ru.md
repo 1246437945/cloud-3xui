@@ -72,7 +72,7 @@ flowchart TD
 
 ```mermaid
 flowchart TD
-    A["控制台 → Zero Trust<br/>→ 网络（Networks）→ 连接器（Tunnels）"] --> B["右上角 创建隧道"]
+    A["控制台 → Zero Trust<br/>→ Сети (Networks) → Коннекторы (Tunnels)"] --> B["右上角 创建隧道"]
     B --> C["选 Cloudflared<br/>(推荐) → 选择 Cloudflared"]
     C --> D["输入隧道名称<br/>(例：github-3xui)<br/>→ 保存隧道"]
     D --> E["安装并运行连接器页<br/>复制 Token<br/>(eyJ 开头的一长串)"]
@@ -88,7 +88,7 @@ flowchart TD
 
 Подробные шаги:
 
-1. Откройте [панель Cloudflare](https://dash.cloudflare.com), в левом меню перейдите в **Zero Trust** → **Networks** → **Tunnels**
+1. Откройте [панель Cloudflare](https://dash.cloudflare.com), в левом меню перейдите в **Zero Trust** → **Сети (Networks)** → **Коннекторы (Tunnels)**
 2. Нажмите **Create a tunnel** в правом верхнем углу
 3. **Выберите тип туннеля**: выберите **Cloudflared** (рекомендуется) и нажмите **Select Cloudflared**
 4. **Назовите туннель**: введите имя (например, `github-3xui`) и нажмите **Save tunnel**
@@ -106,7 +106,7 @@ flowchart TD
    - Домен: выберите ваш домен
    - Тип: `HTTP`
    - URL: `127.0.0.1:2053`
-7. Сохраните. Cloudflare создаст DNS-записи автоматически. Статус **Healthy** в списке Tunnels означает успешную настройку.
+7. Сохраните. Cloudflare создаст DNS-записи автоматически. Статус **Healthy** в списке коннекторов (Tunnels) означает успешную настройку.
 
 
 ### Шаг 2. Генерация UUID
