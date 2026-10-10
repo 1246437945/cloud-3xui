@@ -59,6 +59,10 @@ flowchart TD
 
 ## Детальні кроки налаштування
 
+### Безкоштовний домен (немає домену?)
+
+Немає власного домену? Зареєструйте безкоштовний на https://my.dnshe.com/ (напр. `.ccwu.cc`, дійсний 10 років), а потім спрямуйте NS-сервери домену на Cloudflare.
+
 ### Крок 1: Створіть Named Tunnel у Cloudflare
 
 Офіційний сайт Cloudflare: https://www.cloudflare-cn.com (внутрішній) / https://www.cloudflare.com (міжнародний)
