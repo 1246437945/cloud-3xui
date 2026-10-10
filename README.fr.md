@@ -33,12 +33,20 @@ flowchart TD
     B --> C["API 创建 VLESS+WS 入站"]
     C --> D["启动 Cloudflare 命名隧道"]
     D --> E["输出节点链接"]
-    E --> F["保活 290 分钟"]
-    F --> G["调用 API 触发下一轮"]
+    E --> F["Maintien en activité pendant N minutes<br/>(saisie manuelle, 290 par défaut)"]
+    F --> G["Appeler l'API pour déclencher le cycle suivant<br/>(avec la valeur par défaut 290)"]
     G --> A
 
     style G fill:#f6821f,color:#fff
 ```
+
+## Renouvellement automatique
+
+- **La durée de maintien en activité est entre vos mains** : saisissez manuellement `run_minutes` lorsque vous cliquez sur Run workflow – la valeur saisie correspond aux minutes d'exécution ; si vous laissez vide, la valeur par défaut 290 est utilisée
+- **Le déclenchement automatique utilise la valeur par défaut** : à la fin de chaque cycle, le cycle suivant est lancé via un appel à l'API ; ce déclenchement par API ne comporte pas de paramètres, donc chaque cycle de renouvellement automatique dure 290 minutes
+- Pour un test ponctuel, saisissez `5` ; pour une utilisation quotidienne, laissez vide pour conserver les 290 par défaut
+- Le nom de domaine et l'UUID sont fixes : configurez le client une fois, il reste valable en permanence
+- Pour arrêter, accédez à la page Actions et cliquez sur Cancel ; après l'annulation, il ne redémarrera plus automatiquement
 
 ## Adresses fixes
 
@@ -104,7 +112,7 @@ flowchart TD
 4. Dans le formulaire qui s'affiche :
    - **Panel password** : laissez vide (utilise automatiquement le secret `PANEL_PASSWORD`)
      Mot de passe du panneau (vide = utilise le secret PANEL_PASSWORD)
-   - **Run duration** : `290` par défaut (en minutes) ; pour un premier test, vous pouvez saisir `5` pour une vérification rapide
+   - **Run duration** : `290` par défaut (en minutes) ; pour un premier test, vous pouvez saisir `5` pour une vérification rapide ; pour une utilisation quotidienne, laissez vide
      Durée d'exécution (en minutes, 290 par défaut, 340 au maximum)
 5. Cliquez sur le bouton vert **Run workflow** pour lancer l'exécution.
 
