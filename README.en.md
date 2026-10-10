@@ -31,7 +31,7 @@ Repository Settings → Secrets and variables → Actions, add these three:
 |------|-------|
 | `CF_TUNNEL_TOKEN` | Cloudflare tunnel token |
 | `PANEL_PASSWORD` | Panel login password |
-| `VLESS_UUID` | Node UUID (fixed, permanently valid for clients; generate one at https://1024tools.com/uuid/) |
+| `VLESS_UUID` | Node UUID (fixed, permanently valid for clients; generate one at https://1024tools.com/uuid/, **Be sure to save this UUID — it will not appear in plain text in the logs, and you need it every time you assemble the node link**) |
 
 ### 3. Run
 
