@@ -31,7 +31,7 @@ No repositório: Settings → Secrets and variables → Actions, adicione três:
 |------|-------|
 | `CF_TUNNEL_TOKEN` | Token do túnel Cloudflare |
 | `PANEL_PASSWORD` | Senha de login do painel |
-| `VLESS_UUID` | UUID do nó (fixo, válido permanentemente no cliente, gere em https://1024tools.com/uuid/) |
+| `VLESS_UUID` | UUID do nó (fixo, válido permanentemente no cliente, gere em https://1024tools.com/uuid/, **Certifique-se de salvar este UUID, ele não será exibido em texto claro nos logs, você precisará dele toda vez que montar o link do nó**) |
 
 ### 3. Executar
 
