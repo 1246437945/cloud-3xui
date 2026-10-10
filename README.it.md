@@ -1,53 +1,172 @@
 [简体中文](README.md) | [English](README.en.md) | [Русский](README.ru.md) | [日本語](README.ja.md) | [한국어](README.ko.md) | [Español](README.es.md) | [العربية](README.ar.md) | [Čeština](README.cs.md) | [Dansk](README.da.md) | [Deutsch](README.de.md) | [Esperanto](README.eo.md) | [فارسی](README.fa.md) | [Suomi](README.fi.md) | [Français](README.fr.md) | [Ελληνικά](README.gr.md) | [Magyar](README.hu.md) | [Bahasa Indonesia](README.id.md) | [Italiano](README.it.md) | [മലയാളം](README.ml.md) | [Nederlands](README.nl.md) | [Norsk](README.no.md) | [Polski](README.pl.md) | [Português](README.ptbr.md) | [Română](README.ro.md) | [Türkçe](README.tr.md) | [Українська](README.ua.md) | [Tiếng Việt](README.vn.md)
 
-# cloud-3xui
+# ☁️ cloud-3xui — Nodo VLESS gratuito su GitHub
 
-Crea un nodo 3x-ui (VLESS + WebSocket + TLS) con i server gratuiti di GitHub Actions, dominio fisso, riavvio automatico.
+Crea automaticamente un pannello 3x-ui + un nodo VLESS sui server gratuiti di GitHub Actions, con dominio fisso e rinnovo automatico in caso di disconnessione.
 
-## Come funziona
+## Diagramma dell'architettura
 
-Ogni esecuzione installa automaticamente il pannello 3x-ui su un server Ubuntu di GitHub, crea un inbound VLESS+WS tramite le panel API, poi espone pannello e nodo tramite un **named tunnel** Cloudflare (dominio fisso). Ogni esecuzione dura circa 5 ore, prima della scadenza avvia automaticamente la successiva, l'indirizzo del nodo non cambia mai.
+```mermaid
+flowchart LR
+    subgraph GitHub["GitHub Actions Runner (Ubuntu)"]
+        XUI["3x-ui 面板\n:2053"]
+        XRAY["Xray VLESS+WS\n:8080"]
+    end
+    subgraph CF["Cloudflare"]
+        TUN["命名隧道\n(固定域名)"]
+    end
+    USER["用户客户端\nv2rayN / NekoBox 等"]
+
+    XUI --> TUN
+    XRAY --> TUN
+    TUN --> USER
+
+    style TUN fill:#f6821f,color:#fff
+    style USER fill:#1f9d55,color:#fff
+```
+
+## Flusso di rinnovo automatico
+
+```mermaid
+flowchart TD
+    A["手动 Run workflow\n(或上一轮自动触发)"] --> B["安装 3x-ui"]
+    B --> C["API 创建 VLESS+WS 入站"]
+    C --> D["启动 Cloudflare 命名隧道"]
+    D --> E["输出节点链接"]
+    E --> F["保活 290 分钟"]
+    F --> G["调用 API 触发下一轮"]
+    G --> A
+
+    style G fill:#f6821f,color:#fff
+```
 
 ## Indirizzi fissi
 
-- Nodo: `vless.my-github.ccwu.cc:443` (VLESS + WS + TLS)
-- Pannello: `https://panel.my-github.ccwu.cc/panel` (nome utente `admin`)
+| Uso | Indirizzo |
+|------|------|
+| Nodo | `vless.my-github.ccwu.cc:443` (VLESS + WebSocket + TLS) |
+| Pannello | `https://panel.my-github.ccwu.cc/panel` (nome utente `admin`) |
 
-## Configurazione iniziale
+> ⚠️ I domini sopra sono esempi, sostituiscili con i tuoi.
 
-### 1. Named tunnel Cloudflare
+## Passaggi di configurazione dettagliati
 
-1. Cloudflare Dashboard → Zero Trust → Networks → Tunnels → Create tunnel (Cloudflared)
-2. Dagli un nome e copia il token (la stringa che inizia con `eyJ`)
-3. Nei Public hostnames del tunnel aggiungi due righe:
-   - `vless.tuodominio.com` → HTTP → `127.0.0.1:8080`
-   - `panel.tuodominio.com` → HTTP → `127.0.0.1:2053`
+### Primo passo: creare un named tunnel su Cloudflare
 
-### 2. GitHub Secrets
+1. Apri la [Cloudflare Dashboard](https://dash.cloudflare.com) e vai su **Zero Trust** dal menu a sinistra
+2. A sinistra, **Networks** → **Tunnels**, clicca su **Create a tunnel** in alto a destra
+3. Seleziona il tipo **Cloudflared** e clicca su Avanti
+4. Dai un nome al tunnel (ad esempio `github-3xui`) e salva
+5. La pagina mostrerà un comando di installazione, simile a:
+   ```
+   cloudflared.exe service install eyJhIjoiYzEyNGI2...
+   ```
+   Copia la lunga stringa di caratteri che inizia con `eyJ` — questo è il **Tunnel Token**, conservalo bene
+6. Clicca su Avanti per entrare in **Public hostnames** (route delle applicazioni pubblicate), clicca su **Add a public hostname** e aggiungi due voci:
 
-Repo Settings → Secrets and variables → Actions, aggiungi questi tre:
+   **Prima voce (nodo):**
+   - Subdomain (sottodominio): `vless`
+   - Domain (dominio): seleziona il tuo dominio
+   - Service Type (tipo di servizio): `HTTP`
+   - URL: `127.0.0.1:8080`
 
-| Name | Value |
-|------|-------|
-| `CF_TUNNEL_TOKEN` | Token del tunnel Cloudflare |
-| `PANEL_PASSWORD` | Password di accesso al pannello |
-| `VLESS_UUID` | UUID del nodo (fisso, valido per sempre nel client, generalo su https://1024tools.com/uuid/, **Assicurati di salvare questo UUID, non verrà mostrato in chiaro nei log, ti servirà ogni volta che componi il link del nodo**) |
+   **Seconda voce (pannello):**
+   - Subdomain (sottodominio): `panel`
+   - Domain (dominio): seleziona il tuo dominio
+   - Service Type (tipo di servizio): `HTTP`
+   - URL: `127.0.0.1:2053`
 
-### 3. Esecuzione
+7. Salva. Cloudflare creerà automaticamente la risoluzione DNS, senza bisogno di aggiungerla manualmente.
 
-Actions → 3x-ui VLESS Node → Run workflow (i parametri possono restare vuoti, usa automaticamente i secret).
+### Secondo passo: generare un UUID
 
-Il log mostrerà il link `vless://` completo, importalo in v2rayN / v2rayNG / Streisand / NekoBox.
+1. Apri https://1024tools.com/uuid/
+2. Copia l'UUID generato (come `cbfc229f-9d34-4fef-9990-8baa82a7327b`)
+3. **Assicurati di annotare questo UUID** — non verrà mostrato in chiaro nei log del workflow e ti servirà ogni volta che componi il link del nodo
 
-## Riavvio automatico
+### Terzo passo: aggiungere i Secrets su GitHub
 
-- Ogni esecuzione dura `run_minutes` minuti (default 290), alla fine avvia automaticamente la successiva
-- Dominio e UUID sono fissi, il client si configura una volta sola
-- Per fermare, vai su Actions e premi Cancel, dopo l'annullamento non si riavvia più
+1. Entra in questo repository e clicca sulla scheda **Settings**
+2. A sinistra, **Secrets and variables** → **Actions**
+3. Clicca su **New repository secret** in alto a destra e aggiungi i tre secrets in sequenza:
+
+   | Name | Secret (valore) | Descrizione |
+   |------|-------------|------|
+   | `CF_TUNNEL_TOKEN` | Il Tunnel Token copiato al primo passo | Credenziale del tunnel Cloudflare |
+   | `PANEL_PASSWORD` | La password del pannello che hai impostato | Password di accesso al pannello 3x-ui |
+   | `VLESS_UUID` | L'UUID generato al secondo passo | UUID del nodo, fisso e invariabile |
+
+### Quarto passo: eseguire il workflow
+
+1. Clicca sulla scheda **Actions** in alto nel repository
+2. A sinistra seleziona **3x-ui VLESS Node**
+3. Clicca sul pulsante **Run workflow** a destra
+4. Nel modulo che appare:
+   - **Panel password**: lascia vuoto (verrà usato automaticamente il secret `PANEL_PASSWORD`)
+     Password del pannello (se vuota usa il secret PANEL_PASSWORD)
+   - **Run duration**: predefinito `290` (minuti), per il primo test puoi inserire `5` per una verifica rapida
+     Durata di esecuzione (minuti, predefinito 290, massimo 340)
+5. Clicca sul pulsante verde **Run workflow** per avviare
+
+### Quinto passo: ottenere il link del nodo
+
+1. Attendi circa 2-3 minuti e clicca sull'attività in esecuzione per entrare nella pagina dei dettagli
+2. Espandi il passo **Start named Cloudflare tunnel** e guarda l'output del log:
+   ```
+   ==================================================
+     面板 Panel: https://panel.my-github.ccwu.cc/panel  (admin / 你的密码 your password)
+
+     VLESS 节点 node:
+     vless://YOUR_UUID@vless.my-github.ccwu.cc:443?encryption=none&security=tls&sni=vless.my-github.ccwu.cc&type=ws&path=%2Fws#GitHub-3xui
+
+     把 YOUR_UUID 换成你在 VLESS_UUID secret 里填的 UUID
+     Replace YOUR_UUID with the UUID from your VLESS_UUID secret
+   ==================================================
+   ```
+3. Copia il link `vless://` e sostituisci `YOUR_UUID` con il tuo UUID
+4. Incollalo in un client come v2rayN / v2rayNG / Streisand / NekoBox ed è pronto all'uso
+
+### Sesto passo: verificare il rinnovo automatico (facoltativo)
+
+1. Alla prima esecuzione imposta la durata a `5` minuti
+2. Dopo 5 minuti guarda il log dell'ultimo passo **Trigger next run**, dovrebbe mostrare:
+   ```
+   HTTP 204
+   已触发下一次运行 Next run triggered
+   ```
+3. Torna alla lista Actions, dovrebbe apparire una nuova esecuzione attivata automaticamente
+4. Dopo aver verificato che tutto funzioni, esegui di nuovo e riporta la durata a `290` per l'uso normale
+
+## Descrizione dei passaggi del workflow
+
+| Passo | Italiano | English | Descrizione |
+|------|------|---------|------|
+| Install 3x-ui | Installare 3x-ui | Install 3x-ui | Installa il pannello in modo non interattivo con lo script ufficiale |
+| Create VLESS+WS inbound via API | Creare l'inbound VLESS+WS via API | Create VLESS+WS inbound via API | Accede con l'API Token, crea automaticamente l'inbound |
+| Start named Cloudflare tunnel | Avviare il named tunnel di Cloudflare | Start named Cloudflare tunnel | Connette il tunnel a dominio fisso usando il Token |
+| Keep alive | Mantenere attivo | Keep alive | Sospende per il numero di minuti specificato, monitora lo stato dei servizi |
+| Trigger next run | Attivare l'esecuzione successiva | Trigger next run | Chiama l'API per avviare automaticamente il round successivo |
+
+## Domande frequenti
+
+**Q: L'UUID nel link del nodo appare come `***` nel log?**
+A: È il meccanismo di protezione dei secrets di GitHub. Sostituisci semplicemente `YOUR_UUID` con l'UUID che hai inserito nel secret `VLESS_UUID`.
+
+**Q: Il test del client fallisce (-1)?**
+A: Controlla tre cose: ① che l'UUID sia stato sostituito correttamente; ② che la versione del client sia abbastanza recente (v2rayN 7.x+); ③ che il tunnel Cloudflare sia connesso correttamente (guarda il log).
+
+**Q: Il riavvio automatico non si è attivato?**
+A: Guarda il log del passo **Trigger next run**. Se mostra un codice di stato HTTP diverso da 204, controlla le impostazioni dei permessi Actions del repository.
+
+**Q: È normale che si disconnetta per qualche minuto ogni 5 ore?**
+A: Normale. Dalla fine del round precedente alla connessione del tunnel del round successivo servono circa 3-5 minuti, il client si riconnette automaticamente.
+
+**Q: Vuoi fermare il rinnovo automatico?**
+A: Vai alla pagina Actions e fai Cancel sull'esecuzione corrente, non si riattiverà più automaticamente.
 
 ## Note
 
-- **Velocità**: il traffico passa per Cloudflare → server GitHub (USA/UE), adatto solo a un uso temporaneo/leggero
-- **Breve interruzione**: a ogni riavvio automatico (ogni 5 ore) c'è un'interruzione di circa 3-5 minuti (avvio nuova macchina, installazione 3x-ui, riconnessione tunnel), il client si riconnette da solo
-- **Conformità**: eseguire un proxy su GitHub Actions rischia di violare i ToS con possibile ban dell'account, usalo a tuo rischio
-- **Non** pubblicare `CF_TUNNEL_TOKEN` / `PANEL_PASSWORD` / `VLESS_UUID` in luoghi pubblici
+- **Velocità**: il traffico passa per Cloudflare → i data center di GitHub (USA/UE), adatto solo a un uso temporaneo/leggero
+- **Breve interruzione**: a ogni passaggio del riavvio automatico ogni 5 ore c'è un'interruzione di circa 3-5 minuti (avvio della nuova macchina, installazione di 3x-ui, riconnessione del tunnel), il client si riconnette automaticamente
+- **Conformità**: eseguire un proxy su GitHub Actions può violare i ToS con il rischio di ban dell'account, valuta tu stesso
+- **Sicurezza**: non pubblicare `CF_TUNNEL_TOKEN` / `PANEL_PASSWORD` / `VLESS_UUID` in luoghi pubblici
