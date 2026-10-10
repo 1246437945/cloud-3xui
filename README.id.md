@@ -1,53 +1,172 @@
 [简体中文](README.md) | [English](README.en.md) | [Русский](README.ru.md) | [日本語](README.ja.md) | [한국어](README.ko.md) | [Español](README.es.md) | [العربية](README.ar.md) | [Čeština](README.cs.md) | [Dansk](README.da.md) | [Deutsch](README.de.md) | [Esperanto](README.eo.md) | [فارسی](README.fa.md) | [Suomi](README.fi.md) | [Français](README.fr.md) | [Ελληνικά](README.gr.md) | [Magyar](README.hu.md) | [Bahasa Indonesia](README.id.md) | [Italiano](README.it.md) | [മലയാളം](README.ml.md) | [Nederlands](README.nl.md) | [Norsk](README.no.md) | [Polski](README.pl.md) | [Português](README.ptbr.md) | [Română](README.ro.md) | [Türkçe](README.tr.md) | [Українська](README.ua.md) | [Tiếng Việt](README.vn.md)
 
-# cloud-3xui
+# ☁️ cloud-3xui — Node VLESS Gratis GitHub
 
-Membangun node 3x-ui (VLESS + WebSocket + TLS) dengan server gratis GitHub Actions, domain tetap, restart otomatis.
+Membangun panel 3x-ui + node VLESS secara otomatis di server gratis GitHub Actions, dengan domain tetap dan perpanjangan otomatis saat koneksi terputus.
 
-## Cara kerja
+## Diagram Arsitektur
 
-Setiap run otomatis menginstal panel 3x-ui di server Ubuntu GitHub, membuat inbound VLESS+WS melalui panel API, lalu mengekspos panel dan node lewat Cloudflare **named tunnel** (domain tetap). Setiap run berlangsung sekitar 5 jam, sebelum berakhir otomatis memicu run berikutnya, alamat node tidak pernah berubah.
+```mermaid
+flowchart LR
+    subgraph GitHub["GitHub Actions Runner (Ubuntu)"]
+        XUI["3x-ui 面板\n:2053"]
+        XRAY["Xray VLESS+WS\n:8080"]
+    end
+    subgraph CF["Cloudflare"]
+        TUN["命名隧道\n(固定域名)"]
+    end
+    USER["用户客户端\nv2rayN / NekoBox 等"]
 
-## Alamat tetap
+    XUI --> TUN
+    XRAY --> TUN
+    TUN --> USER
 
-- Node: `vless.my-github.ccwu.cc:443` (VLESS + WS + TLS)
-- Panel: `https://panel.my-github.ccwu.cc/panel` (username `admin`)
+    style TUN fill:#f6821f,color:#fff
+    style USER fill:#1f9d55,color:#fff
+```
 
-## Konfigurasi awal
+## Alur Perpanjangan Otomatis
 
-### 1. Cloudflare named tunnel
+```mermaid
+flowchart TD
+    A["手动 Run workflow\n(或上一轮自动触发)"] --> B["安装 3x-ui"]
+    B --> C["API 创建 VLESS+WS 入站"]
+    C --> D["启动 Cloudflare 命名隧道"]
+    D --> E["输出节点链接"]
+    E --> F["保活 290 分钟"]
+    F --> G["调用 API 触发下一轮"]
+    G --> A
 
-1. Cloudflare Dashboard → Zero Trust → Networks → Tunnels → Create tunnel (Cloudflared)
-2. Beri nama lalu salin token (string yang diawali `eyJ`)
-3. Di Public hostnames tunnel tambahkan dua baris:
-   - `vless.domainkamu.com` → HTTP → `127.0.0.1:8080`
-   - `panel.domainkamu.com` → HTTP → `127.0.0.1:2053`
+    style G fill:#f6821f,color:#fff
+```
 
-### 2. GitHub Secrets
+## Alamat Tetap
 
-Repo Settings → Secrets and variables → Actions, tambahkan tiga ini:
+| Kegunaan | Alamat |
+|------|------|
+| Node | `vless.my-github.ccwu.cc:443` (VLESS + WebSocket + TLS) |
+| Panel | `https://panel.my-github.ccwu.cc/panel` (nama pengguna `admin`) |
 
-| Name | Value |
-|------|-------|
-| `CF_TUNNEL_TOKEN` | Token tunnel Cloudflare |
-| `PANEL_PASSWORD` | Kata sandi login panel |
-| `VLESS_UUID` | UUID node (tetap, berlaku permanen di klien, buat di https://1024tools.com/uuid/, **Pastikan untuk mencatat UUID ini, tidak akan ditampilkan secara jelas di log, Anda memerlukannya setiap kali menyusun tautan node**) |
+> ⚠️ Domain di atas hanyalah contoh, ganti dengan domain milikmu.
 
-### 3. Menjalankan
+## Langkah Konfigurasi Detail
 
-Actions → 3x-ui VLESS Node → Run workflow (parameter boleh kosong, otomatis memakai secret).
+### Langkah 1: Membuat named tunnel Cloudflare
 
-Log akan menampilkan link `vless://` lengkap, impor ke klien v2rayN / v2rayNG / Streisand / NekoBox.
+1. Buka [Cloudflare Dashboard](https://dash.cloudflare.com), masuk ke **Zero Trust** dari menu kiri
+2. Di kiri, **Networks** → **Tunnels**, klik **Create a tunnel** di kanan atas
+3. Pilih tipe **Cloudflared**, klik berikutnya
+4. Beri nama tunnel (misalnya `github-3xui`), simpan
+5. Halaman akan menampilkan perintah instalasi, seperti:
+   ```
+   cloudflared.exe service install eyJhIjoiYzEyNGI2...
+   ```
+   Salin rangkaian karakter panjang yang diawali `eyJ` — inilah **Tunnel Token**, simpan baik-baik
+6. Klik berikutnya untuk masuk ke **Public hostnames** (rute aplikasi yang dipublikasikan), klik **Add a public hostname** untuk menambahkan dua entri:
 
-## Restart otomatis
+   **Entri pertama (node):**
+   - Subdomain (subdomain): `vless`
+   - Domain (domain): pilih domain milikmu
+   - Service Type (tipe layanan): `HTTP`
+   - URL: `127.0.0.1:8080`
 
-- Setiap run berlangsung `run_minutes` menit (default 290), di akhir otomatis memicu run berikutnya
-- Domain dan UUID tetap, konfigurasi klien cukup sekali dan berlaku selamanya
-- Untuk berhenti, buka Actions lalu klik Cancel, setelah dibatalkan tidak akan restart otomatis
+   **Entri kedua (panel):**
+   - Subdomain (subdomain): `panel`
+   - Domain (domain): pilih domain milikmu
+   - Service Type (tipe layanan): `HTTP`
+   - URL: `127.0.0.1:2053`
 
-## Catatan
+7. Simpan. Cloudflare akan otomatis membuat resolusi DNS, tidak perlu menambah manual.
 
-- **Kecepatan**: traffic lewat Cloudflare → server GitHub (AS/EU), hanya cocok untuk pemakaian sementara/ringan
-- **Gangguan singkat**: tiap restart otomatis 5 jam sekali terputus sekitar 3-5 menit (mesin baru booting, instalasi 3x-ui, tunnel reconnect), klien akan reconnect otomatis
-- **Kepatuhan**: menjalankan proxy di GitHub Actions berisiko melanggar ToS dan banned akun, gunakan atas risiko sendiri
-- **Jangan** mempublikasikan `CF_TUNNEL_TOKEN` / `PANEL_PASSWORD` / `VLESS_UUID` di tempat umum
+### Langkah 2: Membuat UUID
+
+1. Buka https://1024tools.com/uuid/
+2. Salin UUID yang dihasilkan (seperti `cbfc229f-9d34-4fef-9990-8baa82a7327b`)
+3. **Pastikan mencatat UUID ini** — tidak akan tampil sebagai teks biasa di log workflow, dan dibutuhkan setiap kali menyusun link node
+
+### Langkah 3: Menambahkan Secrets GitHub
+
+1. Masuk ke repo ini, klik tab **Settings**
+2. Di kiri, **Secrets and variables** → **Actions**
+3. Klik **New repository secret** di kanan atas, tambahkan ketiganya satu per satu:
+
+   | Name | Secret (nilai) | Keterangan |
+   |------|-------------|------|
+   | `CF_TUNNEL_TOKEN` | Tunnel Token yang disalin di langkah 1 | Kredensial tunnel Cloudflare |
+   | `PANEL_PASSWORD` | Kata sandi panel yang kamu tetapkan | Kata sandi login panel 3x-ui |
+   | `VLESS_UUID` | UUID yang dibuat di langkah 2 | UUID node, tetap tidak berubah |
+
+### Langkah 4: Menjalankan workflow
+
+1. Klik tab **Actions** di bagian atas repo
+2. Di kiri pilih **3x-ui VLESS Node**
+3. Klik tombol **Run workflow** di kanan
+4. Pada formulir yang muncul:
+   - **Panel password**: kosongkan (otomatis menggunakan secret `PANEL_PASSWORD`)
+     Kata sandi panel (jika dikosongkan menggunakan secret PANEL_PASSWORD)
+   - **Run duration**: default `290` (menit), untuk pengujian pertama isi `5` untuk verifikasi cepat
+     Durasi berjalan (menit, default 290, maksimal 340)
+5. Klik tombol hijau **Run workflow** untuk mulai menjalankan
+
+### Langkah 5: Mendapatkan link node
+
+1. Tunggu sekitar 2-3 menit, klik tugas yang sedang berjalan untuk masuk ke halaman detail
+2. Perluas langkah **Start named Cloudflare tunnel**, lihat output log:
+   ```
+   ==================================================
+     面板 Panel: https://panel.my-github.ccwu.cc/panel  (admin / 你的密码 your password)
+
+     VLESS 节点 node:
+     vless://YOUR_UUID@vless.my-github.ccwu.cc:443?encryption=none&security=tls&sni=vless.my-github.ccwu.cc&type=ws&path=%2Fws#GitHub-3xui
+
+     把 YOUR_UUID 换成你在 VLESS_UUID secret 里填的 UUID
+     Replace YOUR_UUID with the UUID from your VLESS_UUID secret
+   ==================================================
+   ```
+3. Salin link `vless://`, ganti `YOUR_UUID` dengan UUID milikmu
+4. Tempel ke klien seperti v2rayN / v2rayNG / Streisand / NekoBox, lalu siap digunakan
+
+### Langkah 6: Verifikasi perpanjangan otomatis (opsional)
+
+1. Pada eksekusi pertama, atur durasi menjadi `5` menit
+2. Setelah 5 menit, lihat log langkah terakhir **Trigger next run**, seharusnya menampilkan:
+   ```
+   HTTP 204
+   已触发下一次运行 Next run triggered
+   ```
+3. Kembali ke daftar Actions, seharusnya muncul eksekusi baru yang terpicu otomatis
+4. Setelah memastikan tidak ada masalah, jalankan ulang dan kembalikan durasi ke `290` untuk penggunaan normal
+
+## Penjelasan Langkah Workflow
+
+| Langkah | Indonesia | English | Keterangan |
+|------|------|---------|------|
+| Install 3x-ui | Menginstal 3x-ui | Install 3x-ui | Menginstal panel secara non-interaktif dengan skrip resmi |
+| Create VLESS+WS inbound via API | Membuat inbound VLESS+WS via API | Create VLESS+WS inbound via API | Login dengan API Token, membuat inbound otomatis |
+| Start named Cloudflare tunnel | Memulai named tunnel Cloudflare | Start named Cloudflare tunnel | Menghubungkan ke tunnel domain tetap dengan Token |
+| Keep alive | Menjaga tetap hidup | Keep alive | Tidur selama jumlah menit yang ditentukan, memantau status layanan |
+| Trigger next run | Memicu eksekusi berikutnya | Trigger next run | Memanggil API untuk memicu putaran berikutnya secara otomatis |
+
+## Pertanyaan Umum
+
+**Q: UUID pada link node di log tampil sebagai `***`?**
+A: Itu mekanisme perlindungan secret GitHub. Cukup ganti `YOUR_UUID` dengan UUID yang kamu isi di secret `VLESS_UUID`.
+
+**Q: Tes klien tidak berhasil (-1)?**
+A: Periksa tiga hal: ① apakah UUID diganti dengan benar; ② apakah versi klien cukup baru (v2rayN 7.x+); ③ apakah tunnel Cloudflare terhubung dengan normal (lihat log).
+
+**Q: Restart otomatis tidak terpicu?**
+A: Lihat log langkah **Trigger next run**. Jika menampilkan kode status HTTP selain 204, periksa pengaturan izin Actions repo.
+
+**Q: Apakah normal terputus beberapa menit setiap 5 jam?**
+A: Normal. Dari akhir putaran sebelumnya hingga tunnel putaran berikutnya tersambung membutuhkan sekitar 3-5 menit, klien akan terhubung ulang secara otomatis.
+
+**Q: Ingin menghentikan perpanjangan otomatis?**
+A: Buka halaman Actions dan Cancel eksekusi yang sedang berjalan, tidak akan terpicu lagi secara otomatis.
+
+## Hal yang Perlu Diperhatikan
+
+- **Kecepatan**: lalu lintas melewati Cloudflare → pusat data GitHub (AS/EU), hanya cocok untuk penggunaan sementara/ringan
+- **Gangguan singkat**: setiap pergantian restart otomatis tiap 5 jam terputus sekitar 3-5 menit (mesin baru dinyalakan, 3x-ui diinstal, tunnel terhubung ulang), klien akan terhubung ulang otomatis
+- **Kepatuhan**: menjalankan proxy di GitHub Actions berisiko melanggar ToS dan akun diblokir, pertimbangkan sendiri
+- **Keamanan**: jangan mempublikasikan `CF_TUNNEL_TOKEN` / `PANEL_PASSWORD` / `VLESS_UUID` di tempat umum
