@@ -44,8 +44,8 @@ flowchart TD
 ## Rinnovo automatico
 
 - **La durata la decidi tu**: quando avvii Run workflow compila manualmente `run_minutes`, dura i minuti inseriti; se lasciato vuoto usa il predefinito 290
-- **Ereditarietà automatica dei parametri**: ogni ciclo passa `run_minutes` / `countdown_interval` / `countdown_unit` al successivo, l'intera catena usa i valori iniziali inseriti
-- **Avvio sovrapposto (passaggio senza interruzioni)**: 5 minuti prima della fine di ogni ciclo si avvia in anticipo il successivo, vecchio e nuovo runner sono online contemporaneamente, il tunnel Cloudflare supporta connessioni multiple, il traffico viene instradato automaticamente alle connessioni disponibili, l'utente quasi non percepisce l'uscita del vecchio ciclo (per test brevi ≤6 minuti l'avvio avviene 30 secondi prima)
+- **Ereditarietà automatica dei parametri**: ogni ciclo passa `run_minutes` / `countdown_interval` / `countdown_unit` / `overlap_threshold` / `overlap_long` / `overlap_short` al successivo, l'intera catena usa i valori iniziali inseriti
+- **Avvio sovrapposto (passaggio senza interruzioni)**: attiva in anticipo l'esecuzione successiva prima che termini quella corrente, i runner vecchi e nuovi sono online contemporaneamente, il tunnel Cloudflare supporta più connessioni, il traffico viene distribuito automaticamente sulle connessioni disponibili, l'utente quasi non percepisce l'uscita del vecchio ciclo. Il momento di attivazione è configurabile: un keep-alive maggiore di `overlap_threshold` (predefinito 5 minuti) è considerato un'esecuzione lunga, attivata in anticipo di `overlap_long` (predefinito 5 minuti); se minore è considerata esecuzione breve, attivata in anticipo di `overlap_short` (predefinito 30 secondi)
 - Per un test rapido inserisci `5`, per l'uso quotidiano lascia vuoto (290)
 - Dominio e UUID sono fissi, configura il client una sola volta
 - Per fermarlo premi Cancel in Actions· dopo l'annullamento non si riavvierà da solo
@@ -131,6 +131,12 @@ Passaggi dettagliati:
      Intervallo di output del conto alla rovescia (predefinito 1, 0 per disabilitare)
    - **Countdown interval unit**: unità dell'intervallo del conto alla rovescia, selezionare `minutes` o `seconds` dal menu a tendina
      Unità dell'intervallo di output del conto alla rovescia
+   - **Overlap threshold**: soglia di sovrapposizione (minuti, predefinito `5`), un keep-alive più lungo è considerato un'esecuzione lunga
+     Soglia di sovrapposizione (minuti, predefinito 5): un keep-alive più lungo è considerato un'esecuzione lunga
+   - **Overlap long**: minuti di attivazione anticipata per esecuzioni lunghe (predefinito `5`)
+     Minuti di attivazione anticipata per esecuzioni lunghe (predefinito 5)
+   - **Overlap short**: secondi di attivazione anticipata per esecuzioni brevi (predefinito `30`)
+     Secondi di attivazione anticipata per esecuzioni brevi (predefinito 30)
 5. Clicca sul pulsante verde **Run workflow** per avviare
 
 ### Quinto passo: ottenere il link del nodo
