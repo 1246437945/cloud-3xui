@@ -135,6 +135,10 @@ flowchart TD
      面板密码（留空则使用 PANEL_PASSWORD secret）
    - **Run duration**：默认 `290`（分钟），首次测试可填 `5` 快速验证；日常使用留空即可
      运行时长（分钟，默认 290，最多 340）
+   - **Countdown output interval**：倒计时输出间隔，默认 `1`，填 `0` 关闭
+     倒计时输出间隔（默认 1，填 0 关闭）
+   - **Countdown interval unit**：倒计时输出间隔单位，下拉选择 `minutes` 或 `seconds`
+     倒计时输出间隔单位
 5. 点击绿色的 **Run workflow** 开始运行
 
 ### 第五步：获取节点链接
@@ -173,7 +177,7 @@ flowchart TD
 | Install 3x-ui | 安装 3x-ui | Install 3x-ui | 用官方脚本非交互安装面板 |
 | Create VLESS+WS inbound via API | 通过 API 创建 VLESS+WS 入站 | Create VLESS+WS inbound via API | 用 API Token 登录，自动建入站 |
 | Start named Cloudflare tunnel | 启动 Cloudflare 命名隧道 | Start named Cloudflare tunnel | 用 Token 连接固定域名隧道 |
-| Keep alive | 保活 | Keep alive | 休眠指定分钟数，监控服务状态 |
+| Keep alive | 保活 | Keep alive | 休眠指定分钟数，每分钟检查服务状态，按设定间隔输出倒计时 |
 | Trigger next run | 触发下一次运行 | Trigger next run | 调用 API 自动拉起下一轮 |
 
 ## 常见问题
