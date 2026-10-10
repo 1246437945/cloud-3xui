@@ -71,7 +71,7 @@ Bảng điều khiển: https://dash.cloudflare.com
 
 ```mermaid
 flowchart TD
-    A["控制台 → Zero Trust<br/>→ Networks → Tunnels"] --> B["右上角 创建隧道"]
+    A["控制台 → Zero Trust<br/>→ Mạng（Networks）→ Trình kết nối（Tunnels）"] --> B["右上角 创建隧道"]
     B --> C["选 Cloudflared<br/>(推荐) → 选择 Cloudflared"]
     C --> D["输入隧道名称<br/>(例：github-3xui)<br/>→ 保存隧道"]
     D --> E["安装并运行连接器页<br/>复制 Token<br/>(eyJ 开头的一长串)"]
@@ -87,7 +87,7 @@ flowchart TD
 
 Các bước chi tiết:
 
-1. Mở [Cloudflare Dashboard](https://dash.cloudflare.com), vào menu bên trái **Zero Trust** → **Networks** → **Tunnels**
+1. Mở [Cloudflare Dashboard](https://dash.cloudflare.com), vào menu bên trái **Zero Trust** → **Mạng（Networks）** → **Trình kết nối（Tunnels）**
 2. Nhấn **Tạo tunnel** ở góc trên bên phải
 3. **Chọn loại tunnel**: chọn **Cloudflared** (khuyên dùng), nhấn **Chọn Cloudflared**
 4. **Đặt tên cho tunnel**: nhập tên (ví dụ `github-3xui`), nhấn **Lưu tunnel**
@@ -106,7 +106,7 @@ Các bước chi tiết:
    - Loại: `HTTP`
    - URL: `127.0.0.1:2053`
 
-7. Lưu lại. Cloudflare sẽ tự động tạo bản ghi DNS, không cần thêm thủ công. Quay lại danh sách Tunnels; nếu trạng thái tunnel là **bình thường** thì cấu hình thành công.
+7. Lưu lại. Cloudflare sẽ tự động tạo bản ghi DNS, không cần thêm thủ công. Quay lại danh sách Trình kết nối; nếu trạng thái tunnel là **bình thường** thì cấu hình thành công.
 
 ### Bước 2: Tạo UUID
 
