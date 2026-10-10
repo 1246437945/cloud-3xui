@@ -102,17 +102,18 @@ jobs:
           done
           grep -q "Registered tunnel connection" /tmp/tunnel.log || { echo "Tunnel failed"; cat /tmp/tunnel.log; exit 1; }
           UUID=$(cat /tmp/vless_uuid.txt)
-          # split UUID to avoid GitHub secret masking in logs
+          # GitHub masks secrets in logs, so print UUID in two parts
           UUID_A=$(echo "$UUID" | cut -c1-18)
           UUID_B=$(echo "$UUID" | cut -c19-)
           echo ""
           echo "=================================================="
           echo "  Panel: https://${{ env.PANEL_HOST }}/panel  (admin / your password)"
           echo ""
-          echo "  VLESS node (permanent address):"
-          echo "  vless://${UUID_A}${UUID_B}@${{ env.VLESS_HOST }}:443?encryption=none&security=tls&sni=${{ env.VLESS_HOST }}&type=ws&path=%2Fws#GitHub-3xui"
+          echo "  VLESS node (replace YOUR_UUID with the two parts below joined):"
+          echo "  vless://YOUR_UUID@${{ env.VLESS_HOST }}:443?encryption=none&security=tls&sni=${{ env.VLESS_HOST }}&type=ws&path=%2Fws#GitHub-3xui"
           echo ""
-          echo "  (If UUID shows as ***,拼接这两段: ${UUID_A} + ${UUID_B})"
+          echo "  UUID part 1: ${UUID_A}"
+          echo "  UUID part 2: ${UUID_B}"
           echo "=================================================="
 
       - name: Keep alive
