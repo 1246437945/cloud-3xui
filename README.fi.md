@@ -135,6 +135,8 @@ Yksityiskohtaiset vaiheet:
    - **Panel password**: jätä tyhjäksi (käyttää automaattisesti `PANEL_PASSWORD`-secretiä)
      Paneelin salasana (tyhjä = käytetään PANEL_PASSWORD-secretiä)
    - **Run duration**: oletus `290` (minuuttia); ensimmäisessä testissä voit syöttää `5` nopeaa varmennusta varten; normaalikäytössä jätä tyhjäksi
+   - **Countdown output interval**: Lähtölaskennan tulostusväli, oletus `1`, poista käytöstä syöttämällä `0`
+   - **Countdown interval unit**: Lähtölaskennan tulostusvälin yksikkö, valitse `minutes` tai `seconds` pudotusvalikosta
      Ajoaika (minuuttia, oletus 290, enintään 340)
 5. Napsauta vihreää **Run workflow**-painiketta aloittaaksesi ajon.
 
@@ -174,7 +176,7 @@ Yksityiskohtaiset vaiheet:
 | Install 3x-ui | Asenna 3x-ui | Install 3x-ui | Asenna paneeli virallisella komentosarjalla ilman vuorovaikutusta |
 | Create VLESS+WS inbound via API | Luo VLESS+WS-saapuva API:n kautta | Create VLESS+WS inbound via API | Kirjaudu API-tokenilla, luo saapuva automaattisesti |
 | Start named Cloudflare tunnel | Käynnistä Cloudflaren nimetty tunneli | Start named Cloudflare tunnel | Yhdistä kiinteän verkkotunnuksen tunneli tokenilla |
-| Keep alive | Pidä elossa | Keep alive | Lepää määritetyt minuutit, valvo palveluiden tilaa |
+| Keep alive | Pidä elossa | Keep alive | Lepää määritetyt minuutit, valvo palveluiden tilaa ja tulosta lähtölaskenta määritetyllä välillä |
 | Trigger next run | Käynnistä seuraava ajo | Trigger next run | Kutsu API:ia käynnistääksesi seuraavan kierroksen automaattisesti |
 
 ## Usein kysytyt kysymykset
