@@ -26,11 +26,12 @@ jobs:
     steps:
       - name: Install 3x-ui
         run: |
+          curl -Ls https://raw.githubusercontent.com/MHSanaei/3x-ui/master/install.sh -o /tmp/install-3xui.sh
           sudo XUI_USERNAME="${{ inputs.panel_username }}" \
             XUI_PASSWORD="${{ inputs.panel_password }}" \
             XUI_PANEL_PORT="${{ inputs.panel_port }}" \
             XUI_WEB_BASE_PATH="panel" \
-            bash <(curl -Ls https://raw.githubusercontent.com/MHSanaei/3x-ui/master/install.sh)
+            bash /tmp/install-3xui.sh
           echo "=== 3x-ui status ==="
           sudo systemctl is-active x-ui || sudo systemctl status x-ui --no-pager | head -20
           sudo /usr/local/x-ui/x-ui setting -show true | grep -E 'port:|webBasePath:|username:' || true
