@@ -31,7 +31,7 @@ Repo Settings → Secrets and variables → Actions, voeg deze drie toe:
 |------|-------|
 | `CF_TUNNEL_TOKEN` | Cloudflare tunnel-token |
 | `PANEL_PASSWORD` | Inlogwachtwoord paneel |
-| `VLESS_UUID` | Node-UUID (vast, permanent geldig in de client, genereer op https://1024tools.com/uuid/) |
+| `VLESS_UUID` | Node-UUID (vast, permanent geldig in de client, genereer op https://1024tools.com/uuid/, **Bewaar deze UUID goed, deze wordt niet in platte tekst in de logs getoond, je hebt hem nodig telkens wanneer je de node-link samenstelt**) |
 
 ### 3. Uitvoeren
 
