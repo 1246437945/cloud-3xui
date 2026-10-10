@@ -1,0 +1,69 @@
+name: 3x-ui Panel
+
+on:
+  workflow_dispatch:
+    inputs:
+      panel_username:
+        description: 'Panel username'
+        required: false
+        default: 'admin'
+      panel_password:
+        description: 'Panel password (required)'
+        required: true
+      panel_port:
+        description: 'Panel port'
+        required: false
+        default: '2053'
+      run_minutes:
+        description: 'Run duration in minutes (max 350)'
+        required: false
+        default: '300'
+
+jobs:
+  panel:
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    steps:
+      - name: Install 3x-ui
+        run: |
+          export XUI_USERNAME="${{ inputs.panel_username }}"
+          export XUI_PASSWORD="${{ inputs.panel_password }}"
+          export XUI_PANEL_PORT="${{ inputs.panel_port }}"
+          export XUI_WEB_BASE_PATH="panel"
+          bash <(curl -Ls https://raw.githubusercontent.com/MHSanaei/3x-ui/master/install.sh)
+          echo "=== 3x-ui status ==="
+          sudo systemctl is-active x-ui || sudo systemctl status x-ui --no-pager | head -20
+          /usr/local/x-ui/x-ui setting -show true | grep -E 'port:|webBasePath:|username:' || true
+
+      - name: Setup Cloudflare tunnel
+        run: |
+          curl -Ls https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64 -o /tmp/cloudflared
+          chmod +x /tmp/cloudflared
+          sudo mv /tmp/cloudflared /usr/local/bin/cloudflared
+          nohup cloudflared tunnel --url http://127.0.0.1:${{ inputs.panel_port }} --no-autoupdate > /tmp/tunnel.log 2>&1 &
+          echo "Waiting for tunnel URL..."
+          TUNNEL_URL=""
+          for i in $(seq 1 60); do
+            TUNNEL_URL=$(grep -oE 'https://[a-zA-Z0-9.-]+\.trycloudflare\.com' /tmp/tunnel.log | head -1)
+            if [ -n "$TUNNEL_URL" ]; then break; fi
+            sleep 2
+          done
+          if [ -z "$TUNNEL_URL" ]; then echo "Tunnel URL not found"; cat /tmp/tunnel.log; exit 1; fi
+          echo ""
+          echo "=================================================="
+          echo "  Panel URL: $TUNNEL_URL/panel"
+          echo "  Username: ${{ inputs.panel_username }}"
+          echo "  Password: (the one you entered)"
+          echo "=================================================="
+          echo ""
+
+      - name: Keep alive
+        run: |
+          MINS=${{ inputs.run_minutes }}
+          echo "Keeping 3x-ui alive for $MINS minutes (Cancel anytime in Actions)"
+          END=$(( $(date +%s) + MINS * 60 ))
+          while [ $(date +%s) -lt $END ]; do
+            sleep 60
+            sudo systemctl is-active x-ui >/dev/null || echo "WARNING: x-ui not active"
+            pgrep -f "cloudflared tunnel" >/dev/null || { echo "WARNING: cloudflared died"; break; }
+          done
