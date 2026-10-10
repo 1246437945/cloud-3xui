@@ -60,10 +60,6 @@ flowchart TD
 
 ## 상세 설정 단계
 
-### 무료 도메인 (도메인이 없으신가요?)
-
-자체 도메인이 없으신가요? https://my.dnshe.com/ 에서 무료로 신청하세요 (예: `.ccwu.cc`, 유효기간 10년). 그 다음 도메인의 NS를 Cloudflare로 이전하면 됩니다.
-
 ### 1단계: Cloudflare에서 이름 있는 터널 만들기
 
 
@@ -73,7 +69,7 @@ Cloudflare 공식 사이트: https://www.cloudflare-cn.com (중국) / https://ww
 ```mermaid
 flowchart TD
     A["打开 Cloudflare Dashboard"] --> B["左侧 Zero Trust"]
-    B --> C["Networks → Tunnels"]
+    B --> C["네트워크 (Networks) → 커넥터 (Tunnels)"]
     C --> D["右上角 Create a tunnel"]
     D --> E["选 Cloudflared → 下一步"]
     E --> F["起名（例：github-3xui）→ 保存"]
@@ -89,7 +85,7 @@ flowchart TD
 ```
 
 1. [Cloudflare Dashboard](https://dash.cloudflare.com)를 열고 왼쪽 메뉴에서 **Zero Trust**로 들어갑니다
-2. 왼쪽 **Networks** → **Tunnels**를 열고 오른쪽 위의 **Create a tunnel**을 클릭합니다
+2. 왼쪽 **네트워크 (Networks)** → **커넥터 (Tunnels)**를 열고 오른쪽 위의 **Create a tunnel**을 클릭합니다
 3. **Cloudflared** 유형을 선택하고 다음을 클릭합니다
 4. 터널 이름을 정하고(예: `github-3xui`) 저장합니다
 5. 페이지에 다음과 같은 설치 명령이 표시됩니다:
