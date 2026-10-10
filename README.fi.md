@@ -195,8 +195,8 @@ V: Tarkista kolme asiaa: ① onko UUID korvattu oikein; ② onko asiakasohjelman
 **K: Automaattinen uudelleenkäynnistys ei käynnistynyt?**
 V: Tarkista vaiheen **Trigger next run** loki. Jos näet muun kuin 204:n HTTP-tilakoodin, tarkista repositorion Actions-käyttöoikeusasetukset.
 
-**K: Onko muutaman minuutin katkos 5 tunnin välein normaalia?**
-V: On. Edellisen kierroksen päättymisestä seuraavan kierroksen tunnelin yhdistymiseen kuluu noin 3–5 minuuttia, ja asiakasohjelma yhdistää automaattisesti uudelleen.
+**K: Katkeaako yhteys kierroksen vaihtuessa?**
+V: Käytössä on päällekkäinen käynnistys — seuraava kierros käynnistetään ennen nykyisen päättymistä, vanha ja uusi runner ovat yhtä aikaa käytössä, joten teoriassa katkosta ei ole. Äärimmäisissä tapauksissa, kuten GitHub-jonotuksessa, voi esiintyä lyhyitä vaihteluita; asiakasohjelma yhdistää automaattisesti uudelleen.
 
 **K: Haluatko pysäyttää automaattisen elvytyksen?**
 V: Siirry Actions-sivulle ja peruuta (Cancel) nykyinen ajo – se ei enää käynnisty automaattisesti.
