@@ -44,9 +44,9 @@ flowchart TD
 ## Auto keep-alive
 
 - **You set the keep-alive duration**: when clicking Run workflow, fill in `run_minutes` manually — it will run for as many minutes as you enter; leave it empty to use the default 290
-- **Parameters auto-inherit**: each round passes `run_minutes` / `countdown_interval` / `countdown_unit` to the next round via the API, so the whole chain keeps the values you first entered
+- **Parameters auto-inherit**: each round passes `run_minutes` / `countdown_interval` / `countdown_unit` / `overlap_threshold` / `overlap_long` / `overlap_short` to the next round via the API, so the whole chain keeps the values you first entered
 - For a quick test, just enter `5`; for daily use, leave it empty to use the default 290
-- **Overlapping startup (seamless switch)**: 5 minutes before the end of the current round, the next round is triggered in advance; old and new runners run simultaneously, Cloudflare tunnels support multiple connections, traffic is automatically routed to available connections, so users barely notice when the old round exits (for short tests ≤6 minutes, it triggers 30 seconds in advance)
+- **Overlapping startup (seamless switch)**: the next round is triggered in advance before the end of the current round; old and new runners run simultaneously, Cloudflare tunnels support multiple connections, traffic is automatically routed to available connections, so users barely notice when the old round exits. Trigger timing is configurable: keep-alive longer than `overlap_threshold` (default 5 minutes) counts as a long run and triggers `overlap_long` (default 5 minutes) in advance; shorter ones count as short runs and trigger `overlap_short` (default 30 seconds) in advance
 - The domain and UUID are fixed — configure the client once and it stays valid forever
 - To stop it, go to Actions and click Cancel; once cancelled, it will not restart automatically
 
@@ -139,6 +139,9 @@ Detailed steps:
    - **Run duration**: default `290` (minutes); for a first test you can enter `5` for a quick check; for daily use, just leave it empty
    - **Countdown output interval**: Countdown output interval, default `1`, enter `0` to disable
    - **Countdown interval unit**: Countdown output interval unit, select `minutes` or `seconds` from the dropdown
+   - **Overlap threshold**: Overlap threshold (minutes, default `5`) — keep-alive longer than this counts as a long run
+   - **Overlap long**: Minutes to trigger early for long runs (default `5`)
+   - **Overlap short**: Seconds to trigger early for short runs (default `30`)
 5. Click the green **Run workflow** button to start.
 
 ### Step 5: Get the node link
