@@ -46,7 +46,7 @@ flowchart TD
 - **O gatilho automático usa o padrão**: ao fim de cada ciclo a API inicia o próximo sem parâmetros, então cada ciclo automático dura 290 minutos
 - Para teste rápido digite `5`, para uso diário deixe vazio (290)
 - Domínio e UUID são fixos, configure o cliente uma única vez
-- Para parar clique Cancel em Actions, não reiniciará sozinho
+- Para parar clique Cancel em Actions· após o cancelamento não reiniciará sozinho
 
 ## Endereços fixos
 
