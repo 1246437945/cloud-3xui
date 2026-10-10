@@ -46,7 +46,7 @@ flowchart TD
 - **Kích hoạt tự động dùng mặc định**: cuối mỗi lượt API sẽ kích hoạt lượt tiếp theo mà không kèm tham số, nên mỗi lượt tự động đều là 290 phút
 - Muốn test nhanh thì nhập `5`, dùng hàng ngày thì để trống (290)
 - Domain và UUID cố định, cấu hình client một lần là xong
-- Muốn dừng thì bấm Cancel trong Actions, sẽ không tự khởi động lại
+- Muốn dừng thì bấm Cancel trong Actions· sau khi hủy sẽ không tự khởi động lại
 
 ## Địa Chỉ Cố Định
 
