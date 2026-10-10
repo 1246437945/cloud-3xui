@@ -46,7 +46,7 @@ flowchart TD
 - **Automatyczne wywołanie używa domyślnych**: na końcu każdej rundy API wywołuje kolejną bez parametrów, więc każda automatyczna runda trwa 290 minut
 - Do szybkiego testu wpisz `5`, do codziennego użytku zostaw puste (290)
 - Domena i UUID są stałe, klienta konfigurujesz raz
-- Aby zatrzymać, kliknij Cancel w Actions, nie uruchomi się ponownie sam
+- Aby zatrzymać, kliknij Cancel w Actions· po anulowaniu nie uruchomi się ponownie sam
 
 ## Stałe adresy
 
