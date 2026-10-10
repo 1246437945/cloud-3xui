@@ -16,10 +16,20 @@ on:
         default: '290'
       countdown_interval:
         description: |-
-          Countdown output interval in minutes (default 1, 0 to disable)
-          倒计时输出间隔（分钟，默认 1，填 0 关闭）
+          Countdown output interval (default 1, 0 to disable)
+          倒计时输出间隔（默认 1，填 0 关闭）
         required: false
         default: '1'
+      countdown_unit:
+        description: |-
+          Countdown interval unit
+          倒计时输出间隔单位
+        required: false
+        default: 'minutes'
+        type: choice
+        options:
+          - minutes
+          - seconds
 
 permissions:
   actions: write
@@ -131,17 +141,23 @@ jobs:
           echo "节点运行 $MINS 分钟后自动重启 Node alive for $MINS minutes, then auto-restart"
           END=$(( $(date +%s) + MINS * 60 ))
           INTERVAL=${{ inputs.countdown_interval }}
-          TICK=0
+          UNIT=${{ inputs.countdown_unit }}
+          if [ "$UNIT" = "seconds" ]; then INTERVAL_SEC=$INTERVAL; else INTERVAL_SEC=$((INTERVAL * 60)); fi
+          ELAPSED=0; LAST_CD=0; LAST_HC=0
           while [ $(date +%s) -lt $END ]; do
-            sleep 60
-            TICK=$((TICK + 1))
-            if [ "$INTERVAL" -gt 0 ] && [ $((TICK % INTERVAL)) -eq 0 ]; then
+            sleep 10
+            ELAPSED=$((ELAPSED + 10))
+            if [ $((ELAPSED - LAST_HC)) -ge 60 ]; then
+              LAST_HC=$ELAPSED
+              sudo systemctl is-active x-ui >/dev/null || echo "警告 WARNING: x-ui not active"
+              pgrep -f "cloudflared tunnel" >/dev/null || { echo "警告 WARNING: cloudflared died"; break; }
+            fi
+            if [ "$INTERVAL_SEC" -gt 0 ] && [ $((ELAPSED - LAST_CD)) -ge "$INTERVAL_SEC" ]; then
+              LAST_CD=$ELAPSED
               LEFT=$(( (END - $(date +%s)) / 60 ))
               H=$(( LEFT / 60 )); M=$(( LEFT % 60 ))
               echo "剩余 $H 小时 $M 分钟 / Remaining ${H}h ${M}m"
             fi
-            sudo systemctl is-active x-ui >/dev/null || echo "警告 WARNING: x-ui not active"
-            pgrep -f "cloudflared tunnel" >/dev/null || { echo "警告 WARNING: cloudflared died"; break; }
           done
 
       - name: Trigger next run (auto-restart)
@@ -153,7 +169,7 @@ jobs:
             -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
             -H "Accept: application/vnd.github+json" \
             https://api.github.com/repos/${{ github.repository }}/actions/workflows/3xui.yml/dispatches \
-            -d "{\"ref\":\"main\",\"inputs\":{\"run_minutes\":\"${{ inputs.run_minutes }}\",\"countdown_interval\":\"${{ inputs.countdown_interval }}\"}}")
+            -d "{\"ref\":\"main\",\"inputs\":{\"run_minutes\":\"${{ inputs.run_minutes }}\",\"countdown_interval\":\"${{ inputs.countdown_interval }}\",\"countdown_unit\":\"${{ inputs.countdown_unit }}\"}}")
           echo "HTTP $HTTP_CODE"
           cat /tmp/dispatch_resp.txt; echo ""
           [ "$HTTP_CODE" = "204" ] && echo "已触发下一次运行 Next run triggered" || { echo "触发失败 Trigger failed"; exit 1; }
