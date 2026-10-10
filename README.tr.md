@@ -34,8 +34,9 @@ flowchart TD
     C --> D["启动 Cloudflare 命名隧道"]
     D --> E["输出节点链接"]
     E --> F["保活 N 分钟<br/>(手动输入，默认 290)"]
-    F --> G["调用 API 触发下一轮<br/>(用默认值 290)"]
-    G --> A
+    F --> G["结束前 5 分钟<br/>提前触发下一轮"]
+    G --> H["新旧 runner 重叠运行<br/>流量无缝切换"]
+    H --> A
 
     style G fill:#f6821f,color:#fff
 ```
@@ -43,7 +44,8 @@ flowchart TD
 ## Otomatik yenileme
 
 - **Süreye sen karar ver**: Run workflow çalıştırırken `run_minutes` alanını manuel doldur, yazdığın dakika kadar çalışır; boş bırakılırsa varsayılan 290 kullanılır
-- **Otomatik tetikleme varsayılanı kullanır**: her turun sonunda API parametresiz şekilde sonrakini başlatır, yani her otomatik tur 290 dakika sürer
+- **Otomatik parametre devralma**: her tur `run_minutes` / `countdown_interval` / `countdown_unit` değerlerini sonrakine aktarır, tüm zincir başlangıçta girdiğin değerleri kullanır
+- **Örtüşen başlatma (kesintisiz geçiş)**: her turun bitiminden 5 dakika önce sonraki tur erken başlatılır, eski ve yeni runner aynı anda çevrimiçi, Cloudflare tüneli çoklu bağlantıyı destekler, trafik otomatik olarak kullanılabilir bağlantılara yönlendirilir, kullanıcı eski turun çıkışını neredeyse hissetmez (≤6 dakikalık kısa testlerde 30 saniye erken başlatılır)
 - Hızlı test için `5` yaz, günlük kullanımda boş bırak (290)
 - Alan adı ve UUID sabittir, istemciyi bir kez yapılandırman yeterli
 - Durdurmak için Actions'ta Cancel'e bas· iptalden sonra otomatik yeniden başlamaz
@@ -201,6 +203,6 @@ C: Actions sayfasına gidip mevcut çalıştırmayı Cancel etmeniz yeterli, oto
 ## Notlar
 
 - **Hız**: Trafik Cloudflare → GitHub sunucuları (ABD/Avrupa) üzerinden geçer, yalnızca geçici/hafif kullanım için uygundur
-- **Kısa kesintiler**: Her 5 saatte otomatik yeniden başlatma geçişinde yaklaşık 3-5 dakika kesinti olur (yeni makine başlatma, 3x-ui kurulumu, tünel yeniden bağlanma), istemci otomatik yeniden bağlanıp kurtarır
+- **Kesintisiz geçiş**: örtüşen başlatma ile her tur sonrakini 5 dakika erken başlatır, eski ve yeni runner aynı anda çevrimiçi, teorik olarak kullanıcı hiçbir şey hissetmez; aşırı durumlarda (örn. GitHub kuyruğu) kısa dalgalanmalar olabilir
 - **Uyumluluk**: GitHub Actions'ta proxy çalıştırmak ToS ihlali nedeniyle hesap kapatma riski taşır, kendiniz değerlendirin
 - **Güvenlik**: `CF_TUNNEL_TOKEN` / `PANEL_PASSWORD` / `VLESS_UUID` değerlerini herkese açık yerlerde paylaşmayın
