@@ -34,8 +34,9 @@ flowchart TD
     C --> D["启动 Cloudflare 命名隧道"]
     D --> E["输出节点链接"]
     E --> F["保活 N 分钟<br/>(手动输入，默认 290)"]
-    F --> G["调用 API 触发下一轮<br/>(用默认值 290)"]
-    G --> A
+    F --> G["结束前 5 分钟<br/>提前触发下一轮"]
+    G --> H["新旧 runner 重叠运行<br/>流量无缝切换"]
+    H --> A
 
     style G fill:#f6821f,color:#fff
 ```
@@ -43,7 +44,8 @@ flowchart TD
 ## Automatische verlenging
 
 - **Jij bepaalt de duur**: vul bij Run workflow handmatig `run_minutes` in, hij draait zoveel minuten als je invult; leeg laten gebruikt de standaard 290
-- **Automatische trigger gebruikt de standaard**: aan het einde van elke ronde roept de API de volgende aan zonder parameters, dus elke automatische ronde duurt 290 minuten
+- **Automatische overerving van parameters**: elke ronde geeft `run_minutes` / `countdown_interval` / `countdown_unit` door aan de volgende, de hele keten gebruikt de waarden die je oorspronkelijk hebt ingevuld
+- **Overlappende start (naadloze overgang)**: 5 minuten voor het einde van elke ronde wordt de volgende eerder gestart, oude en nieuwe runner zijn tegelijk online, de Cloudflare-tunnel ondersteunt meerdere verbindingen, verkeer wordt automatisch naar beschikbare verbindingen geleid, de gebruiker merkt vrijwel niets van het afsluiten van de oude ronde (bij korte tests ≤6 minuten wordt 30 seconden eerder gestart)
 - Voor een snelle test vul `5` in, voor dagelijks gebruik leeg laten (290)
 - Domein en UUID zijn vast, client één keer configureren is genoeg
 - Om te stoppen druk op Cancel in Actions· na annulering start hij niet automatisch opnieuw
@@ -201,6 +203,6 @@ A: Annuleer (Cancel) de huidige uitvoering op de Actions-pagina; er wordt dan ni
 ## Opmerkingen
 
 - **Snelheid**: het verkeer gaat via Cloudflare → GitHub-datacenters (VS/Europa), alleen geschikt voor tijdelijk/licht gebruik
-- **Korte onderbreking**: bij de automatische herstart elke 5 uur valt de verbinding ongeveer 3–5 minuten weg (nieuwe machine start op, 3x-ui wordt geïnstalleerd, tunnel maakt opnieuw verbinding); de client herstelt automatisch
+- **Naadloze overgang**: met overlappende start wordt elke ronde 5 minuten eerder gestart, oude en nieuwe runner tegelijk online, theoretisch merkt de gebruiker niets; in extreme gevallen (bijv. GitHub-wachtrij) kan er een korte fluctuatie zijn
 - **Naleving**: het draaien van een proxy op GitHub Actions kan in strijd zijn met de ToS, met risico op accountschorsing — beoordeel dit zelf
 - **Veiligheid**: publiceer `CF_TUNNEL_TOKEN` / `PANEL_PASSWORD` / `VLESS_UUID` nergens openbaar
