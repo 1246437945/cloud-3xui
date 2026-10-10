@@ -196,8 +196,8 @@ R: Verifique três pontos: ① se o UUID foi substituído corretamente; ② se a
 **P: A reinicialização automática não foi disparada?**
 R: Veja o log da etapa **Trigger next run**. Se mostrar um código de status HTTP diferente de 204, verifique as configurações de permissão de Actions do repositório.
 
-**P: É normal a conexão cair por alguns minutos a cada 5 horas?**
-R: Normal. Do fim da rodada anterior até a conexão do novo túnel leva cerca de 3–5 minutos; o cliente se reconecta automaticamente.
+**P: A conexão vai cair durante a rotação?**
+R: Usamos inicialização sobreposta: a próxima rodada é disparada antes do fim da atual, os runners antigo e novo ficam online simultaneamente, em teoria imperceptível. Em casos extremos (ex. fila do GitHub) pode haver breve oscilação, o cliente reconecta automaticamente.
 
 **P: Quer parar a renovação automática?**
 R: Na página de Actions, cancele (Cancel) a execução atual — nenhuma nova será disparada automaticamente.
