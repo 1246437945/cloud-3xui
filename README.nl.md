@@ -44,8 +44,8 @@ flowchart TD
 ## Automatische verlenging
 
 - **Jij bepaalt de duur**: vul bij Run workflow handmatig `run_minutes` in, hij draait zoveel minuten als je invult; leeg laten gebruikt de standaard 290
-- **Automatische overerving van parameters**: elke ronde geeft `run_minutes` / `countdown_interval` / `countdown_unit` door aan de volgende, de hele keten gebruikt de waarden die je oorspronkelijk hebt ingevuld
-- **Overlappende start (naadloze overgang)**: 5 minuten voor het einde van elke ronde wordt de volgende eerder gestart, oude en nieuwe runner zijn tegelijk online, de Cloudflare-tunnel ondersteunt meerdere verbindingen, verkeer wordt automatisch naar beschikbare verbindingen geleid, de gebruiker merkt vrijwel niets van het afsluiten van de oude ronde (bij korte tests ≤6 minuten wordt 30 seconden eerder gestart)
+- **Automatische overerving van parameters**: elke ronde geeft `run_minutes` / `countdown_interval` / `countdown_unit` / `overlap_threshold` / `overlap_long` / `overlap_short` door aan de volgende, de hele keten gebruikt de waarden die je oorspronkelijk hebt ingevuld
+- **Overlappende start (naadloze overgang)**: triggert de volgende run vroeg voordat de huidige eindigt, oude en nieuwe runners zijn tegelijk online, Cloudflare-tunnel ondersteunt meerdere verbindingen, verkeer wordt automatisch verdeeld over beschikbare verbindingen, de gebruiker merkt bijna niet dat de oude stopt. Triggermoment is configureerbaar: keep-alive groter dan `overlap_threshold` (standaard 5 minuten) telt als lange run, triggert `overlap_long` (standaard 5 minuten) eerder; kleiner telt als korte run, triggert `overlap_short` (standaard 30 seconden) eerder
 - Voor een snelle test vul `5` in, voor dagelijks gebruik leeg laten (290)
 - Domein en UUID zijn vast, client één keer configureren is genoeg
 - Om te stoppen druk op Cancel in Actions· na annulering start hij niet automatisch opnieuw
@@ -142,6 +142,12 @@ Gedetailleerde stappen:
      Aftel-uitvoerinterval (standaard 1, 0 om uit te schakelen)
    - **Countdown interval unit**: eenheid van aftelinterval, kies `minutes` of `seconds` uit de dropdown
      Eenheid van aftel-uitvoerinterval
+   - **Overlap threshold**: overlapping drempel (minuten, standaard `5`), keep-alive langer dan dit telt als lange run
+     Overlapping drempel (minuten, standaard 5): keep-alive langer dan dit telt als lange run
+   - **Overlap long**: minuten vroege trigger voor lange runs (standaard `5`)
+     Minuten vroege trigger voor lange runs (standaard 5)
+   - **Overlap short**: seconden vroege trigger voor korte runs (standaard `30`)
+     Seconden vroege trigger voor korte runs (standaard 30)
 5. Klik op de groene **Run workflow** om te starten
 
 ### Stap 5: De node-link ophalen
