@@ -135,6 +135,8 @@ flowchart TD
    - **Panel password**: خالی بگذارید (به‌صورت خودکار از secret مربوط به `PANEL_PASSWORD` استفاده می‌شود)
      رمز پنل (خالی بگذارید تا از secret مربوط به PANEL_PASSWORD استفاده شود)
    - **Run duration**: پیش‌فرض `290` (دقیقه)؛ برای تست اول می‌توانید `5` وارد کنید تا سریع بررسی شود؛ برای استفادهٔ روزمره خالی بگذارید
+   - **Countdown output interval**: فاصلهٔ نمایش شمارش معکوس، پیش‌فرض `1`، برای غیرفعال‌سازی `0` وارد کنید
+   - **Countdown interval unit**: واحد فاصلهٔ نمایش شمارش معکوس، از منوی کشویی `minutes` یا `seconds` را انتخاب کنید
      مدت اجرا (دقیقه، پیش‌فرض 290، حداکثر 340)
 5. روی دکمهٔ سبز **Run workflow** کلیک کنید تا اجرا شروع شود.
 
@@ -174,7 +176,7 @@ flowchart TD
 | Install 3x-ui | نصب 3x-ui | Install 3x-ui | نصب غیرتعاملی پنل با اسکریپت رسمی |
 | Create VLESS+WS inbound via API | ساخت اینباند VLESS+WS از طریق API | Create VLESS+WS inbound via API | ورود با API Token و ساخت خودکار اینباند |
 | Start named Cloudflare tunnel | راه‌اندازی تونل نام‌دار Cloudflare | Start named Cloudflare tunnel | اتصال تونل دامنهٔ ثابت با Token |
-| Keep alive | زنده نگه داشتن | Keep alive | خواب برای دقایق مشخص‌شده و پایش وضعیت سرویس‌ها |
+| Keep alive | زنده نگه داشتن | Keep alive | خواب برای دقایق مشخص‌شده، پایش وضعیت سرویس‌ها و نمایش شمارش معکوس با فاصلهٔ تنظیم‌شده |
 | Trigger next run | فعال‌سازی اجرای بعدی | Trigger next run | فراخوانی API برای راه‌اندازی خودکار دور بعدی |
 
 ## پرسش‌های متداول
