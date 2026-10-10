@@ -71,7 +71,7 @@ Oficiální web Cloudflare: https://www.cloudflare-cn.com (Čína) / https://www
 
 ```mermaid
 flowchart TD
-    A["控制台 → Zero Trust<br/>→ 网络（Networks）→ 连接器（Tunnels）"] --> B["右上角 创建隧道"]
+    A["控制台 → Zero Trust<br/>→ Sítě (Networks) → Konektory (Tunnels)"] --> B["右上角 创建隧道"]
     B --> C["选 Cloudflared<br/>(推荐) → 选择 Cloudflared"]
     C --> D["输入隧道名称<br/>(例：github-3xui)<br/>→ 保存隧道"]
     D --> E["安装并运行连接器页<br/>复制 Token<br/>(eyJ 开头的一长串)"]
@@ -105,7 +105,7 @@ Podrobné kroky:
    - Doména: vyberte svou doménu
    - Typ: `HTTP`
    - URL: `127.0.0.1:2053`
-7. Uložte. Cloudflare vytvoří DNS záznamy automaticky. Stav **Healthy** v seznamu Tunnels znamená úspěšné nastavení.
+7. Uložte. Cloudflare vytvoří DNS záznamy automaticky. Stav **Healthy** v seznamu konektorů (Tunnels) znamená úspěšné nastavení.
 
 
 ### Krok 2: Vygenerování UUID
