@@ -31,7 +31,7 @@ Repo Settings → Secrets and variables → Actions, aldonu tri:
 |------|-------|
 | `CF_TUNNEL_TOKEN` | Tunela token de Cloudflare |
 | `PANEL_PASSWORD` | Pasvorto de panela ensaluto |
-| `VLESS_UUID` | UUID de nodo (fiksa, daŭre valida en kliento, generu mem ĉe https://1024tools.com/uuid/) |
+| `VLESS_UUID` | UUID de nodo (fiksa, daŭre valida en kliento, generu mem ĉe https://1024tools.com/uuid/, **Nepre memoru ĉi tiun UUID — ĝi ne aperos malkaŝe en la protokoloj, kaj vi bezonos ĝin ĉiufoje kiam vi kunmetos la nodan ligilon**) |
 
 ### 3. Rulu
 
