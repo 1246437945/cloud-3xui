@@ -33,12 +33,20 @@ flowchart TD
     B --> C["API 创建 VLESS+WS 入站"]
     C --> D["启动 Cloudflare 命名隧道"]
     D --> E["输出节点链接"]
-    E --> F["保活 290 分钟"]
-    F --> G["调用 API 触发下一轮"]
+    E --> F["Pidä elossa N minuuttia<br/>(manuaalinen syöte, oletus 290)"]
+    F --> G["Kutsu API:ia käynnistääksesi seuraavan kierroksen<br/>(oletusarvolla 290)"]
     G --> A
 
     style G fill:#f6821f,color:#fff
 ```
+
+## Automaattinen elvytys
+
+- **Elossaoloaika on sinun päätettävissäsi**: syötä `run_minutes` manuaalisesti, kun napsautat Run workflow – mitä syötät, niin monta minuuttia se toimii; jos jätät tyhjäksi, käytetään oletusarvoa 290
+- **Automaattinen käynnistys käyttää oletusarvoa**: kunkin kierroksen lopussa seuraava kierros käynnistetään kutsumalla API:ia; API-käynnistys ei sisällä parametreja, joten jokainen automaattisen elvytyksen kierros kestää 290 minuuttia
+- Jos haluat kokeilla väliaikaisesti, syötä `5`; normaalikäytössä jätä tyhjäksi, niin käytetään oletusta 290
+- Verkkotunnus ja UUID ovat kiinteät – määritä asiakasohjelma kerran, niin se toimii pysyvästi
+- Jos haluat pysäyttää, siirry Actions-sivulle ja napsauta Cancel – peruutuksen jälkeen se ei enää käynnisty automaattisesti
 
 ## Kiinteät osoitteet
 
@@ -104,7 +112,7 @@ flowchart TD
 4. Avautuvassa lomakkeessa:
    - **Panel password**: jätä tyhjäksi (käyttää automaattisesti `PANEL_PASSWORD`-secretiä)
      Paneelin salasana (tyhjä = käytetään PANEL_PASSWORD-secretiä)
-   - **Run duration**: oletus `290` (minuuttia); ensimmäisessä testissä voit syöttää `5` nopeaa varmennusta varten
+   - **Run duration**: oletus `290` (minuuttia); ensimmäisessä testissä voit syöttää `5` nopeaa varmennusta varten; normaalikäytössä jätä tyhjäksi
      Ajoaika (minuuttia, oletus 290, enintään 340)
 5. Napsauta vihreää **Run workflow**-painiketta aloittaaksesi ajon.
 
