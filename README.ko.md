@@ -136,6 +136,8 @@ flowchart TD
    - **Panel password**: 비워 두기(`PANEL_PASSWORD` secret 자동 사용)
      패널 비밀번호(비워 두면 PANEL_PASSWORD secret 사용)
    - **Run duration**: 기본값 `290`(분). 처음 테스트할 때는 `5`를 입력해 빠르게 검증 가능하고, 일상적으로 사용할 때는 비워 두면 됩니다
+   - **Countdown output interval**: 카운트다운 출력 간격, 기본값 `1`, `0` 입력 시 비활성화
+   - **Countdown interval unit**: 카운트다운 출력 간격 단위, 드롭다운에서 `minutes` 또는 `seconds` 선택
      실행 시간(분, 기본값 290, 최대 340)
 5. 녹색 **Run workflow** 버튼을 클릭해 실행합니다
 
@@ -175,7 +177,7 @@ flowchart TD
 | Install 3x-ui | 安装 3x-ui | Install 3x-ui | 공식 스크립트로 패널을 비대화식으로 설치 |
 | Create VLESS+WS inbound via API | 通过 API 创建 VLESS+WS 入站 | Create VLESS+WS inbound via API | API Token으로 로그인하고 인바운드를 자동 생성 |
 | Start named Cloudflare tunnel | 启动 Cloudflare 命名隧道 | Start named Cloudflare tunnel | Token으로 고정 도메인 터널에 연결 |
-| Keep alive | 保活 | Keep alive | 지정된 분만큼 대기하며 서비스 상태를 모니터링 |
+| Keep alive | 保活 | Keep alive | 지정된 분만큼 대기하며 서비스 상태를 모니터링하고, 설정된 간격으로 카운트다운 출력 |
 | Trigger next run | 触发下一次运行 | Trigger next run | API를 호출해 다음 라운드를 자동 시작 |
 
 ## 자주 묻는 질문
