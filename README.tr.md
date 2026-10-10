@@ -59,6 +59,10 @@ flowchart TD
 
 ## Detaylı Yapılandırma Adımları
 
+### Ücretsiz alan adı (alan adınız yok mu?)
+
+Kendi alan adınız yok mu? https://my.dnshe.com/ adresinden ücretsiz bir tane alabilirsiniz (örn. `.ccwu.cc`, 10 yıl geçerli), ardından alan adının NS kayıtlarını Cloudflare'e yönlendirin.
+
 ### Adım 1: Cloudflare Named Tunnel Oluşturun
 
 Resmi Cloudflare sitesi: https://www.cloudflare-cn.com (yerel) / https://www.cloudflare.com (uluslararası)
