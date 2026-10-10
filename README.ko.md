@@ -62,6 +62,28 @@ flowchart TD
 
 ### 1단계: Cloudflare에서 이름 있는 터널 만들기
 
+
+Cloudflare 공식 사이트: https://www.cloudflare-cn.com (중국) / https://www.cloudflare.com (국제)
+대시보드: https://dash.cloudflare.com
+
+```mermaid
+flowchart TD
+    A["打开 Cloudflare Dashboard"] --> B["左侧 Zero Trust"]
+    B --> C["Networks → Tunnels"]
+    C --> D["右上角 Create a tunnel"]
+    D --> E["选 Cloudflared → 下一步"]
+    E --> F["起名（例：github-3xui）→ 保存"]
+    F --> G["复制 Token<br/>(eyJ 开头的一长串)"]
+    G --> H["下一步 → Public hostnames"]
+    H --> I["添加第一条<br/>vless.你的域名.com → HTTP → 127.0.0.1:8080"]
+    H --> J["添加第二条<br/>panel.你的域名.com → HTTP → 127.0.0.1:2053"]
+    I --> K["保存完成"]
+    J --> K
+
+    style G fill:#f6821f,color:#fff
+    style K fill:#1f9d55,color:#fff
+```
+
 1. [Cloudflare Dashboard](https://dash.cloudflare.com)를 열고 왼쪽 메뉴에서 **Zero Trust**로 들어갑니다
 2. 왼쪽 **Networks** → **Tunnels**를 열고 오른쪽 위의 **Create a tunnel**을 클릭합니다
 3. **Cloudflared** 유형을 선택하고 다음을 클릭합니다
