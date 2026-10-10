@@ -31,7 +31,7 @@ GitHub Actions の無料サーバーで 3x-ui ノード（VLESS + WebSocket + TL
 |------|-------|
 | `CF_TUNNEL_TOKEN` | Cloudflare トンネルの token |
 | `PANEL_PASSWORD` | パネルのログインパスワード |
-| `VLESS_UUID` | ノードの UUID（固定、クライアント側で恒久有効。https://1024tools.com/uuid/ で生成） |
+| `VLESS_UUID` | ノードの UUID（固定、クライアント側で恒久有効。https://1024tools.com/uuid/ で生成、**この UUID は必ずメモしてください。ログには平文で表示されません。ノードリンクを組み立てるたびに必要になります**） |
 
 ### 3. 実行
 
