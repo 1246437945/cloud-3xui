@@ -33,9 +33,10 @@ flowchart TD
     B --> C["API 创建 VLESS+WS 入站"]
     C --> D["启动 Cloudflare 命名隧道"]
     D --> E["输出节点链接"]
-    E --> F["Keep alive N minutes<br/>(manual input, default 290)"]
-    F --> G["Call API to trigger next round<br/>(using the default 290)"]
-    G --> A
+    E --> F["保活 N 分钟<br/>(手动输入，默认 290)"]
+    F --> G["结束前 5 分钟<br/>提前触发下一轮"]
+    G --> H["新旧 runner 重叠运行<br/>流量无缝切换"]
+    H --> A
 
     style G fill:#f6821f,color:#fff
 ```
@@ -43,8 +44,9 @@ flowchart TD
 ## Auto keep-alive
 
 - **You set the keep-alive duration**: when clicking Run workflow, fill in `run_minutes` manually — it will run for as many minutes as you enter; leave it empty to use the default 290
-- **Auto-triggered rounds use the default**: at the end of each round, the API is called to start the next round; the API trigger carries no parameters, so every auto keep-alive round is 290 minutes
+- **Parameters auto-inherit**: each round passes `run_minutes` / `countdown_interval` / `countdown_unit` to the next round via the API, so the whole chain keeps the values you first entered
 - For a quick test, just enter `5`; for daily use, leave it empty to use the default 290
+- **Overlapping startup (seamless switch)**: 5 minutes before the end of the current round, the next round is triggered in advance; old and new runners run simultaneously, Cloudflare tunnels support multiple connections, traffic is automatically routed to available connections, so users barely notice when the old round exits (for short tests ≤6 minutes, it triggers 30 seconds in advance)
 - The domain and UUID are fixed — configure the client once and it stays valid forever
 - To stop it, go to Actions and click Cancel; once cancelled, it will not restart automatically
 
@@ -198,6 +200,6 @@ A: Just go to the Actions page and Cancel the current run — it won't trigger a
 ## Notes
 
 - **Speed**: traffic goes through Cloudflare → GitHub data centers (US/EU), so it's only suitable for temporary/light use
-- **Brief interruptions**: about 3–5 minutes of downtime at each automatic restart handover every 5 hours (new machine startup, 3x-ui install, tunnel reconnect); the client will reconnect automatically
+- **Seamless switching**: overlapping startup is used — the next round is launched 5 minutes before each round ends, old and new runners are online simultaneously, so in theory users notice nothing; in extreme cases (e.g. GitHub queueing) there may still be brief fluctuations
 - **Compliance**: running a proxy on GitHub Actions risks violating the ToS and getting your account banned — evaluate for yourself
 - **Security**: don't post `CF_TUNNEL_TOKEN` / `PANEL_PASSWORD` / `VLESS_UUID` anywhere public
