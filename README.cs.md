@@ -66,51 +66,47 @@ Nemáte vlastní doménu? Získejte ji zdarma na https://my.dnshe.com/ (např. `
 ### Krok 1: Vytvoření pojmenovaného tunelu v Cloudflare
 
 
-Oficiální stránky Cloudflare: https://www.cloudflare-cn.com (Čína) / https://www.cloudflare.com (mezinárodní)
+Oficiální web Cloudflare: https://www.cloudflare-cn.com (Čína) / https://www.cloudflare.com (mezinárodní)
 Řídicí panel: https://dash.cloudflare.com
 
 ```mermaid
 flowchart TD
-    A["打开 Cloudflare Dashboard"] --> B["左侧 Zero Trust"]
-    B --> C["Networks → Tunnels"]
-    C --> D["右上角 Create a tunnel"]
-    D --> E["选 Cloudflared → 下一步"]
-    E --> F["起名（例：github-3xui）→ 保存"]
-    F --> G["复制 Token<br/>(eyJ 开头的一长串)"]
-    G --> H["下一步 → Public hostnames"]
-    H --> I["添加第一条<br/>vless.你的域名.com → HTTP → 127.0.0.1:8080"]
-    H --> J["添加第二条<br/>panel.你的域名.com → HTTP → 127.0.0.1:2053"]
-    I --> K["保存完成"]
-    J --> K
+    A["控制台 → Zero Trust<br/>→ 网络（Networks）→ 连接器（Tunnels）"] --> B["右上角 创建隧道"]
+    B --> C["选 Cloudflared<br/>(推荐) → 选择 Cloudflared"]
+    C --> D["输入隧道名称<br/>(例：github-3xui)<br/>→ 保存隧道"]
+    D --> E["安装并运行连接器页<br/>复制 Token<br/>(eyJ 开头的一长串)"]
+    E --> F["下一步 → 路由隧道<br/>→ 已发布应用程序路由"]
+    F --> G["添加已发布应用程序路由<br/>子域 vless + 你的域<br/>类型 HTTP → URL 127.0.0.1:8080"]
+    F --> H["添加已发布应用程序路由<br/>子域 panel + 你的域<br/>类型 HTTP → URL 127.0.0.1:2053"]
+    G --> I["保存完成"]
+    H --> I
 
-    style G fill:#f6821f,color:#fff
-    style K fill:#1f9d55,color:#fff
+    style E fill:#f6821f,color:#fff
+    style I fill:#1f9d55,color:#fff
 ```
 
-1. Otevřete [Cloudflare Dashboard](https://dash.cloudflare.com), v levém menu přejděte na **Zero Trust**
-2. Vlevo **Networks** → **Tunnels**, vpravo nahoře klikněte na **Create a tunnel**
-3. Zvolte typ **Cloudflared** a pokračujte dalším krokem
-4. Pojmenujte tunel (např. `github-3xui`) a uložte
-5. Stránka zobrazí instalační příkaz ve tvaru:
-   ```
-   cloudflared.exe service install eyJhIjoiYzEyNGI2...
-   ```
-   Zkopírujte dlouhý řetězec začínající na `eyJ` — to je váš **Tunnel Token**, dobře si ho uložte
-6. Klikněte na další krok do sekce **Public hostnames** (zveřejněné trasy aplikací) a klikněte na **Add a public hostname**, přidejte dva záznamy:
+Podrobné kroky:
+
+1. Otevřete [řídicí panel Cloudflare](https://dash.cloudflare.com) a v levém menu přejděte na **Zero Trust** → **Networks** → **Tunnels**
+2. Klikněte vpravo nahoře na **Create a tunnel**
+3. **Vyberte typ tunelu**: zvolte **Cloudflared** (doporučeno) a klikněte na **Select Cloudflared**
+4. **Pojmenujte tunel**: zadejte název (např. `github-3xui`) a klikněte na **Save tunnel**
+5. **Nainstalujte a spusťte konektor**: stránka zobrazí instalační příkaz — zkopírujte dlouhý **token** začínající `eyJ` a uložte si ho (později ho použijete jako GitHub Secret). Nic **není** třeba instalovat lokálně, pokračujte dál
+6. **Směrujte tunel**: přejděte na kartu **Public hostnames**, klikněte na **Add a public hostname** a přidejte dva záznamy:
 
    **První (uzel):**
-   - Subdomain (subdoména): `vless`
-   - Domain (doména): vyberte svou doménu
-   - Service Type (typ služby): `HTTP`
+   - Subdoména: `vless`
+   - Doména: vyberte svou doménu
+   - Typ: `HTTP`
    - URL: `127.0.0.1:8080`
 
    **Druhý (panel):**
-   - Subdomain (subdoména): `panel`
-   - Domain (doména): vyberte svou doménu
-   - Service Type (typ služby): `HTTP`
+   - Subdoména: `panel`
+   - Doména: vyberte svou doménu
+   - Typ: `HTTP`
    - URL: `127.0.0.1:2053`
+7. Uložte. Cloudflare vytvoří DNS záznamy automaticky. Stav **Healthy** v seznamu Tunnels znamená úspěšné nastavení.
 
-7. Uložte. Cloudflare automaticky vytvoří DNS záznamy, není třeba je přidávat ručně.
 
 ### Krok 2: Vygenerování UUID
 
