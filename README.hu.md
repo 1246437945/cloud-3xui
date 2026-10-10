@@ -34,8 +34,9 @@ flowchart TD
     C --> D["启动 Cloudflare 命名隧道"]
     D --> E["输出节点链接"]
     E --> F["保活 N 分钟<br/>(手动输入，默认 290)"]
-    F --> G["调用 API 触发下一轮<br/>(用默认值 290)"]
-    G --> A
+    F --> G["结束前 5 分钟<br/>提前触发下一轮"]
+    G --> H["新旧 runner 重叠运行<br/>流量无缝切换"]
+    H --> A
 
     style G fill:#f6821f,color:#fff
 ```
@@ -43,7 +44,8 @@ flowchart TD
 ## Automatikus megújítás
 
 - **Az időtartamot te szabod meg**: Run workflow indításakor töltsd ki kézzel a `run_minutes` mezőt, annyi percig fut, amennyit beírsz; üresen hagyva az alapértelmezett 290 érvényes
-- **Az automatikus indítás az alapértelmezettet használja**: minden kör végén az API paraméterek nélkül indítja a következőt, így az automatikus körök mindig 290 percesek
+- **Paraméterek automatikus öröklése**: minden kör továbbadja a `run_minutes` / `countdown_interval` / `countdown_unit` értékeket a következőnek, az egész lánc az eredetileg megadott értékeidet használja
+- **Átfedő indítás (zökkenőmentes átállás)**: minden kör vége előtt 5 perccel elindul a következő, a régi és az új runner egyszerre online, a Cloudflare tunnel több kapcsolatot támogat, a forgalom automatikusan a működő kapcsolatokra terelődik, a régi kör kilépésekor a felhasználó szinte semmit nem érez (rövid teszteknél ≤6 perc 30 másodperccel korábban indul)
 - Gyors teszthez írj `5`-öt, napi használatra hagyd üresen (290)
 - A domain és az UUID fix, a klienst egyszer kell beállítani
 - A leállításhoz nyomj Cancel-t az Actions oldalon· a törlés után nem indul újra automatikusan
@@ -190,6 +192,6 @@ V: Menj az Actions oldalra, és állítsd le (Cancel) az aktuális futtatást, t
 ## Megjegyzések
 
 - **Sebesség**: a forgalom a Cloudflare → GitHub adatközpontokon (USA/EU) keresztül megy, csak ideiglenes/enyhe használatra alkalmas
-- **Rövid kimaradás**: minden 5 órás automatikus újraindítás átállásakor kb. 3-5 perc kimaradás (új gép indul, 3x-ui telepítés, tunnel újracsatlakozás), a kliens automatikusan újracsatlakozik
+- **Zökkenőmentes átállás**: átfedő indítással minden kör 5 perccel korábban indítja a következőt, a régi és az új runner egyszerre online, elméletileg a felhasználó semmit nem vesz észre; extrém esetben (pl. GitHub sor) lehet rövid ingadozás
 - **Szabályosság**: GitHub Actionsön proxyt futtatni sértheti a ToS-t, fióktiltás kockázatával — mérlegeld magad
 - **Biztonság**: ne tedd közzé nyilvánosan a `CF_TUNNEL_TOKEN` / `PANEL_PASSWORD` / `VLESS_UUID` értékeket
