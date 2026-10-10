@@ -46,7 +46,7 @@ flowchart TD
 - **Automatische trigger gebruikt de standaard**: aan het einde van elke ronde roept de API de volgende aan zonder parameters, dus elke automatische ronde duurt 290 minuten
 - Voor een snelle test vul `5` in, voor dagelijks gebruik leeg laten (290)
 - Domein en UUID zijn vast, client één keer configureren is genoeg
-- Om te stoppen druk op Cancel in Actions, hij start niet automatisch opnieuw
+- Om te stoppen druk op Cancel in Actions· na annulering start hij niet automatisch opnieuw
 
 ## Vaste adressen
 
