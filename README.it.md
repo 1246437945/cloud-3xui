@@ -72,7 +72,7 @@ Dashboard: https://dash.cloudflare.com
 ```mermaid
 flowchart TD
     A["打开 Cloudflare Dashboard"] --> B["左侧 Zero Trust"]
-    B --> C["Networks → Tunnels"]
+    B --> C["Reti（Networks） → Connettori（Tunnels）"]
     C --> D["右上角 Create a tunnel"]
     D --> E["选 Cloudflared → 下一步"]
     E --> F["起名（例：github-3xui）→ 保存"]
@@ -88,7 +88,7 @@ flowchart TD
 ```
 
 1. Apri la [Cloudflare Dashboard](https://dash.cloudflare.com) e vai su **Zero Trust** dal menu a sinistra
-2. A sinistra, **Networks** → **Tunnels**, clicca su **Create a tunnel** in alto a destra
+2. A sinistra, **Reti（Networks）** → **Connettori（Tunnels）**, clicca su **Create a tunnel** in alto a destra
 3. Seleziona il tipo **Cloudflared** e clicca su Avanti
 4. Dai un nome al tunnel (ad esempio `github-3xui`) e salva
 5. La pagina mostrerà un comando di installazione, simile a:
