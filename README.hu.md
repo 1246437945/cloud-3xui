@@ -46,7 +46,7 @@ flowchart TD
 - **Az automatikus indítás az alapértelmezettet használja**: minden kör végén az API paraméterek nélkül indítja a következőt, így az automatikus körök mindig 290 percesek
 - Gyors teszthez írj `5`-öt, napi használatra hagyd üresen (290)
 - A domain és az UUID fix, a klienst egyszer kell beállítani
-- Leállításhoz nyomj Cancel-t az Actions oldalon, nem indul újra automatikusan
+- A leállításhoz nyomj Cancel-t az Actions oldalon· a törlés után nem indul újra automatikusan
 
 ## Rögzített címek
 
