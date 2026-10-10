@@ -53,8 +53,15 @@ jobs:
               print("Panel not responding"); sys.exit(1)
 
           s = requests.Session()
-          m = re.search(r'<meta name="csrf-token" content="([^"]+)"', r.text)
-          csrf = m.group(1) if m else ""
+          # get public csrf token before login
+          try:
+              r = s.get(PANEL + "/csrf-token", timeout=10)
+              csrf = r.json().get("token", "")
+          except Exception:
+              csrf = ""
+          if not csrf:
+              m = re.search(r'<meta name="csrf-token" content="([^"]+)"', r.text)
+              csrf = m.group(1) if m else ""
           # login
           r = s.post(PANEL + "/login", data={"username": USERNAME, "password": PASSWORD},
                      headers={"X-CSRF-Token": csrf}, timeout=10)
