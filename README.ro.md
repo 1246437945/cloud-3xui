@@ -44,8 +44,8 @@ flowchart TD
 ## Reînnoire automată
 
 - **Durata o stabilești tu**: la Run workflow completează manual `run_minutes`, rulează câte minute introduci; gol folosește implicitul 290
-- **Moștenire automată a parametrilor**: fiecare rundă transmite `run_minutes` / `countdown_interval` / `countdown_unit` mai departe, întregul lanț folosește valorile introduse inițial de tine
-- **Pornire suprapusă (tranziție fără întreruperi)**: cu 5 minute înainte de sfârșitul fiecărei runde, următoarea este pornită mai devreme, runner-ul vechi și cel nou sunt online simultan, tunelul Cloudflare suportă conexiuni multiple, traficul este direcționat automat către conexiunile disponibile, utilizatorul aproape nu simte ieșirea rundei vechi (pentru teste scurte ≤6 minute, pornirea are loc cu 30 de secunde mai devreme)
+- **Moștenire automată a parametrilor**: fiecare rundă transmite `run_minutes` / `countdown_interval` / `countdown_unit` / `overlap_threshold` / `overlap_long` / `overlap_short` mai departe, întregul lanț folosește valorile introduse inițial de tine
+- **Pornire suprapusă (tranziție fără întreruperi)**: declanșează din timp următoarea rulare înainte ca cea curentă să se termine, runner-ele vechi și noi sunt online simultan, tunelul Cloudflare suportă mai multe conexiuni, traficul este distribuit automat către conexiunile disponibile, utilizatorul aproape nu simte ieșirea celui vechi. Momentul declanșării e configurabil: keep-alive mai mare decât `overlap_threshold` (implicit 5 minute) e considerat rulare lungă, declanșată cu `overlap_long` (implicit 5 minute) mai devreme; dacă e mai mic e considerat rulare scurtă, declanșată cu `overlap_short` (implicit 30 secunde) mai devreme
 - Pentru test rapid introdu `5`, pentru uz zilnic lasă gol (290)
 - Domeniul și UUID sunt fixe, configurezi clientul o singură dată
 - Pentru oprire apasă Cancel în Actions· după anulare nu repornește automat
@@ -142,6 +142,12 @@ Pași detaliați:
      Intervalul de afișare al numărătorii inverse (implicit 1, 0 pentru dezactivare)
    - **Countdown interval unit**: unitatea intervalului numărătorii inverse, selectați `minutes` sau `seconds` din meniul derulant
      Unitatea intervalului de afișare al numărătorii inverse
+   - **Overlap threshold**: prag de suprapunere (minute, implicit `5`), keep-alive-ul mai lung decât atât e considerat rulare lungă
+     Prag de suprapunere (minute, implicit 5): keep-alive-ul mai lung decât atât e considerat rulare lungă
+   - **Overlap long**: minute de declanșare timpurie pentru rulări lungi (implicit `5`)
+     Minute de declanșare timpurie pentru rulări lungi (implicit 5)
+   - **Overlap short**: secunde de declanșare timpurie pentru rulări scurte (implicit `30`)
+     Secunde de declanșare timpurie pentru rulări scurte (implicit 30)
 5. Faceți clic pe butonul verde **Run workflow** pentru a porni
 
 ### Pasul 5: Obțineți linkul nodului
