@@ -135,6 +135,8 @@ flowchart TD
    - **Panel password** : laissez vide (utilise automatiquement le secret `PANEL_PASSWORD`)
      Mot de passe du panneau (vide = utilise le secret PANEL_PASSWORD)
    - **Run duration** : `290` par défaut (en minutes) ; pour un premier test, vous pouvez saisir `5` pour une vérification rapide ; pour une utilisation quotidienne, laissez vide
+   - **Countdown output interval**: Intervalle d'affichage du compte à rebours, par défaut `1`, saisissez `0` pour le désactiver
+   - **Countdown interval unit**: Unité de l'intervalle d'affichage du compte à rebours, sélectionnez `minutes` ou `seconds` dans le menu déroulant
      Durée d'exécution (en minutes, 290 par défaut, 340 au maximum)
 5. Cliquez sur le bouton vert **Run workflow** pour lancer l'exécution.
 
@@ -174,7 +176,7 @@ flowchart TD
 | Install 3x-ui | Installer 3x-ui | Install 3x-ui | Installer le panneau de façon non interactive avec le script officiel |
 | Create VLESS+WS inbound via API | Créer une entrée VLESS+WS via l'API | Create VLESS+WS inbound via API | Se connecter avec le jeton d'API et créer l'entrée automatiquement |
 | Start named Cloudflare tunnel | Démarrer le tunnel nommé Cloudflare | Start named Cloudflare tunnel | Connecter le tunnel à domaine fixe avec le jeton |
-| Keep alive | Maintien en activité | Keep alive | Mettre en veille pendant le nombre de minutes indiqué et surveiller l'état des services |
+| Keep alive | Maintien en activité | Keep alive | Mettre en veille pendant le nombre de minutes indiqué, surveiller l'état des services et afficher le compte à rebours à l'intervalle configuré |
 | Trigger next run | Déclencher l'exécution suivante | Trigger next run | Appeler l'API pour lancer automatiquement le cycle suivant |
 
 ## Questions fréquentes
