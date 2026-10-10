@@ -31,7 +31,7 @@ Repo Settings → Secrets and variables → Actions, lisää kolme:
 |------|-------|
 | `CF_TUNNEL_TOKEN` | Cloudflaren tunnelin token |
 | `PANEL_PASSWORD` | Paneelin kirjautumissalasana |
-| `VLESS_UUID` | Noden UUID (kiinteä, pysyvästi voimassa asiakasohjelmassa, generoi itse osoitteessa https://1024tools.com/uuid/) |
+| `VLESS_UUID` | Noden UUID (kiinteä, pysyvästi voimassa asiakasohjelmassa, generoi itse osoitteessa https://1024tools.com/uuid/, **Muista tallentaa tämä UUID — se ei näy selväkielisenä lokeissa, ja tarvitset sitä joka kerta kun kokoat solmun linkin**) |
 
 ### 3. Ajo
 
