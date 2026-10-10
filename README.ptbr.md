@@ -34,8 +34,9 @@ flowchart TD
     C --> D["启动 Cloudflare 命名隧道"]
     D --> E["输出节点链接"]
     E --> F["保活 N 分钟<br/>(手动输入，默认 290)"]
-    F --> G["调用 API 触发下一轮<br/>(用默认值 290)"]
-    G --> A
+    F --> G["结束前 5 分钟<br/>提前触发下一轮"]
+    G --> H["新旧 runner 重叠运行<br/>流量无缝切换"]
+    H --> A
 
     style G fill:#f6821f,color:#fff
 ```
@@ -43,7 +44,8 @@ flowchart TD
 ## Renovação automática
 
 - **A duração é você quem decide**: ao executar Run workflow preencha `run_minutes` manualmente, dura os minutos informados; vazio usa o padrão 290
-- **O gatilho automático usa o padrão**: ao fim de cada ciclo a API inicia o próximo sem parâmetros, então cada ciclo automático dura 290 minutos
+- **Herança automática de parâmetros**: cada ciclo repassa `run_minutes` / `countdown_interval` / `countdown_unit` para o próximo, toda a cadeia usa os valores que você preencheu inicialmente
+- **Inicialização sobreposta (transição perfeita)**: 5 minutos antes do fim de cada ciclo, o próximo é iniciado antecipadamente, runner antigo e novo ficam online simultaneamente, o túnel Cloudflare suporta múltiplas conexões, o tráfego é direcionado automaticamente para as conexões disponíveis, o usuário quase não percebe a saída do ciclo antigo (para testes curtos ≤6 minutos, inicia 30 segundos antes)
 - Para teste rápido digite `5`, para uso diário deixe vazio (290)
 - Domínio e UUID são fixos, configure o cliente uma única vez
 - Para parar clique Cancel em Actions· após o cancelamento não reiniciará sozinho
@@ -197,6 +199,6 @@ R: Na página de Actions, cancele (Cancel) a execução atual — nenhuma nova s
 ## Observações
 
 - **Velocidade**: o tráfego passa pelo Cloudflare → datacenters do GitHub (EUA/Europa), adequado apenas para uso temporário/leve
-- **Interrupções breves**: a cada reinicialização automática (5 horas), a conexão cai por cerca de 3–5 minutos (nova máquina inicia, 3x-ui é instalado, túnel se reconecta); o cliente se reconecta automaticamente
+- **Transição perfeita**: com inicialização sobreposta, cada ciclo inicia o próximo 5 minutos antes, runner antigo e novo online simultaneamente, teoricamente o usuário não percebe nada; em casos extremos (ex. fila do GitHub) pode haver breve oscilação
 - **Conformidade**: rodar um proxy no GitHub Actions pode violar os ToS, com risco de banimento da conta — avalie por conta própria
 - **Segurança**: não publique `CF_TUNNEL_TOKEN` / `PANEL_PASSWORD` / `VLESS_UUID` em locais públicos
