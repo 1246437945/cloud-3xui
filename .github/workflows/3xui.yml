@@ -15,6 +15,9 @@ on:
         required: false
         default: '290'
 
+permissions:
+  actions: write
+
 env:
   VLESS_HOST: vless.my-github.ccwu.cc
   PANEL_HOST: panel.my-github.ccwu.cc
@@ -131,8 +134,11 @@ jobs:
         if: always()
         run: |
           echo "触发下一次运行 Triggering next run..."
-          curl -s -X POST \
+          HTTP_CODE=$(curl -s -o /tmp/dispatch_resp.txt -w "%{http_code}" -X POST \
             -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
             -H "Accept: application/vnd.github+json" \
             https://api.github.com/repos/${{ github.repository }}/actions/workflows/3xui.yml/dispatches \
-            -d '{"ref":"main"}' && echo "已触发下一次运行 Next run triggered"
+            -d '{"ref":"main"}')
+          echo "HTTP $HTTP_CODE"
+          cat /tmp/dispatch_resp.txt; echo ""
+          [ "$HTTP_CODE" = "204" ] && echo "已触发下一次运行 Next run triggered" || { echo "触发失败 Trigger failed"; exit 1; }
