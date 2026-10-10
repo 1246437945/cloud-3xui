@@ -26,7 +26,7 @@ jobs:
             bash /tmp/install-3xui.sh
           sudo systemctl is-active x-ui
 
-      - name: Create VLESS+XHTTP inbound via API
+      - name: Create VLESS+WS inbound via API
         env:
           PANEL_PASSWORD: ${{ inputs.panel_password }}
         run: |
@@ -67,7 +67,7 @@ jobs:
               "enable": True,
               "remark": "vless-ws",
               "listen": "",
-              "port": XHTTP_PORT,
+              "port": WS_PORT,
               "protocol": "vless",
               "expiryTime": 0,
               "total": 0,
@@ -102,18 +102,18 @@ jobs:
           # tunnel 1: panel
           nohup cloudflared tunnel --url http://127.0.0.1:2053 --no-autoupdate > /tmp/tunnel-panel.log 2>&1 &
           # tunnel 2: xhttp inbound
-          nohup cloudflared tunnel --url http://127.0.0.1:8080 --no-autoupdate > /tmp/tunnel-xhttp.log 2>&1 &
+          nohup cloudflared tunnel --url http://127.0.0.1:8080 --no-autoupdate > /tmp/tunnel-ws.log 2>&1 &
           echo "Waiting for tunnel URLs..."
-          PANEL_URL=""; XHTTP_URL=""
+          PANEL_URL=""; WS_TUNNEL_URL=""
           for i in $(seq 1 60); do
             [ -z "$PANEL_URL" ] && PANEL_URL=$(grep -oE 'https://[a-zA-Z0-9.-]+\.trycloudflare\.com' /tmp/tunnel-panel.log | head -1)
-            [ -z "$XHTTP_URL" ] && XHTTP_URL=$(grep -oE 'https://[a-zA-Z0-9.-]+\.trycloudflare\.com' /tmp/tunnel-xhttp.log | head -1)
-            [ -n "$PANEL_URL" ] && [ -n "$XHTTP_URL" ] && break
+            [ -z "$WS_TUNNEL_URL" ] && WS_TUNNEL_URL=$(grep -oE 'https://[a-zA-Z0-9.-]+\.trycloudflare\.com' /tmp/tunnel-ws.log | head -1)
+            [ -n "$PANEL_URL" ] && [ -n "$WS_TUNNEL_URL" ] && break
             sleep 2
           done
-          [ -z "$PANEL_URL" ] || [ -z "$XHTTP_URL" ] && { echo "Tunnel failed"; exit 1; }
+          [ -z "$PANEL_URL" ] || [ -z "$WS_TUNNEL_URL" ] && { echo "Tunnel failed"; exit 1; }
           UUID=$(cat /tmp/vless_uuid.txt)
-          HOST=$(echo "$XHTTP_URL" | sed 's#https://##')
+          HOST=$(echo "$WS_TUNNEL_URL" | sed 's#https://##')
           NODE="vless://${UUID}@${HOST}:443?encryption=none&security=tls&sni=${HOST}&type=ws&path=%2Fws#GitHub-3xui"
           echo "$NODE" > /tmp/vless_node.txt
           echo ""
