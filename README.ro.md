@@ -59,6 +59,10 @@ flowchart TD
 
 ## Pași detaliați de configurare
 
+### Domeniu gratuit (nu ai domeniu?)
+
+Nu ai domeniu propriu? Poți înregistra unul gratuit pe https://my.dnshe.com/ (ex. `.ccwu.cc`, valabil 10 ani), apoi direcționează serverele de nume (NS) ale domeniului către Cloudflare.
+
 ### Pasul 1: Creați un Named Tunnel în Cloudflare
 
 Site-ul oficial Cloudflare: https://www.cloudflare-cn.com (intern) / https://www.cloudflare.com (internațional)
