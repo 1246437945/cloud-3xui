@@ -71,7 +71,7 @@ Dashboard: https://dash.cloudflare.com
 
 ```mermaid
 flowchart TD
-    A["控制台 → Zero Trust<br/>→ Networks → Tunnels"] --> B["右上角 创建隧道"]
+    A["控制台 → Zero Trust<br/>→ Netwerken（Networks）→ Connectoren（Tunnels）"] --> B["右上角 创建隧道"]
     B --> C["选 Cloudflared<br/>(推荐) → 选择 Cloudflared"]
     C --> D["输入隧道名称<br/>(例：github-3xui)<br/>→ 保存隧道"]
     D --> E["安装并运行连接器页<br/>复制 Token<br/>(eyJ 开头的一长串)"]
@@ -87,7 +87,7 @@ flowchart TD
 
 Gedetailleerde stappen:
 
-1. Open het [Cloudflare-dashboard](https://dash.cloudflare.com) en ga in het linkermenu naar **Zero Trust** → **Networks** → **Tunnels**
+1. Open het [Cloudflare-dashboard](https://dash.cloudflare.com) en ga in het linkermenu naar **Zero Trust** → **Netwerken（Networks）** → **Connectoren（Tunnels）**
 2. Klik rechtsboven op **Een tunnel maken**
 3. **Type tunnel kiezen**: selecteer **Cloudflared** (aanbevolen) en klik op **Cloudflared selecteren**
 4. **De tunnel een naam geven**: voer een naam in (bijvoorbeeld `github-3xui`) en klik op **Tunnel opslaan**
@@ -106,7 +106,7 @@ Gedetailleerde stappen:
    - Service Type (servicetype): `HTTP`
    - URL: `127.0.0.1:2053`
 
-7. Sla op. Cloudflare maakt automatisch de DNS-records aan; je hoeft niets handmatig toe te voegen. Als de tunnelstatus in de Tunnels-lijst **In orde** is, is de configuratie geslaagd.
+7. Sla op. Cloudflare maakt automatisch de DNS-records aan; je hoeft niets handmatig toe te voegen. Als de tunnelstatus in de Connectoren-lijst **In orde** is, is de configuratie geslaagd.
 
 ### Stap 2: Een UUID genereren
 
