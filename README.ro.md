@@ -31,7 +31,7 @@ Fiecare rulare instalează automat panoul 3x-ui pe un server Ubuntu GitHub, cree
 |------|-------|
 | `CF_TUNNEL_TOKEN` | Token-ul tunelului Cloudflare |
 | `PANEL_PASSWORD` | Parola de autentificare în panou |
-| `VLESS_UUID` | UUID-ul nodului (fix, valabil permanent în client, generează la https://1024tools.com/uuid/) |
+| `VLESS_UUID` | UUID-ul nodului (fix, valabil permanent în client, generează la https://1024tools.com/uuid/, **Asigurați-vă că salvați acest UUID, nu va fi afișat în clar în jurnale, veți avea nevoie de el de fiecare dată când compuneți linkul nodului**) |
 
 ### 3. Rulare
 
