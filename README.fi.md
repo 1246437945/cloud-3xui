@@ -71,46 +71,42 @@ Hallintapaneeli: https://dash.cloudflare.com
 
 ```mermaid
 flowchart TD
-    A["打开 Cloudflare Dashboard"] --> B["左侧 Zero Trust"]
-    B --> C["Verkostot (Networks) → Liittimet (Tunnels)"]
-    C --> D["右上角 Create a tunnel"]
-    D --> E["选 Cloudflared → 下一步"]
-    E --> F["起名（例：github-3xui）→ 保存"]
-    F --> G["复制 Token<br/>(eyJ 开头的一长串)"]
-    G --> H["下一步 → Public hostnames"]
-    H --> I["添加第一条<br/>vless.你的域名.com → HTTP → 127.0.0.1:8080"]
-    H --> J["添加第二条<br/>panel.你的域名.com → HTTP → 127.0.0.1:2053"]
-    I --> K["保存完成"]
-    J --> K
+    A["控制台 → Zero Trust<br/>→ 网络（Networks）→ 连接器（Tunnels）"] --> B["右上角 创建隧道"]
+    B --> C["选 Cloudflared<br/>(推荐) → 选择 Cloudflared"]
+    C --> D["输入隧道名称<br/>(例：github-3xui)<br/>→ 保存隧道"]
+    D --> E["安装并运行连接器页<br/>复制 Token<br/>(eyJ 开头的一长串)"]
+    E --> F["下一步 → 路由隧道<br/>→ 已发布应用程序路由"]
+    F --> G["添加已发布应用程序路由<br/>子域 vless + 你的域<br/>类型 HTTP → URL 127.0.0.1:8080"]
+    F --> H["添加已发布应用程序路由<br/>子域 panel + 你的域<br/>类型 HTTP → URL 127.0.0.1:2053"]
+    G --> I["保存完成"]
+    H --> I
 
-    style G fill:#f6821f,color:#fff
-    style K fill:#1f9d55,color:#fff
+    style E fill:#f6821f,color:#fff
+    style I fill:#1f9d55,color:#fff
 ```
 
-1. Avaa [Cloudflare Dashboard](https://dash.cloudflare.com) ja siirry vasemman valikon **Zero Trust**-osioon.
-2. Valitse vasemmalta **Verkostot (Networks)** → **Liittimet (Tunnels)** ja napsauta oikeassa yläkulmassa **Create a tunnel**.
-3. Valitse tyyppi **Cloudflared** ja jatka eteenpäin.
-4. Anna tunnelille nimi (esim. `github-3xui`) ja tallenna.
-5. Sivu näyttää asennuskomennon, esimerkiksi:
-   ```
-   cloudflared.exe service install eyJhIjoiYzEyNGI2...
-   ```
-   Kopioi `eyJ`-alkuinen pitkä merkkijono – se on **Tunnel Token** – ja tallenna se.
-6. Napsauta Seuraava siirtyäksesi **Public hostnames** (julkaistut sovellusreitit) -osioon ja lisää kaksi kohtaa napsauttamalla **Add a public hostname**:
+Yksityiskohtaiset vaiheet:
+
+1. Avaa [Cloudflare Dashboard](https://dash.cloudflare.com) ja siirry vasemmasta valikosta kohtaan **Zero Trust** → **Networks** → **Tunnels**
+2. Napsauta oikeassa yläkulmassa **Create a tunnel**
+3. **Valitse tunnelityyppi**: valitse **Cloudflared** (suositus) ja napsauta **Select Cloudflared**
+4. **Nimeä tunneli**: kirjoita nimi (esim. `github-3xui`) ja napsauta **Save tunnel**
+5. **Asenna ja käynnistä liitin**: sivu näyttää asennuskomennon — kopioi pitkä `eyJ`-alkuinen **tunniste** ja tallenna se (käytät sitä myöhemmin GitHub Secretinä). Paikallista asennusta **ei** tarvita; jatka eteenpäin
+6. **Reititä tunneli**: siirry **Public hostnames** -välilehdelle, napsauta **Add a public hostname** ja lisää kaksi merkintää:
 
    **Ensimmäinen (solmu):**
-   - Subdomain (aliverkkotunnus): `vless`
-   - Domain (verkkotunnus): valitse oma verkkotunnuksesi
-   - Service Type (palvelutyyppi): `HTTP`
+   - Alidomain: `vless`
+   - Domain: valitse oma domainisi
+   - Tyyppi: `HTTP`
    - URL: `127.0.0.1:8080`
 
    **Toinen (paneeli):**
-   - Subdomain (aliverkkotunnus): `panel`
-   - Domain (verkkotunnus): valitse oma verkkotunnuksesi
-   - Service Type (palvelutyyppi): `HTTP`
+   - Alidomain: `panel`
+   - Domain: valitse oma domainisi
+   - Tyyppi: `HTTP`
    - URL: `127.0.0.1:2053`
+7. Tallenna. Cloudflare luo DNS-tietueet automaattisesti. Tila **Healthy** Tunnels-listassa tarkoittaa onnistunutta määritystä.
 
-7. Tallenna. Cloudflare luo DNS-tietueet automaattisesti, eikä niitä tarvitse lisätä käsin.
 
 ### Vaihe 2: Luo UUID
 
