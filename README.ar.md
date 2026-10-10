@@ -71,46 +71,42 @@ flowchart TD
 
 ```mermaid
 flowchart TD
-    A["打开 Cloudflare Dashboard"] --> B["左侧 Zero Trust"]
-    B --> C["Networks → Tunnels"]
-    C --> D["右上角 Create a tunnel"]
-    D --> E["选 Cloudflared → 下一步"]
-    E --> F["起名（例：github-3xui）→ 保存"]
-    F --> G["复制 Token<br/>(eyJ 开头的一长串)"]
-    G --> H["下一步 → Public hostnames"]
-    H --> I["添加第一条<br/>vless.你的域名.com → HTTP → 127.0.0.1:8080"]
-    H --> J["添加第二条<br/>panel.你的域名.com → HTTP → 127.0.0.1:2053"]
-    I --> K["保存完成"]
-    J --> K
+    A["控制台 → Zero Trust<br/>→ 网络（Networks）→ 连接器（Tunnels）"] --> B["右上角 创建隧道"]
+    B --> C["选 Cloudflared<br/>(推荐) → 选择 Cloudflared"]
+    C --> D["输入隧道名称<br/>(例：github-3xui)<br/>→ 保存隧道"]
+    D --> E["安装并运行连接器页<br/>复制 Token<br/>(eyJ 开头的一长串)"]
+    E --> F["下一步 → 路由隧道<br/>→ 已发布应用程序路由"]
+    F --> G["添加已发布应用程序路由<br/>子域 vless + 你的域<br/>类型 HTTP → URL 127.0.0.1:8080"]
+    F --> H["添加已发布应用程序路由<br/>子域 panel + 你的域<br/>类型 HTTP → URL 127.0.0.1:2053"]
+    G --> I["保存完成"]
+    H --> I
 
-    style G fill:#f6821f,color:#fff
-    style K fill:#1f9d55,color:#fff
+    style E fill:#f6821f,color:#fff
+    style I fill:#1f9d55,color:#fff
 ```
 
-1. افتح [Cloudflare Dashboard](https://dash.cloudflare.com)، ومن القائمة اليسرى انتقل إلى **Zero Trust**
-2. من اليسار **Networks** → **Tunnels**، ثم انقر **Create a tunnel** أعلى اليمين
-3. اختر النوع **Cloudflared**، ثم انقر التالي
-4. أعطِ النفق اسمًا (مثل `github-3xui`)، ثم احفظ
-5. ستعرض الصفحة أمر تثبيت على الشكل التالي:
-   ```
-   cloudflared.exe service install eyJhIjoiYzEyNGI2...
-   ```
-   انسخ السلسلة الطويلة التي تبدأ بـ `eyJ`، وهي **Tunnel Token**، واحتفظ بها جيدًا
-6. انقر التالي للانتقال إلى **Public hostnames** (مسارات التطبيقات المنشورة)، وانقر **Add a public hostname** لإضافة مسارين:
+خطوات تفصيلية:
+
+1. افتح [لوحة تحكم Cloudflare](https://dash.cloudflare.com) ثم انتقل إلى **Zero Trust** ← **Networks** ← **Tunnels** من القائمة اليسرى
+2. انقر على **Create a tunnel** في الزاوية العلوية اليمنى
+3. **اختر نوع النفق**: اختر **Cloudflared** (موصى به) ثم انقر على **Select Cloudflared**
+4. **سمِّ النفق**: أدخل اسمًا (مثال: `github-3xui`) ثم انقر على **Save tunnel**
+5. **ثبّت الموصل وشغّله**: تعرض الصفحة أمر تثبيت — انسخ الـ **Token** الطويل الذي يبدأ بـ `eyJ` واحفظه (ستستخدمه كـ GitHub Secret لاحقًا). **لا** حاجة للتثبيت محليًا؛ تابع إلى الخطوة التالية
+6. **وجّه النفق**: انتقل إلى تبويب **Public hostnames** وانقر على **Add a public hostname** ثم أضف مدخلين:
 
    **الأول (العقدة):**
-   - Subdomain (النطاق الفرعي): `vless`
-   - Domain (النطاق): اختر نطاقك
-   - Service Type (نوع الخدمة): `HTTP`
-   - URL: `127.0.0.1:8080`
+   - النطاق الفرعي: `vless`
+   - النطاق: اختر نطاقك
+   - النوع: `HTTP`
+   - الرابط: `127.0.0.1:8080`
 
    **الثاني (اللوحة):**
-   - Subdomain (النطاق الفرعي): `panel`
-   - Domain (النطاق): اختر نطاقك
-   - Service Type (نوع الخدمة): `HTTP`
-   - URL: `127.0.0.1:2053`
+   - النطاق الفرعي: `panel`
+   - النطاق: اختر نطاقك
+   - النوع: `HTTP`
+   - الرابط: `127.0.0.1:2053`
+7. احفظ. سينشئ Cloudflare سجلات DNS تلقائيًا. إذا ظهرت الحالة **Healthy** في قائمة Tunnels فهذا يعني نجاح الإعداد.
 
-7. احفظ. سينشئ Cloudflare سجلات DNS تلقائيًا دون الحاجة إلى إضافة يدوية.
 
 ### الخطوة 2: توليد UUID
 
