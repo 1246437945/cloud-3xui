@@ -31,7 +31,7 @@ Trong repo: Settings → Secrets and variables → Actions, thêm ba secret:
 |------|-------|
 | `CF_TUNNEL_TOKEN` | Token tunnel Cloudflare |
 | `PANEL_PASSWORD` | Mật khẩu đăng nhập panel |
-| `VLESS_UUID` | UUID của node (cố định, hiệu lực vĩnh viễn trong client, tự tạo tại https://1024tools.com/uuid/) |
+| `VLESS_UUID` | UUID của node (cố định, hiệu lực vĩnh viễn trong client, tự tạo tại https://1024tools.com/uuid/, **Hãy nhớ lưu UUID này, nó sẽ không hiển thị dưới dạng văn bản rõ trong nhật ký, bạn sẽ cần nó mỗi khi ghép liên kết node**) |
 
 ### 3. Chạy
 
