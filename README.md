@@ -46,5 +46,6 @@ Actions → 3x-ui VLESS Node → Run workflow（参数可空，自动用 secret�
 ## 注意事项
 
 - **速度**：流量经 Cloudflare → GitHub 机房（美欧），仅适合临时/轻度使用
+- **短暂中断**：每 5 小时自动重启交接时约断 3-5 分钟（新机器启动、装 3x-ui、隧道重连），客户端会自动重连恢复
 - **合规**：在 GitHub Actions 跑代理有违反 ToS 被封号的风险，自行评估
 - **不要**把 `CF_TUNNEL_TOKEN` / `PANEL_PASSWORD` / `VLESS_UUID` 发到公开地方
