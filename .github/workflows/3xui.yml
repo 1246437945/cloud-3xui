@@ -160,6 +160,7 @@ jobs:
               printf "\r剩余 %d 小时 %d 分钟 %d 秒 / Remaining %dh %dm %ds    " "$H" "$M" "$S" "$H" "$M" "$S"
             fi
           done
+          echo ""
 
       - name: Trigger next run (auto-restart)
         # Skip on manual cancel, so user can stop the loop
