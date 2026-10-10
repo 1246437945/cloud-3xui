@@ -87,7 +87,7 @@ flowchart TD
 
 Detalaj paŝoj:
 
-1. Malfermu la [stirpanelon de Cloudflare](https://dash.cloudflare.com) kaj iru al **Zero Trust** → **Networks** → **Tunnels** en la maldekstra menuo
+1. Malfermu la [stirpanelon de Cloudflare](https://dash.cloudflare.com) kaj iru al **Zero Trust** → **Retoj (Networks)** → **Konektiloj (Tunnels)** en la maldekstra menuo
 2. Alklaku **Create a tunnel** supre dekstre
 3. **Elektu la tunelan tipon**: elektu **Cloudflared** (rekomendata) kaj alklaku **Select Cloudflared**
 4. **Nomu la tunelon**: entajpu nomon (ekz. `github-3xui`) kaj alklaku **Save tunnel**
