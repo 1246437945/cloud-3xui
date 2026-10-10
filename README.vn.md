@@ -59,10 +59,6 @@ flowchart TD
 
 ## Các Bước Cấu Hình Chi Tiết
 
-### Tên miền miễn phí (chưa có tên miền?)
-
-Chưa có tên miền riêng? Bạn có thể đăng ký một tên miền miễn phí tại https://my.dnshe.com/ (ví dụ `.ccwu.cc`, hiệu lực 10 năm), rồi trỏ NS của tên miền về Cloudflare.
-
 ### Bước 1: Tạo Named Tunnel trong Cloudflare
 
 Trang chủ chính thức của Cloudflare: https://www.cloudflare-cn.com (trong nước) / https://www.cloudflare.com (quốc tế)
@@ -71,46 +67,42 @@ Bảng điều khiển: https://dash.cloudflare.com
 
 ```mermaid
 flowchart TD
-    A["打开 Cloudflare Dashboard"] --> B["左侧 Zero Trust"]
-    B --> C["Networks → Tunnels"]
-    C --> D["右上角 Create a tunnel"]
-    D --> E["选 Cloudflared → 下一步"]
-    E --> F["起名（例：github-3xui）→ 保存"]
-    F --> G["复制 Token<br/>(eyJ 开头的一长串)"]
-    G --> H["下一步 → Public hostnames"]
-    H --> I["添加第一条<br/>vless.你的域名.com → HTTP → 127.0.0.1:8080"]
-    H --> J["添加第二条<br/>panel.你的域名.com → HTTP → 127.0.0.1:2053"]
-    I --> K["保存完成"]
-    J --> K
+    A["控制台 → Zero Trust<br/>→ Networks → Tunnels"] --> B["右上角 创建隧道"]
+    B --> C["选 Cloudflared<br/>(推荐) → 选择 Cloudflared"]
+    C --> D["输入隧道名称<br/>(例：github-3xui)<br/>→ 保存隧道"]
+    D --> E["安装并运行连接器页<br/>复制 Token<br/>(eyJ 开头的一长串)"]
+    E --> F["下一步 → 路由隧道<br/>→ 已发布应用程序路由"]
+    F --> G["添加已发布应用程序路由<br/>子域 vless + 你的域<br/>类型 HTTP → URL 127.0.0.1:8080"]
+    F --> H["添加已发布应用程序路由<br/>子域 panel + 你的域<br/>类型 HTTP → URL 127.0.0.1:2053"]
+    G --> I["保存完成"]
+    H --> I
 
-    style G fill:#f6821f,color:#fff
-    style K fill:#1f9d55,color:#fff
+    style E fill:#f6821f,color:#fff
+    style I fill:#1f9d55,color:#fff
 ```
 
-1. Mở [Cloudflare Dashboard](https://dash.cloudflare.com), vào menu bên trái **Zero Trust**
-2. Bên trái **Networks** → **Tunnels**, nhấn **Create a tunnel** ở góc trên bên phải
-3. Chọn loại **Cloudflared**, nhấn tiếp theo
-4. Đặt tên cho tunnel (ví dụ `github-3xui`), lưu lại
-5. Trang sẽ hiển thị một lệnh cài đặt, dạng như:
-   ```
-   cloudflared.exe service install eyJhIjoiYzEyNGI2...
-   ```
-   Sao chép chuỗi ký tự dài bắt đầu bằng `eyJ`, đó chính là **Tunnel Token**, lưu lại cẩn thận
-6. Nhấn tiếp theo để vào **Public hostnames** (Định tuyến ứng dụng công khai), nhấn **Add a public hostname** để thêm hai cái:
+Các bước chi tiết:
+
+1. Mở [Cloudflare Dashboard](https://dash.cloudflare.com), vào menu bên trái **Zero Trust** → **Networks** → **Tunnels**
+2. Nhấn **Tạo tunnel** ở góc trên bên phải
+3. **Chọn loại tunnel**: chọn **Cloudflared** (khuyên dùng), nhấn **Chọn Cloudflared**
+4. **Đặt tên cho tunnel**: nhập tên (ví dụ `github-3xui`), nhấn **Lưu tunnel**
+5. **Cài đặt và chạy trình kết nối**: trang sẽ hiển thị một lệnh cài đặt, sao chép chuỗi ký tự dài bắt đầu bằng `eyJ` — đó chính là **Token**, lưu lại cẩn thận (sau này dùng để lưu vào GitHub Secret). **Không cần** cài đặt gì trên máy, nhấn tiếp theo để tiếp tục
+6. **Định tuyến tunnel**: vào tab **Định tuyến ứng dụng đã xuất bản**, nhấn **Thêm định tuyến ứng dụng đã xuất bản** và thêm hai cái:
 
    **Cái thứ nhất (node):**
-   - Subdomain (tên miền phụ): `vless`
-   - Domain (tên miền): chọn tên miền của bạn
-   - Service Type (loại dịch vụ): `HTTP`
+   - Tên miền phụ: `vless`
+   - Tên miền: chọn tên miền của bạn
+   - Loại: `HTTP`
    - URL: `127.0.0.1:8080`
 
    **Cái thứ hai (bảng điều khiển):**
-   - Subdomain (tên miền phụ): `panel`
-   - Domain (tên miền): chọn tên miền của bạn
-   - Service Type (loại dịch vụ): `HTTP`
+   - Tên miền phụ: `panel`
+   - Tên miền: chọn tên miền của bạn
+   - Loại: `HTTP`
    - URL: `127.0.0.1:2053`
 
-7. Lưu lại. Cloudflare sẽ tự động tạo bản ghi DNS, không cần thêm thủ công.
+7. Lưu lại. Cloudflare sẽ tự động tạo bản ghi DNS, không cần thêm thủ công. Quay lại danh sách Tunnels; nếu trạng thái tunnel là **bình thường** thì cấu hình thành công.
 
 ### Bước 2: Tạo UUID
 
