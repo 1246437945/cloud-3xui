@@ -135,6 +135,8 @@ Podrobné kroky:
    - **Panel password**: nechte prázdné (automaticky se použije `PANEL_PASSWORD` secret)
      Heslo panelu (prázdné = použije se PANEL_PASSWORD secret)
    - **Run duration**: výchozí `290` (minut), při prvním testu můžete zadat `5` pro rychlé ověření; pro běžné použití nechte prázdné
+   - **Countdown output interval**: Interval výpisu odpočtu, výchozí `1`, zadáním `0` se vypne
+   - **Countdown interval unit**: Jednotka intervalu výpisu odpočtu, z rozevíracího seznamu vyberte `minutes` nebo `seconds`
      Doba běhu (v minutách, výchozí 290, max. 340)
 5. Kliknutím na zelené **Run workflow** spustíte běh
 
@@ -174,7 +176,7 @@ Podrobné kroky:
 | Install 3x-ui | Instalace 3x-ui | Install 3x-ui | Nainstaluje panel oficiálním skriptem bez interakce |
 | Create VLESS+WS inbound via API | Vytvoření příchozího VLESS+WS přes API | Create VLESS+WS inbound via API | Přihlásí se přes API Token a automaticky vytvoří příchozí |
 | Start named Cloudflare tunnel | Spuštění pojmenovaného tunelu Cloudflare | Start named Cloudflare tunnel | Připojí tunel s pevnou doménou pomocí Tokenu |
-| Keep alive | Udržení běhu | Keep alive | Uspí se na zadaný počet minut a sleduje stav služeb |
+| Keep alive | Udržení běhu | Keep alive | Uspí se na zadaný počet minut, sleduje stav služeb a vypisuje odpočet v nastaveném intervalu |
 | Trigger next run | Spuštění dalšího běhu | Trigger next run | Zavolá API a automaticky nastartuje další kolo |
 
 ## Časté dotazy
