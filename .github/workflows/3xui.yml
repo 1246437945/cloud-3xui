@@ -122,6 +122,7 @@ jobs:
           for i in $(seq 1 30); do
             grep -q "Registered tunnel connection" /tmp/tunnel.log && break
             sleep 2
+          echo ""
           done
           grep -q "Registered tunnel connection" /tmp/tunnel.log || { echo "隧道失败 Tunnel failed"; cat /tmp/tunnel.log; exit 1; }
           echo ""
@@ -156,7 +157,7 @@ jobs:
               LAST_CD=$ELAPSED
               LEFT_SEC=$(( END - $(date +%s) ))
               H=$(( LEFT_SEC / 3600 )); M=$(( (LEFT_SEC % 3600) / 60 )); S=$(( LEFT_SEC % 60 ))
-              echo "剩余 $H 小时 $M 分钟 $S 秒 / Remaining ${H}h ${M}m ${S}s"
+              printf "\r剩余 %d 小时 %d 分钟 %d 秒 / Remaining %dh %dm %ds    " "$H" "$M" "$S" "$H" "$M" "$S"
             fi
           done
 
