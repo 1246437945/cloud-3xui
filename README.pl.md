@@ -136,6 +136,10 @@ Szczegółowe kroki:
      Hasło panelu (puste = użycie sekretu `PANEL_PASSWORD`)
    - **Run duration**：domyślnie `290` (minut); do pierwszego testu możesz wpisać `5` dla szybkiej weryfikacji
      Czas działania (minuty, domyślnie 290, maks. 340)
+   - **Countdown output interval**: interwał wyświetlania odliczania, domyślnie `1`, wpisz `0` aby wyłączyć
+     Interwał wyświetlania odliczania (domyślnie 1, 0 aby wyłączyć)
+   - **Countdown interval unit**: jednostka interwału odliczania, wybierz `minutes` lub `seconds` z listy rozwijanej
+     Jednostka interwału wyświetlania odliczania
 5. Kliknij zielony przycisk **Run workflow**, aby rozpocząć
 
 ### Krok 5: Pobranie linku do węzła
@@ -174,7 +178,7 @@ Szczegółowe kroki:
 | Install 3x-ui | Instalacja 3x-ui | Install 3x-ui | Instalacja panelu oficjalnym skryptem, nieinteraktywnie |
 | Create VLESS+WS inbound via API | Utworzenie inboundu VLESS+WS przez API | Create VLESS+WS inbound via API | Logowanie tokenem API i automatyczne utworzenie inboundu |
 | Start named Cloudflare tunnel | Uruchomienie nazwanego tunelu Cloudflare | Start named Cloudflare tunnel | Połączenie z tunelem o stałej domenie przy użyciu tokenu |
-| Keep alive | Utrzymanie aktywności | Keep alive | Uśpienie na określoną liczbę minut i monitorowanie stanu usług |
+| Keep alive | Utrzymanie aktywności | Keep alive | Usypia na określoną liczbę minut, co minutę sprawdza stan usług, wyświetla odliczanie w ustawionym interwale |
 | Trigger next run | Wyzwolenie następnego uruchomienia | Trigger next run | Wywołanie API w celu automatycznego uruchomienia kolejnej rundy |
 
 ## Częste pytania
